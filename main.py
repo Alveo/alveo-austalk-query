@@ -2,10 +2,11 @@
 @author: Dylan Wheeler
 '''
 
-from bottle import route, post, run, request, redirect, template, static_file
+import bottle
+from beaker.middleware import SessionMiddleware
 import alquery
+import qbuilder
 import pyalveo
-import re
 
 API_KEY = 'Ms8qzfWCDSNJUwdAkezq'
 BASE_URL = 'https://app.alveo.edu.au/'
@@ -27,16 +28,24 @@ PREFIXES = """
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
         PREFIX is: <http://purl.org/ontology/is/core#>
         PREFIX iso: <http://purl.org/iso25964/skos-thes#>"""
+        
+session_opts = {
+    'session.cookie_expires': True
+}
 
-@route('/styles/<filename>')
+app = SessionMiddleware(bottle.app(), session_opts)
+        
+@bottle.route('/styles/<filename>')
 def serveStyle(filename):
-    return static_file(filename, root='./views/styles')
+    return bottle.static_file(filename, root='./views/styles')
 
-@route('/results')
+@bottle.get('/itemsearch')
+@bottle.get('/itemresults')
+@bottle.get('/presults')
 def redirect_home():
-    redirect('/')
+    bottle.redirect('/')
     
-@route('/')
+@bottle.route('/')
 def search():
     
     cities = QUERY.qList("austalk", PREFIXES+
@@ -76,45 +85,42 @@ def search():
             ?part austalk:first_language ?flang .
             MINUS{
                 ?flang iso639schema:name ?y}}}
-        ORDER BY ?part
-    """)
+        ORDER BY ?part""")
     fLangInt = QUERY.qList("austalk", PREFIXES+
     """                            
         SELECT distinct ?val
         WHERE {
             ?part a foaf:Person .
             ?part austalk:first_language ?val .}
-        ORDER BY ?part
-    """)
-    print fLangDisp
-    print fLangInt
-    return template('search', cities=cities, herit=herit, highQual=highQual, profCat=profCat, fLangDisp=fLangDisp, fLangInt=fLangInt)
-    
-@route('/test')
-def test():
-    query = PREFIXES+ """     
+        ORDER BY ?part""")
+    bCountries = QUERY.qList("austalk", PREFIXES+
+        """
         SELECT distinct ?val 
         where {
           ?part a foaf:Person .
-          ?part austalk:recording_site ?site .
-          ?site austalk:city ?val .}    
-    """
-    
-    
-    searchResults = USER_CLIENT.sparql_query('austalk', query)  
-    return searchResults
+          ?part austalk:pob_country ?val .}""")
 
-@post('/results')
+    return bottle.template('psearch', cities=cities, herit=herit, highQual=highQual, profCat=profCat, fLangDisp=fLangDisp, fLangInt=fLangInt, bCountries=bCountries)
+    
+@bottle.route('/test')
+def test():
+    session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
+    session['test'] = session.get('test',0) + 1
+    session.save()
+    return 'Test counter: %d' % session['test']
+
+@bottle.post('/presults')
 def results():
+    
+    session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
         
     query = PREFIXES+ """
     
-    SELECT ?participant ?gender (str(?a) as ?age) ?city ?heritage ?highqual ?profcat"""
+    SELECT ?participant ?gender (str(?a) as ?age) ?city ?bcountry ?heritage ?highqual ?profcat"""
     
     #Building up the "Select" clause of the query from formdata for columns we only want to include if there's formdata.
-    if request.forms.get('ses') != "":
-        query = query + """ ?ses """
-        
+    query = query + qbuilder.selectList(['ses', 'olangs', 'bstate', 'btown'])
+           
     query = query + """
     WHERE {
         ?participant a foaf:Person .
@@ -125,61 +131,42 @@ def results():
         ?participant foaf:age ?a .
         ?participant foaf:gender ?gender .
         ?participant austalk:professional_category ?profcat .
-        ?participant austalk:first_language ?flang .     
+        ?participant austalk:first_language ?flang .
+        ?participant austalk:pob_country ?bcountry .   
     """
     #Building up the "Where" clause of the query from formdata for columns we only want to include if there's formdata.
-    if request.forms.get('ses') != "":
+    if bottle.request.forms.get('ses') != "":
         query = query + """?participant austalk:ses ?ses ."""
+    if bottle.request.forms.get('olangs') != "":
+        query = query + """?participant austalk:other_languages ?olangs ."""
+    if bottle.request.forms.get('bstate') != "":
+        query = query + """?participant austalk:pob_state ?bstate ."""
+    if bottle.request.forms.get('btown') != "":
+        query = query + """?participant austalk:pob_town ?btown ."""
           
-    #Building filters.
-    if request.forms.get('city') != '':
-        city = request.forms.get('city')
-        query = query + """FILTER regex(?city, "^%s$", "i")""" % (city)
-        
-    if request.forms.get('gender') != '':
-        gender = request.forms.get('gender')
-        query = query + """FILTER regex(?gender, "^%s$", "i")""" % (gender)
-    
-    try:
-        if request.forms.get('age') != '':
-            age = request.forms.get('age')       
-            if re.match(".*-.*", age):
-                ages = re.split("-", age, maxsplit=1)
-                query = query + """FILTER (xsd:integer(%s) <= ?a && ?a <= xsd:integer(%s))""" % (int(ages[0]), int(ages[1]))
-            else:        
-                query = query + """FILTER (?a = xsd:integer(%s))""" % (int(age))
-    except(ValueError):
-        query = query
-        
-    if request.forms.get('heritage') != '':
-        heritage = request.forms.get('heritage')
-        query = query + """FILTER regex(?heritage, "^%s$", "i")""" % (heritage)
-        
-    if request.forms.get('ses') != "":
-        ses = request.forms.get('ses')
-        query = query + """FILTER regex(?ses, "^%s$", "i")""" % (ses)
-        
-    if request.forms.get('highqual') !="":
-        highQual = request.forms.get('highqual')
-        query = query + """FILTER regex(?highqual, "^%s$", "i")""" % (highQual)
-        
-    if request.forms.get('profcat') != "":
-        profCat = request.forms.get('profcat')
-        query = query + """FILTER regex(?profcat, "^%s$", "i")""" % (profCat)
-        
-    if request.forms.get('flang') != "":
-        fLang = request.forms.get('flang')
-        print fLang
-        query = query + """FILTER regex(str(?flang), "^%s$", "i")""" % (fLang)
-        print query
-        
-           
+    #Building filters.    
+    query = query + qbuilder.simpleFilterList(['city', 'gender', 'heritage', 'ses', 'highqual',
+                                               'profcat', 'bcountry', 'bstate', 'btown'])
+    query = query + qbuilder.toStrFilter('flang')
+    query = query + qbuilder.numRangeFilter('age')
+    query = query + qbuilder.textRangeFilter('olangs')
+                         
     query = query + "} ORDER BY ?participant"
-
+    print query
+    
     resultsTable = QUERY.htmlTable("austalk", query)
-       
-    return template('results', resultsTable=resultsTable[0], resultCount=resultsTable[1])
+    
+    return bottle.template('presults', resultsTable=resultsTable, resultCount=session['resultscount'])
 
-run(host='localhost', port=8080, debug=True)
+@bottle.post('/itemresults')
+def item_results():
+    return bottle.template('itemresults')
+
+@bottle.post('/itemsearch')
+def item_search():
+    return bottle.template('itemsearch')
+
+if __name__ == '__main__':
+    bottle.run(app=app, host='localhost', port=8080, debug=True)
 
 

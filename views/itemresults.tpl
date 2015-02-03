@@ -7,10 +7,7 @@
 
 <body>
 
-<h1>Search Results</h1>
-<p>Total matches: {{resultCount}}</p>
-
-{{!resultsTable}}
+<p>There sure are lots of items here.</p>
 
 </body>
 

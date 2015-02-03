@@ -1,0 +1,10 @@
+*****3/2/15*****
+
+-Started factoring query building out of main and into qbuilder.py. When this is finished, what I'm hoping is that we'll have a function that allows us to build an entire SPARQL query with a single call to some function in qbuilder. This would make qbuilder a pretty useful thing in its own right and would be a good step towards generalising the app to be able to query collections other than austalk. Although that's not a particularly high priority at the moment.
+
+-Now using beaker to keep the most recent list of participants from search results in the session data. Had to rewrite a bunch of stuff to get this working. Also using this to store the count for the number of search results from a query now, which let me clear up something that was kind of nasty about alquery.htmlTable.
+
+-Added itemresults.tpl and a button to get all the items for the selected participants to the results page. 
+-Renamed "results" to "presults". 
+-Renamed "search" to "psearch".
+
