@@ -1,0 +1,50 @@
+***TODO***
+
+-itemsearch.tpl, itemresults.tpl, and export.tpl are all missing some HTML - headings and so on.
+-No confirmation message yet after an item list is exported to Alveo. Just returns you home.
+
+-Would like to display a list of a user's existing item lists on the export page, so they can add to one without
+needing to remember it's name.
+
+-qbuilder.regex_filter needs to be made smarter. This is for fields where we want the user to be able to enter a
+text search using regular expressions. Right now it supports entering items separated by commas or items in quotes,
+but a search combining these things doesn't work as expected (in fact it completely breaks the query).
+	As an alternative to fixing this up, could simply have a note explaining SPARQL's regex syntax and get users to
+use that directly. This is somewhat less user friendly to people who aren't familiar with using regular expressions
+than the current parsing, but would probably be simple enough given an explanation and should avoid any weird
+behaviour.
+
+-Put in a page where a user can enter their API key. Store this for the session only and use it instead of my
+API key. This'd just be a placeholder for a real login system but it's required if we want people to be able
+to export item lists to their own Alveo accounts without having to directly edit the code. This might be low
+priority.
+
+-Add a button to the item results page to export the selected items to Alveo as an item list. Just a text field
+to enter the name of the item list and a submit button. Simple, assuming we have all the item URIs in a list
+already.
+
+-Write tests for all current functionality, fix any major problems this exposes.
+
+-Add language usage as a searchable field for participants. Keep forgetting this one.
+
+***OPTIONAL/LOW PRIORITY***
+
+-On the itemresults page, prompts don't always display correctly. Something to do with the regex for pulling
+the data we actually want out of the raw query results. Also, some prompts are very long. Should probably limit
+the number of characters displayed.
+
+-Cache values for drop down boxes in participant search. The search page loads a little slowly, takes around
+5 seconds.
+
+-Ability to remove participants from the selected list on the results page of a participant search, before
+selecting items. Maybe also include a box to add a participant directly by URI?
+
+-Get first language field displaying in search results. This is kind of messy because some values for this
+field are URIs that need to be converted and some are literals. Might not bother. The search does work correctly.
+
+-"Total matches" on itemresults page includes participants for whom no items were found in the Alveo database
+as if they were a single search result, making it slightly inaccurate. Low priority to fix this bug.
+
+-Make column headings look nicer in search results. Very low priority.
+
+-CSV export of search results.

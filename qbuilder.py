@@ -5,7 +5,7 @@
 from bottle import request
 import re
 
-def simpleFilter(fName):
+def simple_filter(fName):
     '''
     @summary: Used to add a simple filter to a SPARQL query.
     
@@ -21,7 +21,7 @@ def simpleFilter(fName):
     else:
         return ''
     
-def toStrFilter(fName):
+def to_str_filter(fName):
     '''
     @summary: Used to add a simple filter to a SPARQL query where the field needs to be converted to a string from another data type (such as a URI)
     
@@ -37,7 +37,7 @@ def toStrFilter(fName):
     else:
         return ''
     
-def simpleFilterList(fList):
+def simple_filter_list(fList):
     '''
     @summary: Used to add many simple filters to a SPARQL query.
     
@@ -50,11 +50,11 @@ def simpleFilterList(fList):
     filters = ''
     
     for field in fList:
-        filters = filters + simpleFilter(field)
+        filters = filters + simple_filter(field)
     
     return filters
 
-def numRangeFilter(fName):
+def num_range_filter(fName):
     '''
     @summary: Used to add a filter that can search a range of numbers to a SPARQL query.
     
@@ -77,7 +77,7 @@ def numRangeFilter(fName):
     else:
         return ''
     
-def textRangeFilter(fName):
+def regex_filter(fName):
     '''
     @summary: Used to add a filter that can search one or more text entries separated by commas to a SPARQL query.
     
@@ -105,7 +105,7 @@ def textRangeFilter(fName):
     else:
         return ''
     
-def selectList(sList):
+def select_list(sList):
     '''
     @summary: Used to add a list of items to a SPARQL query SELECT line when we only want to select these items if they have form data.
     

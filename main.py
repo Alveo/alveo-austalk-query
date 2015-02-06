@@ -36,44 +36,45 @@ session_opts = {
 app = SessionMiddleware(bottle.app(), session_opts)
         
 @bottle.route('/styles/<filename>')
-def serveStyle(filename):
+def serve_style(filename):
     return bottle.static_file(filename, root='./views/styles')
 
 @bottle.get('/itemsearch')
 @bottle.get('/itemresults')
 @bottle.get('/presults')
+@bottle.get('/export')
 def redirect_home():
     bottle.redirect('/')
     
 @bottle.route('/')
 def search():
     
-    cities = QUERY.qList("austalk", PREFIXES+
+    cities = QUERY.results_list("austalk", PREFIXES+
     """    
         SELECT distinct ?val 
         where {
           ?part a foaf:Person .
           ?part austalk:recording_site ?site .
           ?site austalk:city ?val .}""")
-    herit = QUERY.qList("austalk", PREFIXES+
+    herit = QUERY.results_list("austalk", PREFIXES+
     """    
         SELECT distinct ?val 
         where {
           ?part a foaf:Person .
           ?part austalk:cultural_heritage ?val .}""")
-    highQual = QUERY.qList("austalk", PREFIXES+
+    highQual = QUERY.results_list("austalk", PREFIXES+
     """    
         SELECT distinct ?val 
         where {
           ?part a foaf:Person .
           ?part austalk:education_level ?val .}""")
-    profCat = QUERY.qList("austalk", PREFIXES+
+    profCat = QUERY.results_list("austalk", PREFIXES+
     """
         SELECT distinct ?val 
         where {
           ?part a foaf:Person .
           ?part austalk:professional_category ?val . } """)
-    fLangDisp = QUERY.qList("austalk", PREFIXES+
+    fLangDisp = QUERY.results_list("austalk", PREFIXES+
     """                            
         SELECT distinct ?flang
         WHERE {{
@@ -86,14 +87,14 @@ def search():
             MINUS{
                 ?flang iso639schema:name ?y}}}
         ORDER BY ?part""")
-    fLangInt = QUERY.qList("austalk", PREFIXES+
+    fLangInt = QUERY.results_list("austalk", PREFIXES+
     """                            
         SELECT distinct ?val
         WHERE {
             ?part a foaf:Person .
             ?part austalk:first_language ?val .}
         ORDER BY ?part""")
-    bCountries = QUERY.qList("austalk", PREFIXES+
+    bCountries = QUERY.results_list("austalk", PREFIXES+
         """
         SELECT distinct ?val 
         where {
@@ -116,21 +117,19 @@ def results():
         
     query = PREFIXES+ """
     
-    SELECT ?participant ?gender (str(?a) as ?age) ?city ?bcountry ?heritage ?highqual ?profcat"""
+    SELECT ?participant ?gender (str(?a) as ?age) ?city ?bcountry"""
     
     #Building up the "Select" clause of the query from formdata for columns we only want to include if there's formdata.
-    query = query + qbuilder.selectList(['ses', 'olangs', 'bstate', 'btown'])
+    query = query + qbuilder.select_list(['olangs', 'bstate', 'btown', 'ses', 'heritage',
+                                         'profcat', 'highqual'])
            
     query = query + """
     WHERE {
         ?participant a foaf:Person .
-        ?participant austalk:cultural_heritage ?heritage .
-        ?participant austalk:education_level ?highqual .
         ?participant austalk:recording_site ?site .
         ?site austalk:city ?city .
         ?participant foaf:age ?a .
         ?participant foaf:gender ?gender .
-        ?participant austalk:professional_category ?profcat .
         ?participant austalk:first_language ?flang .
         ?participant austalk:pob_country ?bcountry .   
     """
@@ -143,28 +142,79 @@ def results():
         query = query + """?participant austalk:pob_state ?bstate ."""
     if bottle.request.forms.get('btown') != "":
         query = query + """?participant austalk:pob_town ?btown ."""
+    if bottle.request.forms.get('heritage') != "":
+        query = query + """?participant austalk:cultural_heritage ?heritage ."""
+    if bottle.request.forms.get('profcat') != "":
+        query = query + """?participant austalk:professional_category ?profcat ."""
+    if bottle.request.forms.get('highqual') != "":
+        query = query + """?participant austalk:education_level ?highqual ."""
           
     #Building filters.    
-    query = query + qbuilder.simpleFilterList(['city', 'gender', 'heritage', 'ses', 'highqual',
+    query = query + qbuilder.simple_filter_list(['city', 'gender', 'heritage', 'ses', 'highqual',
                                                'profcat', 'bcountry', 'bstate', 'btown'])
-    query = query + qbuilder.toStrFilter('flang')
-    query = query + qbuilder.numRangeFilter('age')
-    query = query + qbuilder.textRangeFilter('olangs')
+    query = query + qbuilder.to_str_filter('flang')
+    query = query + qbuilder.num_range_filter('age')
+    query = query + qbuilder.regex_filter('olangs')
                          
     query = query + "} ORDER BY ?participant"
     print query
-    
-    resultsTable = QUERY.htmlTable("austalk", query)
+
+    resultsTable = QUERY.html_table("austalk", query)
+    session['partlist'] = session['lastresults']
     
     return bottle.template('presults', resultsTable=resultsTable, resultCount=session['resultscount'])
 
 @bottle.post('/itemresults')
 def item_results():
-    return bottle.template('itemresults')
+    
+    session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
+    
+    query = PREFIXES + """   
+    SELECT distinct ?item ?prompt ?compname
+    WHERE {
+      ?item a ausnc:AusNCObject .
+      ?item olac:speaker <%s> .
+      ?item austalk:prompt ?prompt .
+      ?item austalk:componentName ?compname .
+     """
+     
+    partList = session['partlist']
+    resultsList = []
+    itemList = []
+    resultsCount = 0
+    
+    query = query + qbuilder.regex_filter('prompt')
+    query = query + qbuilder.regex_filter('compname')
+    
+    query = query + "}"
+    
+    print query
+    
+    for part in partList:
+        resultsList.append(QUERY.html_table("austalk", query % (part)))
+        resultsCount = resultsCount + session['resultscount']
+        itemList = itemList + session['lastresults']
+    
+    session['itemlist'] = itemList
+    session.save()
+    return bottle.template('itemresults', partList=partList, resultsList=resultsList, resultsCount=resultsCount)
 
 @bottle.post('/itemsearch')
 def item_search():
     return bottle.template('itemsearch')
+
+@bottle.post('/export')
+def export():
+    
+    session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
+    itemList = pyalveo.ItemGroup(session['itemlist'], USER_CLIENT)
+    
+    if bottle.request.forms.get('listname') != None:
+        listName = bottle.request.forms.get('listname')
+        itemList.add_to_item_list_by_name(listName)
+        bottle.redirect('/')
+    else:     
+        return bottle.template('export')
 
 if __name__ == '__main__':
     bottle.run(app=app, host='localhost', port=8080, debug=True)

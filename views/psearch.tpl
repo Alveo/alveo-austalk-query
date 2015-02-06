@@ -116,6 +116,7 @@
 	 <td>Example usage:<ul><li>Entering "Japanese" (without quotes) will return all participants whose other languages include Japanese.</li>
 						   <li>Entering "Japanese" (with quotes) will return participants whose ONLY other language is Japanese.</li>
 						   <li>Entering "Japanese, Hindi" (without quotes) will return participants whose other languages include Japanese or Hindi or both.</li></ul></td>
+	</tr>					   
 	<tr>
 	 <td><b>Professional Category:</b></td>
 	 <td>Searching for "clerical and service" or "intermediate clerical and service" will cause a server error. All other values work. No idea why this is happening, fixing it is on the to do list.</td>

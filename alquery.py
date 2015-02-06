@@ -16,7 +16,7 @@ class AlQuery(object):
                
         self.client = client
 
-    def htmlTable(self, collection, query):
+    def html_table(self, collection, query):
         """
         @summary: Queries the Alveo database and returns the results as an HTML table.
         
@@ -47,7 +47,8 @@ class AlQuery(object):
                     if bindings[j-4] == head[i]:
                         rlist.append(bindings[j])
         else:
-            return ["No search results.", 0]
+            session['resultscount'] = 0
+            return "No search results."
            
         html = "<table><tr>"
         
@@ -61,13 +62,14 @@ class AlQuery(object):
             mlist.append(rlist[i])
             
         session['lastresults'] = mlist
+        session.save()
         session['resultscount'] = x
         
         for i in range(0, x):
             html = html + "</tr><tr>"
             
             for j in range(0, len(head)):
-                if re.match("""http:""", rlist[i + x*j]) != None:
+                if re.match("""http:|https:""", rlist[i + x*j]) != None:
                     html = html + """<td><a href="%s">%s</a></td>""" % (rlist[i + x*j], rlist[i + x*j])
                 else:         
                     html = html + "<td>%s</td>" % (rlist[i + x*j])
@@ -78,7 +80,7 @@ class AlQuery(object):
     
     
     
-    def qList(self, collection, query):
+    def results_list(self, collection, query):
         """
         @summary: Queries the Alveo database and returns the results as a list ordered according to the SELECT statement.
         

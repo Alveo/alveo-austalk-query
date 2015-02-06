@@ -22,6 +22,10 @@
 	</form>
   </td>
  </tr>
+ <tr>
+  <td>
+   <p><b>WARNING: Selecting all items for many participants can take a very long time.</b></p>
+   <p>Up to 1 minute for 50 participants, up to 15 minutes for 800 participants.</p>
 </table>
 
 <p>Total matches: {{resultCount}}</p>
