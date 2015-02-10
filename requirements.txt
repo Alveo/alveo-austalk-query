@@ -1,6 +1,6 @@
 Beaker==1.6.5.post1
 bottle==0.11.6
-pyalveo==0.3
+pyalveo==0.4
 python-dateutil==2.4.0
 six==1.9.0
 wsgiref==0.1.2
