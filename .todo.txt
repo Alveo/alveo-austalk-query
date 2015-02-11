@@ -1,8 +1,5 @@
 ***TODO***
 
--itemsearch.tpl, itemresults.tpl, and export.tpl are all missing some HTML - headings and so on.
--No confirmation message yet after an item list is exported to Alveo. Just returns you home.
-
 -Would like to display a list of a user's existing item lists on the export page, so they can add to one without
 needing to remember it's name.
 
@@ -14,18 +11,10 @@ use that directly. This is somewhat less user friendly to people who aren't fami
 than the current parsing, but would probably be simple enough given an explanation and should avoid any weird
 behaviour.
 
--Put in a page where a user can enter their API key. Store this for the session only and use it instead of my
-API key. This'd just be a placeholder for a real login system but it's required if we want people to be able
-to export item lists to their own Alveo accounts without having to directly edit the code. This might be low
-priority.
-
--Add a button to the item results page to export the selected items to Alveo as an item list. Just a text field
-to enter the name of the item list and a submit button. Simple, assuming we have all the item URIs in a list
-already.
-
 -Write tests for all current functionality, fix any major problems this exposes.
 
--Add language usage as a searchable field for participants. Keep forgetting this one.
+-Add language usage as a searchable field for participants. Not sure exactly how this needs to be implemented, on
+hold for now.
 
 ***OPTIONAL/LOW PRIORITY***
 

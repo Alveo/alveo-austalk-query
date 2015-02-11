@@ -9,6 +9,8 @@
 
 <h1>Alveo Query Engine</h1>
 
+<p><b>{{message}}</b></p>
+
 <p>First, search by participants. You can then filter the items relating to these participants.</p>
 
 <form action="/presults" method="POST">
@@ -23,7 +25,7 @@
 		</select>
 	  </td>
 	  <td>		
-		Age: <input type="text" name="age">
+		Age: <input type="text" name="a">
 	  </td>
 	  <td>
 		City: <select name="city" >
@@ -109,7 +111,9 @@
 <table>
 	<tr>
 	 <td><b>Age:</b></td>
-	 <td>Enter a single number to search for a specific age. Enter two numbers separated by a hyphen (e.g, "18-50") to search for a range of ages.</td>
+	 <td>Enter a single number to search for a specific age. Enter two numbers separated by a hyphen (e.g, "18-50") to search for a range of ages. Enter a negative number (e.g, "-50") to search
+	 for people at or under a specific age.<br>
+	 Enter a number followed by a + (e.g, "50+") to search for people at or over a specific age.</td>
 	</tr>
 	<tr>
 	 <td><b>Other Languages:</b></td>

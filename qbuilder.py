@@ -14,12 +14,12 @@ def simple_filter(fName):
     @return: A FILTER line to be added to a SPARQL query.
     @rtype: String
     '''
-    
-    if request.forms.get(fName) != '':
+
+    if request.forms.get(fName):
         val = request.forms.get(fName)
         return """FILTER regex(?%s, "^%s$", "i")""" % (fName, val)
     else:
-        return ''
+        return ''       
     
 def to_str_filter(fName):
     '''
@@ -31,7 +31,7 @@ def to_str_filter(fName):
     @rtype: String
     '''
     
-    if request.forms.get(fName) != '':
+    if request.forms.get(fName):
         val = request.forms.get(fName)
         return """FILTER regex(str(?%s), "^%s$", "i")""" % (fName, val)
     else:
@@ -64,14 +64,23 @@ def num_range_filter(fName):
     @rtype: String
     '''
     
-    if request.forms.get(fName) != '':    
+    if request.forms.get(fName):    
         try:
-            val = request.forms.get(fName)       
+            val = request.forms.get(fName)    
+            val = val.rstrip("-")
+            if re.match("-", val):
+                val = val.strip("-")
+                return """FILTER (?%s <= xsd:integer(%s))""" % (fName, int(val))
+            if re.match(".+\+", val):
+                val = val.strip("+")
+                return """FILTER (?%s >= xsd:integer(%s))""" % (fName, int(val))
             if re.match(".*-.*", val):
                 vals = re.split("-", val, maxsplit=1)
-                return """FILTER (xsd:integer(%s) <= ?a && ?a <= xsd:integer(%s))""" % (int(vals[0]), int(vals[1]))
+                if vals[0] > vals[1]:
+                    vals.reverse()
+                return """FILTER (xsd:integer(%s) <= ?%s && ?%s <= xsd:integer(%s))""" % (int(vals[0]), fName, fName, int(vals[1]))
             else:        
-                return """FILTER (?a = xsd:integer(%s))""" % (int(val))
+                return """FILTER (?%s = xsd:integer(%s))""" % (fName, int(val))
         except(ValueError):
             return ''
     else:
@@ -86,7 +95,7 @@ def regex_filter(fName):
     @return: A FILTER line to be added to a SPARQL query.
     @rtype: String
     '''     
-    if request.forms.get(fName) != "":
+    if request.forms.get(fName):
         val = request.forms.get(fName)
         
         if re.match("""\".*\"""", val):
@@ -117,7 +126,7 @@ def select_list(sList):
     
     selects = ''   
     for item in sList:
-        if request.forms.get(item) != "":
+        if request.forms.get(item):
             selects = selects + """ ?%s """ % (item)
     return selects   
     

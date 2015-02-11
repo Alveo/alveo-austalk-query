@@ -8,10 +8,7 @@ import alquery
 import qbuilder
 import pyalveo
 
-API_KEY = 'Ms8qzfWCDSNJUwdAkezq'
 BASE_URL = 'https://app.alveo.edu.au/'
-USER_CLIENT = pyalveo.Client(API_KEY, BASE_URL)
-QUERY = alquery.AlQuery(USER_CLIENT)
 PREFIXES = """
         PREFIX dc:<http://purl.org/dc/terms/>
         PREFIX austalk:<http://ns.austalk.edu.au/>
@@ -49,32 +46,49 @@ def redirect_home():
 @bottle.route('/')
 def search():
     
-    cities = QUERY.results_list("austalk", PREFIXES+
+    session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
+        
+    try:
+        apiKey = session['apikey']
+        client = pyalveo.Client(apiKey, BASE_URL)
+        quer = alquery.AlQuery(client)
+    except KeyError:
+        bottle.redirect('/login')
+        
+    try:
+        message = session['message']
+        session['message'] = ""
+        session.save()
+    except KeyError:
+        session['message'] = ""
+        message = session['message']
+    
+    cities = quer.results_list("austalk", PREFIXES+
     """    
         SELECT distinct ?val 
         where {
           ?part a foaf:Person .
           ?part austalk:recording_site ?site .
           ?site austalk:city ?val .}""")
-    herit = QUERY.results_list("austalk", PREFIXES+
+    herit = quer.results_list("austalk", PREFIXES+
     """    
         SELECT distinct ?val 
         where {
           ?part a foaf:Person .
           ?part austalk:cultural_heritage ?val .}""")
-    highQual = QUERY.results_list("austalk", PREFIXES+
+    highQual = quer.results_list("austalk", PREFIXES+
     """    
         SELECT distinct ?val 
         where {
           ?part a foaf:Person .
           ?part austalk:education_level ?val .}""")
-    profCat = QUERY.results_list("austalk", PREFIXES+
+    profCat = quer.results_list("austalk", PREFIXES+
     """
         SELECT distinct ?val 
         where {
           ?part a foaf:Person .
           ?part austalk:professional_category ?val . } """)
-    fLangDisp = QUERY.results_list("austalk", PREFIXES+
+    fLangDisp = quer.results_list("austalk", PREFIXES+
     """                            
         SELECT distinct ?flang
         WHERE {{
@@ -87,33 +101,33 @@ def search():
             MINUS{
                 ?flang iso639schema:name ?y}}}
         ORDER BY ?part""")
-    fLangInt = QUERY.results_list("austalk", PREFIXES+
+    fLangInt = quer.results_list("austalk", PREFIXES+
     """                            
         SELECT distinct ?val
         WHERE {
             ?part a foaf:Person .
             ?part austalk:first_language ?val .}
         ORDER BY ?part""")
-    bCountries = QUERY.results_list("austalk", PREFIXES+
+    bCountries = quer.results_list("austalk", PREFIXES+
         """
         SELECT distinct ?val 
         where {
           ?part a foaf:Person .
           ?part austalk:pob_country ?val .}""")
 
-    return bottle.template('psearch', cities=cities, herit=herit, highQual=highQual, profCat=profCat, fLangDisp=fLangDisp, fLangInt=fLangInt, bCountries=bCountries)
+    return bottle.template('psearch', cities=cities, herit=herit, highQual=highQual, profCat=profCat, fLangDisp=fLangDisp, fLangInt=fLangInt, bCountries=bCountries, message=message)
     
-@bottle.route('/test')
-def test():
-    session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
-    session['test'] = session.get('test',0) + 1
-    session.save()
-    return 'Test counter: %d' % session['test']
-
 @bottle.post('/presults')
 def results():
     
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
+    
+    try:
+        apiKey = session['apikey']
+        client = pyalveo.Client(apiKey, BASE_URL)
+        quer = alquery.AlQuery(client)
+    except KeyError:
+        bottle.redirect('/login')
         
     query = PREFIXES+ """
     
@@ -134,32 +148,33 @@ def results():
         ?participant austalk:pob_country ?bcountry .   
     """
     #Building up the "Where" clause of the query from formdata for columns we only want to include if there's formdata.
-    if bottle.request.forms.get('ses') != "":
+    if bottle.request.forms.get('ses'):
         query = query + """?participant austalk:ses ?ses ."""
-    if bottle.request.forms.get('olangs') != "":
+    if bottle.request.forms.get('olangs'):
         query = query + """?participant austalk:other_languages ?olangs ."""
-    if bottle.request.forms.get('bstate') != "":
+    if bottle.request.forms.get('bstate'):
         query = query + """?participant austalk:pob_state ?bstate ."""
-    if bottle.request.forms.get('btown') != "":
+    if bottle.request.forms.get('btown'):
         query = query + """?participant austalk:pob_town ?btown ."""
-    if bottle.request.forms.get('heritage') != "":
+    if bottle.request.forms.get('heritage'):
         query = query + """?participant austalk:cultural_heritage ?heritage ."""
-    if bottle.request.forms.get('profcat') != "":
+    if bottle.request.forms.get('profcat'):
         query = query + """?participant austalk:professional_category ?profcat ."""
-    if bottle.request.forms.get('highqual') != "":
+    if bottle.request.forms.get('highqual'):
         query = query + """?participant austalk:education_level ?highqual ."""
           
-    #Building filters.    
+    #Building filters.
+    
+        
     query = query + qbuilder.simple_filter_list(['city', 'gender', 'heritage', 'ses', 'highqual',
-                                               'profcat', 'bcountry', 'bstate', 'btown'])
+                                             'profcat', 'bcountry', 'bstate', 'btown'])
     query = query + qbuilder.to_str_filter('flang')
-    query = query + qbuilder.num_range_filter('age')
+    query = query + qbuilder.num_range_filter('a')
     query = query + qbuilder.regex_filter('olangs')
                          
     query = query + "} ORDER BY ?participant"
     print query
-
-    resultsTable = QUERY.html_table("austalk", query)
+    resultsTable = quer.html_table("austalk", query)
     session['partlist'] = session['lastresults']
     
     return bottle.template('presults', resultsTable=resultsTable, resultCount=session['resultscount'])
@@ -168,6 +183,13 @@ def results():
 def item_results():
     
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
+    
+    try:
+        apiKey = session['apikey']
+        client = pyalveo.Client(apiKey, BASE_URL)
+        quer = alquery.AlQuery(client)
+    except KeyError:
+        bottle.redirect('/login')
     
     query = PREFIXES + """   
     SELECT distinct ?item ?prompt ?compname
@@ -188,10 +210,8 @@ def item_results():
     
     query = query + "}"
     
-    print query
-    
     for part in partList:
-        resultsList.append(QUERY.html_table("austalk", query % (part)))
+        resultsList.append(quer.html_table("austalk", query % (part)))
         resultsCount = resultsCount + session['resultscount']
         itemList = itemList + session['lastresults']
     
@@ -201,20 +221,49 @@ def item_results():
 
 @bottle.post('/itemsearch')
 def item_search():
+    
+    session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
+    
+    try:
+        apiKey = session['apikey']
+    except KeyError:
+        bottle.redirect('/login')
+        
     return bottle.template('itemsearch')
 
 @bottle.post('/export')
 def export():
     
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
-    itemList = pyalveo.ItemGroup(session['itemlist'], USER_CLIENT)
+    
+    if session['apikey'] == None:
+        bottle.redirect('/login')
+        
+    apiKey = session['apikey']
+    client = pyalveo.Client(apiKey, BASE_URL)
+    
+    itemList = pyalveo.ItemGroup(session['itemlist'], client)
     
     if bottle.request.forms.get('listname') != None:
         listName = bottle.request.forms.get('listname')
         itemList.add_to_item_list_by_name(listName)
+        session['message'] = "List exported to Alveo."
+        session.save()
         bottle.redirect('/')
     else:     
         return bottle.template('export')
+    
+@bottle.get('/login')
+def login():
+    return bottle.template('login')
+
+@bottle.post('/login')
+def logged_in():  
+    session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable   
+    session['apikey'] = bottle.request.forms.get('apikey')
+    session['message'] = "Login successful."
+    session.save()
+    bottle.redirect('/')
 
 if __name__ == '__main__':
     bottle.run(app=app, host='localhost', port=8080, debug=True)

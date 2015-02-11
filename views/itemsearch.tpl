@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Search by item</title>
+	<title>Search by Item</title>
 	<link rel="stylesheet" type="text/css" href="/styles/style.css">
 </head>
 
 <body>
+
+<h1>Search Items</h1>
 
 <form action="/itemresults" method="POST">
 <table>

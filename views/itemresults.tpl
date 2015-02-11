@@ -7,6 +7,8 @@
 
 <body>
 
+<h1>Search Results</h1>
+
 <form method="POST" action="/export">
  <input value="Export to Alveo" type="submit">
 </form>

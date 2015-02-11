@@ -1,3 +1,22 @@
+*****11/2/15*****
+
+-Minor changes to HTML in some .tpls.
+
+-Started work on creating tests for qbuilder, created a test_page.tpl to support doing as much testing as possible
+without needing to actually run queries against the live database. Test assests not included on BitBucket currently.
+
+-Some changes made to checks for formdata in qbuilder and main that were needed based on testing.
+
+-Fixes and changes to qbuilder.num_range_filter based on testing. Added some new functionality, described in the
+search page's notes.
+
+-Implemented login system.
+
+-Added confirmation on the home page after an item list is exported or the user is logged in. Other messages
+can also be displayed by setting the key 'message' in the session to some value.
+
+-Removed unused test page routing from main.
+
 *****6/2/15*****
 
 -Added searching for items based on the last set of selected participants. Currently you can select all items or
