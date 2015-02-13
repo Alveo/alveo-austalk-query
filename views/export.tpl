@@ -7,8 +7,11 @@
 
 <body>
 
-<h1>Export to Alveo Item List</h1>
+<div class="navi">
+	% include('nav.tpl', apiKey=apiKey, title="Export to Alveo")
+</div>
 
+<div class="content">
 <form method="POST" action="/export">
 <table>
  <tr>
@@ -21,7 +24,7 @@
  </tr>
 </table>
 </form>
-
+</div>
 </body>
 
 </html>

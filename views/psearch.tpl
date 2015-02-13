@@ -5,16 +5,23 @@
 	<link rel="stylesheet" type="text/css" href="/styles/style.css">
 </head>
 
+
+
 <body>
 
-<h1>Alveo Query Engine</h1>
+<div class="navi">
+	% include('nav.tpl', apiKey=apiKey, title="Search Participants")
+</div>
 
-<p><b>{{message}}</b></p>
+<div class="message">
+	<p style="margin-left:15px;"><b>{{message}}</b></p>
+</div>
 
+<div class="content">
 <p>First, search by participants. You can then filter the items relating to these participants.</p>
 
+<div class="search_form">
 <form action="/presults" method="POST">
-
 	<table>
 	 <tr>
 	  <td>
@@ -103,6 +110,7 @@
 	 </tr>
 	</table>
 </form>
+</div>
 
 <h2>Notes:</h2>
 
@@ -134,6 +142,8 @@
 	 <td>Not displayed in results, but does search correctly.</td>
 	</tr>
 </table>
+	 
+</div>
 	 
 </body>
 

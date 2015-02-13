@@ -115,7 +115,8 @@ def search():
           ?part a foaf:Person .
           ?part austalk:pob_country ?val .}""")
 
-    return bottle.template('psearch', cities=cities, herit=herit, highQual=highQual, profCat=profCat, fLangDisp=fLangDisp, fLangInt=fLangInt, bCountries=bCountries, message=message)
+    return bottle.template('psearch', cities=cities, herit=herit, highQual=highQual, profCat=profCat, fLangDisp=fLangDisp, fLangInt=fLangInt, bCountries=bCountries, message=message,
+                           apiKey=apiKey)
     
 @bottle.post('/presults')
 def results():
@@ -163,9 +164,7 @@ def results():
     if bottle.request.forms.get('highqual'):
         query = query + """?participant austalk:education_level ?highqual ."""
           
-    #Building filters.
-    
-        
+    #Building filters.       
     query = query + qbuilder.simple_filter_list(['city', 'gender', 'heritage', 'ses', 'highqual',
                                              'profcat', 'bcountry', 'bstate', 'btown'])
     query = query + qbuilder.to_str_filter('flang')
@@ -173,11 +172,11 @@ def results():
     query = query + qbuilder.regex_filter('olangs')
                          
     query = query + "} ORDER BY ?participant"
-    print query
+
     resultsTable = quer.html_table("austalk", query)
     session['partlist'] = session['lastresults']
     
-    return bottle.template('presults', resultsTable=resultsTable, resultCount=session['resultscount'])
+    return bottle.template('presults', resultsTable=resultsTable, resultCount=session['resultscount'], apiKey=apiKey)
 
 @bottle.post('/itemresults')
 def item_results():
@@ -217,7 +216,7 @@ def item_results():
     
     session['itemlist'] = itemList
     session.save()
-    return bottle.template('itemresults', partList=partList, resultsList=resultsList, resultsCount=resultsCount)
+    return bottle.template('itemresults', partList=partList, resultsList=resultsList, resultsCount=resultsCount, apiKey=apiKey)
 
 @bottle.post('/itemsearch')
 def item_search():
@@ -229,7 +228,7 @@ def item_search():
     except KeyError:
         bottle.redirect('/login')
         
-    return bottle.template('itemsearch')
+    return bottle.template('itemsearch', apiKey=apiKey)
 
 @bottle.post('/export')
 def export():
@@ -251,11 +250,11 @@ def export():
         session.save()
         bottle.redirect('/')
     else:     
-        return bottle.template('export')
+        return bottle.template('export', apiKey=apiKey)
     
 @bottle.get('/login')
 def login():
-    return bottle.template('login')
+    return bottle.template('login', apiKey='')
 
 @bottle.post('/login')
 def logged_in():  

@@ -7,8 +7,12 @@
 
 <body>
 
-<h1>Search Items</h1>
+<div class="navi">
+	% include('nav.tpl', apiKey=apiKey, title="Search Items")
+</div>
 
+<div class="content">
+<div class="search_form">
 <form action="/itemresults" method="POST">
 <table>
  <tr>
@@ -25,7 +29,7 @@
  </tr>
 </table>
 </form>
-
+</div>
 <h2>Notes:</h2>
 
 <p>Any fields left blank will not be used to filter results.</p>
@@ -37,7 +41,7 @@
 						   <li>Entering "hid" (with quotes) will return ONLY the prompt "hid"</li>
 						   <li>Entering "hid, hod" (without quotes) will return the prompts hode, hod, hid, hide, whod</li></ul></td>
 	</tr>	
-
+</div>
 </body>
 
 </html>

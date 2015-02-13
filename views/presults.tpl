@@ -7,8 +7,15 @@
 
 <body>
 
-<h1>Search Results</h1>
+<div class="navi">
+	% include('nav.tpl', apiKey=apiKey, title="Search Results")
+</div>
 
+<div class="content">
+<p>You can now search for items related to the selected participants, or select all items for this list of
+participants.</p>
+<p><b>Selecting items for large numbers of participants can take a long time (up to 15 minutes if selecting for
+all participants). Please be patient.</b></p>
 <table>
  <tr>
   <td>
@@ -22,16 +29,13 @@
 	</form>
   </td>
  </tr>
- <tr>
-  <td>
-   <p><b>WARNING: Selecting all items for many participants can take a very long time.</b></p>
-   <p>Up to 1 minute for 50 participants, up to 15 minutes for 800 participants.</p>
 </table>
 
 <p>Total matches: {{resultCount}}</p>
 
 {{!resultsTable}}
 
+</div>
 </body>
 
 </html>

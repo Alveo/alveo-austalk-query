@@ -1,3 +1,15 @@
+*****13/2/15*****
+
+-Started improving the appearance of the app and trying to make it look a little more like the main
+Alveo website. 
+
+-Added nav.tpl, included on all pages. Right now only visual, could be extended in the future to contain actual
+navigation.
+
+-Made alquery work in a way that's decidedly less silly. There's actually more that could be done here to
+improve the way results are handled, but this is much better and should hopefully fix problems encountered
+during deployment.
+
 *****11/2/15*****
 
 -Minor changes to HTML in some .tpls.

@@ -31,25 +31,21 @@ class AlQuery(object):
         session = bottle.request.environ.get('beaker.session') #@UndefinedVariable
         
         searchResults = self.client.sparql_query(collection, query)
-
-        itemI = searchResults.iteritems()
-        
-        head = re.findall(r"(?<=')(?!,)(?!:).*?(?=')", str(itemI.next()))
-        head.pop(0)
-        head.pop(0)
-        bindings = re.findall(r"""(?<=')(?!,)(?!:)(?!}).*?(?=')|(?<=")(?!,)(?!:)(?!}).*?(?=")""", str(itemI.next()))
-        
+   
+        head = searchResults['head']['vars']     
+                
         rlist = []
         
-        if len(bindings) >= 4:
-            for i in range(0, len(head)):
-                for j in range(0, len(bindings)):            
-                    if bindings[j-4] == head[i]:
-                        rlist.append(bindings[j])
-        else:
+        for column in head:
+            for result in searchResults['results']['bindings']:
+                rlist.append(result[column]['value'])
+                
+        if len(rlist) == 0:
+            session['lastresults'] = []
             session['resultscount'] = 0
+            session.save()
             return "No search results."
-           
+  
         html = "<table><tr>"
         
         for i in head:
@@ -62,8 +58,8 @@ class AlQuery(object):
             mlist.append(rlist[i])
             
         session['lastresults'] = mlist
-        session.save()
         session['resultscount'] = x
+        session.save()
         
         for i in range(0, x):
             html = html + "</tr><tr>"
@@ -93,21 +89,12 @@ class AlQuery(object):
         
         searchResults = self.client.sparql_query(collection, query)      
         
-        itemI = searchResults.iteritems()
-        
-        head = re.findall(r"(?<=')(?!,)(?!:).*?(?=')", str(itemI.next()))
-        head.pop(0)
-        head.pop(0)
-        bindings = re.findall(r"""(?<=')(?!,)(?!:)(?!}).*?(?=')|(?<=")(?!,)(?!:)(?!}).*?(?=")""", str(itemI.next()))
-        
+        head = searchResults['head']['vars']     
+                
         rlist = []
         
-        if len(bindings) >= 4:
-            for i in range(0, len(head)):
-                for j in range(0, len(bindings)):            
-                    if bindings[j-4] == head[i]:
-                        rlist.append(bindings[j])
-        else:
-            return []
+        for column in head:
+            for result in searchResults['results']['bindings']:
+                rlist.append(result[column]['value'])
         
         return rlist

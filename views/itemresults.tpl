@@ -7,8 +7,11 @@
 
 <body>
 
-<h1>Search Results</h1>
+<div class="navi">
+	% include('nav.tpl', apiKey=apiKey, title="Search Results")
+</div>
 
+<div class="content">
 <form method="POST" action="/export">
  <input value="Export to Alveo" type="submit">
 </form>
@@ -19,7 +22,7 @@
 <p>Participant: <a href="{{partList[i]}}">{{partList[i]}}</a></p>
 {{!resultsList[i]}}
 %end
-
+</div>
 </body>
 
 </html>
