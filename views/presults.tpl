@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Search Results</title>
+	<title>Participant List</title>
 	<link rel="stylesheet" type="text/css" href="/styles/style.css">
 </head>
 
@@ -31,9 +31,12 @@ all participants). Please be patient.</b></p>
  </tr>
 </table>
 
-<p>Total matches: {{resultCount}}</p>
+<p>Selected participants: {{resultCount}}</p>
 
+<form action="/removeparts" method="POST">
+	<input value="Remove Selected Participants" type="submit">
 {{!resultsTable}}
+</form>
 
 </div>
 </body>

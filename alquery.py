@@ -47,8 +47,9 @@ class AlQuery(object):
             return "No search results."
   
         html = "<table><tr>"
+        html = html + "<th>Selected</th>"
         
-        for i in head:
+        for i in head:       
             html = html + "<th>%s</th>" % (i)
         
         x = len(rlist)/len(head)
@@ -63,8 +64,9 @@ class AlQuery(object):
         
         for i in range(0, x):
             html = html + "</tr><tr>"
-            
-            for j in range(0, len(head)):
+            html = html + """<td><input type="checkbox" name="selected" value="%s">""" % (rlist[i])       
+                 
+            for j in range(0, len(head)):               
                 if re.match("""http:|https:""", rlist[i + x*j]) != None:
                     html = html + """<td><a href="%s">%s</a></td>""" % (rlist[i + x*j], rlist[i + x*j])
                 else:         

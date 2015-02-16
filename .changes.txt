@@ -1,3 +1,21 @@
+*****16/2/15*****
+
+-First pass at adding navigation. Could be made more pretty. Required several code changes to get things working,
+primarily more stuff needing to be stored in the session so that people can navigate back to old search
+results correctly.
+
+-First pass at adding operations on individual search results. Right now all you can do is select items and
+then remove those items. This functionality should be extended in the future to allow doing things (searching
+with, exporting to Alveo) only to selected items. It's also a little ugly right now.
+
+-Login page now displays the currently signed in API key if one exists instead of always saying you're not
+logged in.
+
+-Minor changes to various .tpls and the stylesheet to improve look.
+
+-Added brief mention/explanation of SPARQL regexp syntax where relevant, although it might be better to create
+a page as part of this app that explains the relevant parts in more detail.
+
 *****13/2/15*****
 
 -Started improving the appearance of the app and trying to make it look a little more like the main
