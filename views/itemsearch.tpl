@@ -36,10 +36,11 @@
 
 <table>
 	<tr>
-	 <td><b>Prompt:</b></td>
+	 <td><b>Prompt/Component:</b></td>
 	 <td>Example usage:<ul><li>Entering "hid" (without quotes) will return the prompts "hid" and "hide"</li>
 						   <li>Entering "hid" (with quotes) will return ONLY the prompt "hid"</li>
-						   <li>Entering "hid, hod" (without quotes) will return the prompts hode, hod, hid, hide, whod</li></ul></td>
+						   <li>Entering "hid, hod" (without quotes) will return the prompts hode, hod, hid, hide, whod</li></ul>
+		<p>You can also use SPARQL's regular expression syntax ('.' is a wildcard character, '*' matches 0-many of the previous expression, etc.). Searches are not case-sensitive.</p></td>
 	</tr>	
 </div>
 </body>

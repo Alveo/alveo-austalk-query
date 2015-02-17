@@ -11,28 +11,31 @@ use that directly. This is somewhat less user friendly to people who aren't fami
 than the current parsing, but would probably be simple enough given an explanation and should avoid any weird
 behaviour.
 
--Write tests for all current functionality, fix any major problems this exposes.
+-Write tests for all current functionality, fix any major problems this exposes. This task is on hold
+pending the availability of a proper testing environment - query the actual live database is not going to
+be terribly useful for testing purposes, and this limits what's possible here.
+
+-Ability to do other things with selected items/participants such as search by or export to Alveo.
+
+***OPTIONAL/LOW PRIORITY***
+
+-Ability to add items/participants directly by their URIs. Low priority because it's not clear how useful
+this would be. Best guess is "not very", but I can think of situations where it might be wanted and it shouldn't
+be too hard to implement.
+
+-Some redirects still don't have message, esp. those that point to the login page.
+
+-On the itemresults page, prompts don't always display correctly. Also, some prompts are very long. 
+Should probably limit the number of characters displayed.
 
 -Add language usage as a searchable field for participants. Not sure exactly how this needs to be implemented, on
 hold for now.
 
-***OPTIONAL/LOW PRIORITY***
-
--On the itemresults page, prompts don't always display correctly. Something to do with the regex for pulling
-the data we actually want out of the raw query results. Also, some prompts are very long. Should probably limit
-the number of characters displayed.
-
 -Cache values for drop down boxes in participant search. The search page loads a little slowly, takes around
 5 seconds.
 
--Ability to remove participants from the selected list on the results page of a participant search, before
-selecting items. Maybe also include a box to add a participant directly by URI?
-
 -Get first language field displaying in search results. This is kind of messy because some values for this
 field are URIs that need to be converted and some are literals. Might not bother. The search does work correctly.
-
--"Total matches" on itemresults page includes participants for whom no items were found in the Alveo database
-as if they were a single search result, making it slightly inaccurate. Low priority to fix this bug.
 
 -Make column headings look nicer in search results. Very low priority.
 

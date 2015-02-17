@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Search Results</title>
+	<title>Item List</title>
 	<link rel="stylesheet" type="text/css" href="/styles/style.css">
 </head>
 
@@ -12,16 +12,19 @@
 </div>
 
 <div class="content">
-<form method="POST" action="/export">
+<form method="GET" action="/export">
  <input value="Export to Alveo" type="submit">
 </form>
 
-<p>Total matches: {{resultsCount}}</p>
+<p>Selected items: {{resultsCount}}</p>
 
+<form action="/removeitems" method="POST">
+	<input value="Remove Selected Items" type="submit">
 %for i in range(0, len(partList)):
 <p>Participant: <a href="{{partList[i]}}">{{partList[i]}}</a></p>
 {{!resultsList[i]}}
 %end
+</form>
 </div>
 </body>
 

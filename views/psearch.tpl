@@ -127,7 +127,8 @@
 	 <td><b>Other Languages:</b></td>
 	 <td>Example usage:<ul><li>Entering "Japanese" (without quotes) will return all participants whose other languages include Japanese.</li>
 						   <li>Entering "Japanese" (with quotes) will return participants whose ONLY other language is Japanese.</li>
-						   <li>Entering "Japanese, Hindi" (without quotes) will return participants whose other languages include Japanese or Hindi or both.</li></ul></td>
+						   <li>Entering "Japanese, Hindi" (without quotes) will return participants whose other languages include Japanese or Hindi or both.</li></ul>
+		 <p>You can also use SPARQL's regular expression syntax ('.' is a wildcard character, '*' matches 0-many of the previous expression, etc.). Searches are not case-sensitive.</p></td>
 	</tr>					   
 	<tr>
 	 <td><b>Professional Category:</b></td>

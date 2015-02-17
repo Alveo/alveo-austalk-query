@@ -7,6 +7,7 @@ from beaker.middleware import SessionMiddleware
 import alquery
 import qbuilder
 import pyalveo
+import re
 
 BASE_URL = 'https://app.alveo.edu.au/'
 PREFIXES = """
@@ -36,9 +37,6 @@ app = SessionMiddleware(bottle.app(), session_opts)
 def serve_style(filename):
     return bottle.static_file(filename, root='./views/styles')
 
-@bottle.get('/itemsearch')
-@bottle.get('/itemresults')
-@bottle.get('/presults')
 @bottle.get('/export')
 def redirect_home():
     bottle.redirect('/')
@@ -174,9 +172,53 @@ def results():
     query = query + "} ORDER BY ?participant"
 
     resultsTable = quer.html_table("austalk", query)
-    session['partlist'] = session['lastresults']
     
-    return bottle.template('presults', resultsTable=resultsTable, resultCount=session['resultscount'], apiKey=apiKey)
+    session['partlist'] = session['lastresults']
+    session['parthtml'] = resultsTable
+    session['partcount'] = session['resultscount']
+    session.save()
+    
+    return bottle.template('presults', resultsTable=resultsTable, resultCount=session['partcount'], apiKey=apiKey)
+
+@bottle.get('/presults')
+def part_list():
+    
+    session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
+
+    try:
+        apiKey = session['apikey']
+    except KeyError:
+        bottle.redirect('/login')
+        
+    try:
+        resultsTable = session['parthtml']
+    except KeyError:
+        session['message'] = "Perform a participant search first."
+        session.save()
+        redirect_home()
+        
+    return bottle.template('presults', resultsTable=resultsTable, resultCount=session['partcount'], apiKey=apiKey)
+
+@bottle.post('/removeparts')
+def remove_parts():
+    session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
+    
+    resultsTable = session['parthtml']
+    partList = session['partlist']
+    
+    selectedParts = bottle.request.forms.getall('selected')
+    
+    for part in selectedParts:
+        partList.remove(part)
+        resultsTable = re.sub("""<tr><td><input type="checkbox" name="selected" value="%s">.*?</tr>""" % (part), '', resultsTable)
+    
+    session['partcount'] = session['partcount'] - len(selectedParts)
+    session['parthtml'] = resultsTable
+    session['partlist'] = partList
+    session.save()
+             
+    bottle.redirect('/presults')
+    
 
 @bottle.post('/itemresults')
 def item_results():
@@ -215,9 +257,60 @@ def item_results():
         itemList = itemList + session['lastresults']
     
     session['itemlist'] = itemList
+    session['itemcount'] = resultsCount
+    session['itemhtml'] = resultsList
     session.save()
+    
     return bottle.template('itemresults', partList=partList, resultsList=resultsList, resultsCount=resultsCount, apiKey=apiKey)
 
+@bottle.get('/itemresults')
+def item_list():
+    
+    session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
+
+    try:
+        apiKey = session['apikey']
+    except KeyError:
+        bottle.redirect('/login')
+        
+    try:
+        resultsTable = session['itemhtml']
+    except KeyError:
+        session['message'] = "Perform an item search first."
+        session.save()
+        redirect_home()
+        
+    return bottle.template('itemresults', partList=session['partlist'],  resultsList=resultsTable, resultsCount=session['itemcount'], apiKey=apiKey)
+
+@bottle.post('/removeitems')
+def remove_items():
+    session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
+    
+    resultsTable = session['itemhtml']
+    itemList = session['itemlist']
+    
+    selectedItems = bottle.request.forms.getall('selected')
+    
+    for item in selectedItems:
+        itemList.remove(item)
+        for i in range(0, len(resultsTable)):
+            print item
+            print resultsTable[i]
+            if re.search("""<tr><td><input type="checkbox" name="selected" value="%s">.*?</tr>""" % (item), resultsTable[i]):
+                result = resultsTable.pop(i)
+                result = re.sub("""<tr><td><input type="checkbox" name="selected" value="%s">.*?</tr>""" % (item), '', result)
+                resultsTable.insert(i, result)
+
+    
+    session['itemcount'] = session['itemcount'] - len(selectedItems)
+    session['itemhtml'] = resultsTable
+    session['itemlist'] = itemList
+    session.save()
+             
+    bottle.redirect('/itemresults')
+
+
+@bottle.route('/itemsearch')
 @bottle.post('/itemsearch')
 def item_search():
     
@@ -228,20 +321,33 @@ def item_search():
     except KeyError:
         bottle.redirect('/login')
         
+    try:
+        partList = session['partlist']
+    except KeyError:
+        session['message'] = "Select some participants first."
+        session.save()
+        redirect_home()
+        
     return bottle.template('itemsearch', apiKey=apiKey)
-
+    
+@bottle.get('/export')
 @bottle.post('/export')
 def export():
     
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
     
-    if session['apikey'] == None:
+    try:
+        apiKey = session['apikey']
+        client = pyalveo.Client(apiKey, BASE_URL)
+    except KeyError:
         bottle.redirect('/login')
         
-    apiKey = session['apikey']
-    client = pyalveo.Client(apiKey, BASE_URL)
-    
-    itemList = pyalveo.ItemGroup(session['itemlist'], client)
+    try:
+        itemList = pyalveo.ItemGroup(session['itemlist'], client)
+    except KeyError:
+        session['message'] = "Select some items first."
+        session.save()
+        bottle.redirect('/')
     
     if bottle.request.forms.get('listname') != None:
         listName = bottle.request.forms.get('listname')
@@ -254,7 +360,15 @@ def export():
     
 @bottle.get('/login')
 def login():
-    return bottle.template('login', apiKey='')
+    
+    session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
+    
+    try:
+        apiKey = session['apikey']
+    except KeyError:
+        apiKey = 'Not logged in.'
+    
+    return bottle.template('login', apiKey=apiKey)
 
 @bottle.post('/login')
 def logged_in():  
