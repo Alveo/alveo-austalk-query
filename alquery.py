@@ -1,5 +1,7 @@
 '''
 @author: Dylan Wheeler
+
+@summary: Interfaces with pyalveo, performs SPARQL queries, and returns the results in different formats.
 '''
 
 import bottle

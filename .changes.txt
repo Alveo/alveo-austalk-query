@@ -1,3 +1,15 @@
+*****20/2/15*****
+
+-Added "show annotated items only" search option.
+
+-Added some pre-baked word lists to the item search. Tried a few methods of doing this. Using a regex FILTER
+actually appears to offer the best performance. Using the VALUES keyword appears to have universally awful
+perfomance.
+
+-Added component type drop down menu to item search.
+
+-Added drop down menu containing existing item lists to the export page.
+
 *****16/2/15*****
 
 -First pass at adding navigation. Could be made more pretty. Required several code changes to get things working,

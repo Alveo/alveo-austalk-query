@@ -1,5 +1,8 @@
 '''
 @author: Dylan Wheeler
+
+@summary: The Alveo query engine is designed to provide a more useful way of searching the Alveo database. Currently only supports the Austalk collection.
+This file contains all the routing and much of the logic for the application. Run this to start the application. Listens on localhost:8080.
 '''
 
 import bottle
@@ -25,7 +28,8 @@ PREFIXES = """
         PREFIX iso639:<http://downlode.org/rdf/iso-639/languages#> 
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
         PREFIX is: <http://purl.org/ontology/is/core#>
-        PREFIX iso: <http://purl.org/iso25964/skos-thes#>"""
+        PREFIX iso: <http://purl.org/iso25964/skos-thes#>
+        PREFIX dada: <http://purl.org/dada/schema/0.2#>"""
         
 session_opts = {
     'session.cookie_expires': True
@@ -35,14 +39,17 @@ app = SessionMiddleware(bottle.app(), session_opts)
         
 @bottle.route('/styles/<filename>')
 def serve_style(filename):
+    '''Loads static files from views/styles. Store all .css files there.'''
     return bottle.static_file(filename, root='./views/styles')
 
-@bottle.get('/export')
 def redirect_home():
+    '''Redirects requests back to the homepage.'''
     bottle.redirect('/')
     
 @bottle.route('/')
 def search():
+    '''The home page and participant search page. Drop-down lists are populated from the SPARQL database and the template returned.
+    Displays the contents of session['message'] if one is set.'''
     
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
         
@@ -118,6 +125,7 @@ def search():
     
 @bottle.post('/presults')
 def results():
+    '''Perfoms a search of participants and display the results as a table. Saves the results in the session so they can be retrieved later'''
     
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
     
@@ -182,6 +190,7 @@ def results():
 
 @bottle.get('/presults')
 def part_list():
+    '''Displays the results of the last participant search, or redirects home if no such search has been performed yet.'''
     
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
 
@@ -201,6 +210,8 @@ def part_list():
 
 @bottle.post('/removeparts')
 def remove_parts():
+    '''Removes selected participants from the list of participants and saves the edited list back into the session.'''
+    
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
     
     resultsTable = session['parthtml']
@@ -222,6 +233,7 @@ def remove_parts():
 
 @bottle.post('/itemresults')
 def item_results():
+    '''Like results(), but for items not participants. Functionally similar.'''
     
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
     
@@ -241,6 +253,9 @@ def item_results():
       ?item austalk:componentName ?compname .
      """
      
+    if bottle.request.forms.get('anno') == "required":
+        query = query + """?ann dada:annotates ?item ."""
+     
     partList = session['partlist']
     resultsList = []
     itemList = []
@@ -249,7 +264,21 @@ def item_results():
     query = query + qbuilder.regex_filter('prompt')
     query = query + qbuilder.regex_filter('compname')
     
+    if bottle.request.forms.get('comptype') != "":
+        query=query+"""FILTER regex(?compname, "%s", "i")""" % (bottle.request.forms.get('comptype'))
+    
+    if bottle.request.forms.get('wlist')=='hvdwords':
+        query=query+"""FILTER regex(?prompt, "^head$|^had$|^hud$|^hard$|^heared$|^heed$|^hid$|^herd$|^howd$|^hoyd$|^haired$|^hood$|^hod$", "i")"""
+    
+    if bottle.request.forms.get('wlist')=='hvdmono':
+        query=query+"""FILTER regex(?prompt, "^head$|^had$|^hud$|^heed$|^hid$|^herd$|^hood$|^hod$", "i")"""
+    
+    if bottle.request.forms.get('wlist')=='hvddip':
+        query=query+"""FILTER regex(?prompt, "^hard$|^heared$|^herd$|^howd$|^hoyd$|^haired$", "i")"""
+    
     query = query + "}"
+  
+    print query
     
     for part in partList:
         resultsList.append(quer.html_table("austalk", query % (part)))
@@ -265,6 +294,7 @@ def item_results():
 
 @bottle.get('/itemresults')
 def item_list():
+    '''Like part_list but for items. Note that it is functionally different, so these two functions can't currently be rolled together.'''
     
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
 
@@ -284,6 +314,8 @@ def item_list():
 
 @bottle.post('/removeitems')
 def remove_items():
+    '''Like remove_parts but for items. Again, not functionally identical.'''
+    
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
     
     resultsTable = session['itemhtml']
@@ -313,6 +345,7 @@ def remove_items():
 @bottle.route('/itemsearch')
 @bottle.post('/itemsearch')
 def item_search():
+    '''Displays the page for searching items, unless there's not yet a group of participants selected to search for.'''
     
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
     
@@ -322,7 +355,7 @@ def item_search():
         bottle.redirect('/login')
         
     try:
-        partList = session['partlist']
+        partList = session['partlist'] #@UnusedVariable
     except KeyError:
         session['message'] = "Select some participants first."
         session.save()
@@ -333,6 +366,8 @@ def item_search():
 @bottle.get('/export')
 @bottle.post('/export')
 def export():
+    '''Exports a selected set of items to Alveo if method is POST. If method is GET, displays a simple form to allow said exporting
+    unless no items have yet been selected to export. Redirects home after the export is completed'''
     
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
     
@@ -355,11 +390,13 @@ def export():
         session['message'] = "List exported to Alveo."
         session.save()
         bottle.redirect('/')
-    else:     
-        return bottle.template('export', apiKey=apiKey)
+    else:
+        itemLists = client.get_item_lists()     
+        return bottle.template('export', apiKey=apiKey, itemLists=itemLists)
     
 @bottle.get('/login')
 def login():
+    '''Login page.'''
     
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
     
@@ -372,6 +409,8 @@ def login():
 
 @bottle.post('/login')
 def logged_in():  
+    '''Logs the user in with their API key.'''
+    
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable   
     session['apikey'] = bottle.request.forms.get('apikey')
     session['message'] = "Login successful."
@@ -379,6 +418,7 @@ def logged_in():
     bottle.redirect('/')
 
 if __name__ == '__main__':
+    '''Runs the app. Listens on localhost:8080.'''
     bottle.run(app=app, host='localhost', port=8080, debug=True)
 
 

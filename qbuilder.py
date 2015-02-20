@@ -1,5 +1,7 @@
 '''
 @author: Dylan Wheeler
+
+@summary: Contains functions related to building SPARQL queries.
 '''
 
 from bottle import request

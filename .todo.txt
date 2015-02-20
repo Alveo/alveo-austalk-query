@@ -1,8 +1,5 @@
 ***TODO***
 
--Would like to display a list of a user's existing item lists on the export page, so they can add to one without
-needing to remember it's name.
-
 -qbuilder.regex_filter needs to be made smarter. This is for fields where we want the user to be able to enter a
 text search using regular expressions. Right now it supports entering items separated by commas or items in quotes,
 but a search combining these things doesn't work as expected (in fact it completely breaks the query).
