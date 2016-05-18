@@ -12,8 +12,7 @@ import qbuilder
 import pyalveo
 import re
 
-#BASE_URL = 'https://app.alveo.edu.au/' #Normal Server
-BASE_URL = 'https://alveo-staging1.intersect.org.au/' #Staging Server
+BASE_URL = 'https://app.alveo.edu.au/' #Normal Server
 PREFIXES = """
         PREFIX dc:<http://purl.org/dc/terms/>
         PREFIX austalk:<http://ns.austalk.edu.au/>
@@ -33,7 +32,7 @@ PREFIXES = """
         PREFIX dada: <http://purl.org/dada/schema/0.2#>"""
         
 session_opts = {
-    'session.cookie_expires': True
+    'session.cookie_expires': False
 }
 
 app = SessionMiddleware(bottle.app(), session_opts)
