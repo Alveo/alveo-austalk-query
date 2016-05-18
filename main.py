@@ -13,6 +13,7 @@ import pyalveo
 import re
 
 BASE_URL = 'https://app.alveo.edu.au/' #Normal Server
+#BASE_URL = 'https://alveo-staging1.intersect.org.au/' #Staging Server
 PREFIXES = """
         PREFIX dc:<http://purl.org/dc/terms/>
         PREFIX austalk:<http://ns.austalk.edu.au/>
@@ -142,7 +143,7 @@ def results():
     
     #Building up the "Select" clause of the query from formdata for columns we only want to include if there's formdata.
     query = query + qbuilder.select_list(['olangs', 'bstate', 'btown', 'ses', 'heritage',
-                                         'profcat', 'highqual'])
+                                         'profcat', 'highqual','speakerid'])
            
     query = query + """
     WHERE {
@@ -169,6 +170,7 @@ def results():
         query = query + """?participant austalk:professional_category ?profcat ."""
     if bottle.request.forms.get('highqual'):
         query = query + """?participant austalk:education_level ?highqual ."""
+        
           
     #Building filters.       
     query = query + qbuilder.simple_filter_list(['city', 'gender', 'heritage', 'ses', 'highqual',
@@ -176,9 +178,9 @@ def results():
     query = query + qbuilder.to_str_filter('flang')
     query = query + qbuilder.num_range_filter('a')
     query = query + qbuilder.regex_filter('olangs')
+    query = query + qbuilder.regex_filter('participant',toString=True,prepend="http://id.austalk.edu.au/participant/")
                          
     query = query + "} ORDER BY ?participant"
-
     resultsTable = quer.html_table("austalk", query)
     
     session['partlist'] = session['lastresults']

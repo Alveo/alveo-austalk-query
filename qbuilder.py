@@ -88,7 +88,7 @@ def num_range_filter(fName):
     else:
         return ''
     
-def regex_filter(fName):
+def regex_filter(fName,toString=False,prepend=""):
     '''
     @summary: Used to add a filter that can search one or more text entries separated by commas to a SPARQL query.
     
@@ -101,18 +101,24 @@ def regex_filter(fName):
         val = request.forms.get(fName)
         
         if re.match("""\".*\"""", val):
-            val = val.strip("\"")
+            val = prepend+val.strip("\"")
+            if toString:
+                return """FILTER regex(str(?%s), "^%s$", "i")""" % (fName, val) 
             return """FILTER regex(?%s, "^%s$", "i")""" % (fName, val)           
         elif re.match(".*,.*", val):
             vals = ""
             tvals = re.split(",", val)
             for x in tvals:
-                x = x.strip()
+                x = prepend+x.strip()
                 vals = vals + str(x) +"|"
             vals = vals.rstrip("|")
+            if toString:
+                return """FILTER regex(str(?%s), "%s", "i")""" % (fName, vals)
             return """FILTER regex(?%s, "%s", "i")""" % (fName, vals)
-        else:    
-            return """FILTER regex(?%s, "%s", "i")""" % (fName, val)
+        else:
+            if toString:    
+                return """FILTER regex(str(?%s), "%s", "i")""" % (fName, prepend+val)
+            return """FILTER regex(?%s, "%s", "i")""" % (fName, prepend+val)
     else:
         return ''
     

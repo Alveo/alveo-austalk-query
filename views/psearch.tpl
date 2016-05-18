@@ -35,7 +35,7 @@
 		Age: <input type="text" name="a">
 	  </td>
 	  <td>
-		City: <select name="city" >
+		Test Location: <select name="city" >
 		    <option value = "">Any</option>
 			% for city in cities:
 			<option value="{{city}}">{{city}}</option>
@@ -102,6 +102,9 @@
 				% end
 			</select>
 	  </td>
+	  <td>
+		Speaker Id: <input type="text" name="participant">
+	  </td>
 	 </tr>	 
 	 <tr>
 	  <td>
@@ -128,7 +131,11 @@
 	 <td>Example usage:<ul><li>Entering "Japanese" (without quotes) will return all participants whose other languages include Japanese.</li>
 						   <li>Entering "Japanese" (with quotes) will return participants whose ONLY other language is Japanese.</li>
 						   <li>Entering "Japanese, Hindi" (without quotes) will return participants whose other languages include Japanese or Hindi or both.</li></ul>
-		 <p>You can also use SPARQL's regular expression syntax ('.' is a wildcard character, '*' matches 0-many of the previous expression, etc.). Searches are not case-sensitive.</p></td>
+		 <p>You can also use SPARQL's regular expression syntax. Some examples, '.' is a wildcard character, '*' matches 0-many of the previous expression. Partial searches can also work using "^" and "$", for example "^Eng" will result in all languages starting in "Eng" and "man$" will result in all languages ending in "man". Searches are not case-sensitive.</p></td>
+	</tr>
+	<tr>
+	  <td><b>Participants:</b></td>
+	  <td>You can search for individual speakers by entering their speaker id's. Similar to Other languages, you can search for multiple participants by separating them with a "," and partial searches also work. Note that it may be necessary to end an id with "$" as searching for participant "1_114" with return both "1_114" and "1_1141".</td>
 	</tr>					   
 	<tr>
 	 <td><b>Professional Category:</b></td>
@@ -141,6 +148,10 @@
 	<tr>
 	 <td><b>First Language:</b></td>
 	 <td>Not displayed in results, but does search correctly.</td>
+	</tr>
+	<tr>
+	  <td><b>Test Location:</b></td>
+	  <td>The location of where the speaker was tested, not their home town.</td>
 	</tr>
 </table>
 	 
