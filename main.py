@@ -174,10 +174,15 @@ def results():
           
     #Building filters.       
     query = query + qbuilder.simple_filter_list(['city', 'gender', 'heritage', 'ses', 'highqual',
-                                             'profcat', 'bcountry', 'bstate', 'btown'])
+                                             'profcat', 'bstate', 'btown'])
     query = query + qbuilder.to_str_filter('flang')
     query = query + qbuilder.num_range_filter('a')
     query = query + qbuilder.regex_filter('olangs')
+    #since birth country is a multipple select, it can be gotten as a list. We can now put it together so it's as
+    #if it's a normal user entered list of items.
+    customStr = "".join('''"%s",''' % s for s in bottle.request.forms.getall('bcountry'))[0:-1]
+    
+    query = query + qbuilder.regex_filter('bcountry',custom=customStr)
     query = query + qbuilder.regex_filter('participant',toString=True,prepend="http://id.austalk.edu.au/participant/")
                          
     query = query + "} ORDER BY ?participant"

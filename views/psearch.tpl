@@ -24,6 +24,9 @@
 <form action="/presults" method="POST">
 	<table>
 	 <tr>
+	 <td>
+		Speaker Id: <input type="text" name="participant">
+	  </td>
 	  <td>
 		Gender: <select name="gender">
 			<option value = "">Any</option>
@@ -34,22 +37,15 @@
 	  <td>		
 		Age: <input type="text" name="a">
 	  </td>
-	  <td>
+	 </tr>
+	 <tr>
+	 <td>
 		Test Location: <select name="city" >
 		    <option value = "">Any</option>
 			% for city in cities:
 			<option value="{{city}}">{{city}}</option>
 			% end
 		</select>
-	  </td>
-	 </tr>
-	 <tr>
-	  <td>
-		Birth Country: <select name="bcountry">
-			<option value = "">Any</option>
-			%for country in bCountries:
-			<option value="{{country}}">{{country}}</option>
-			%end
 	  </td>
 	  <td>
 		Birth State: <input type="text" name="bstate">
@@ -103,7 +99,11 @@
 			</select>
 	  </td>
 	  <td>
-		Speaker Id: <input type="text" name="participant">
+		Birth Country: <br> <select name="bcountry" multiple size=4>
+			<option value = "">Any</option>
+			%for country in bCountries:
+			<option value="{{country}}">{{country}}</option>
+			%end
 	  </td>
 	 </tr>	 
 	 <tr>
