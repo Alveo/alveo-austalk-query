@@ -88,31 +88,55 @@ def num_range_filter(fName):
     else:
         return ''
     
-def regex_filter(fName):
+def regex_filter(fName,toString=False,prepend="",custom=None):
     '''
     @summary: Used to add a filter that can search one or more text entries separated by commas to a SPARQL query.
     
     @param fName: The name of the field being filtered. Make sure that this matches the name of the input in the HTML form.
     @type fName: String
+    @param toString: If fName needs to be converted to a string in the query
+    @type Boolean
+    @param prepend: Adds a string at the beginning of the query, use if the user input values is not the entire value that needs to be specified in SPARQL.
+                    Eg: User selects ?participant with a [0-9]_[0-9]^3 string rather than the entire url. 
+                    Necessary if the searched element can be a subset of another element. Ie: when you search for "1_114" yet "1_1441" also exists.
+    @type String
+    @param custom: If the input needs to be manually formatted rather than being pulled directly from the form
+    @type String
     @return: A FILTER line to be added to a SPARQL query.
     @rtype: String
     '''     
     if request.forms.get(fName):
-        val = request.forms.get(fName)
-        
-        if re.match("""\".*\"""", val):
-            val = val.strip("\"")
-            return """FILTER regex(?%s, "^%s$", "i")""" % (fName, val)           
-        elif re.match(".*,.*", val):
+        if custom:
+            val = custom
+        else:
+            val = request.forms.get(fName)
+             
+        #check first to see if it's a list of some sort
+        if re.match(".*,.*", val):
             vals = ""
             tvals = re.split(",", val)
             for x in tvals:
-                x = x.strip()
-                vals = vals + str(x) +"|"
+                #maybe this element of the list has quotes
+                if re.match("""\".*\"""", x):
+                    x = "^"+prepend+x.strip()[1:-1]+"$"
+                    vals = vals + str(x) +"|"
+                else:
+                    x = prepend+x.strip()
+                    vals = vals + str(x) +"|"
             vals = vals.rstrip("|")
+            if toString:
+                return """FILTER regex(str(?%s), "%s", "i")""" % (fName, vals)
             return """FILTER regex(?%s, "%s", "i")""" % (fName, vals)
-        else:    
-            return """FILTER regex(?%s, "%s", "i")""" % (fName, val)
+        #if it's no list then we check for quotes
+        elif re.match("""\".*\"""", val):
+            val = prepend+val.strip("\"")
+            if toString:
+                return """FILTER regex(str(?%s), "^%s$", "i")""" % (fName, val) 
+            return """FILTER regex(?%s, "^%s$", "i")""" % (fName, val)      
+        else:
+            if toString:    
+                return """FILTER regex(str(?%s), "%s", "i")""" % (fName, prepend+val)
+            return """FILTER regex(?%s, "%s", "i")""" % (fName, prepend+val)
     else:
         return ''
     

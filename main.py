@@ -12,7 +12,8 @@ import qbuilder
 import pyalveo
 import re
 
-BASE_URL = 'https://app.alveo.edu.au/'
+BASE_URL = 'https://app.alveo.edu.au/' #Normal Server
+#BASE_URL = 'https://alveo-staging1.intersect.org.au/' #Staging Server
 PREFIXES = """
         PREFIX dc:<http://purl.org/dc/terms/>
         PREFIX austalk:<http://ns.austalk.edu.au/>
@@ -32,7 +33,7 @@ PREFIXES = """
         PREFIX dada: <http://purl.org/dada/schema/0.2#>"""
         
 session_opts = {
-    'session.cookie_expires': True
+    'session.cookie_expires': False
 }
 
 app = SessionMiddleware(bottle.app(), session_opts)
@@ -142,7 +143,7 @@ def results():
     
     #Building up the "Select" clause of the query from formdata for columns we only want to include if there's formdata.
     query = query + qbuilder.select_list(['olangs', 'bstate', 'btown', 'ses', 'heritage',
-                                         'profcat', 'highqual'])
+                                         'profcat', 'highqual','speakerid'])
            
     query = query + """
     WHERE {
@@ -169,16 +170,22 @@ def results():
         query = query + """?participant austalk:professional_category ?profcat ."""
     if bottle.request.forms.get('highqual'):
         query = query + """?participant austalk:education_level ?highqual ."""
+        
           
     #Building filters.       
     query = query + qbuilder.simple_filter_list(['city', 'gender', 'heritage', 'ses', 'highqual',
-                                             'profcat', 'bcountry', 'bstate', 'btown'])
+                                             'profcat', 'bstate', 'btown'])
     query = query + qbuilder.to_str_filter('flang')
     query = query + qbuilder.num_range_filter('a')
     query = query + qbuilder.regex_filter('olangs')
+    #since birth country is a multipple select, it can be gotten as a list. We can now put it together so it's as
+    #if it's a normal user entered list of items.
+    customStr = "".join('''"%s",''' % s for s in bottle.request.forms.getall('bcountry'))[0:-1]
+    
+    query = query + qbuilder.regex_filter('bcountry',custom=customStr)
+    query = query + qbuilder.regex_filter('participant',toString=True,prepend="http://id.austalk.edu.au/participant/")
                          
     query = query + "} ORDER BY ?participant"
-
     resultsTable = quer.html_table("austalk", query)
     
     session['partlist'] = session['lastresults']
