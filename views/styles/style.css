@@ -81,3 +81,56 @@ body{
 .navi td a:hover {
   background-color: #F8D939;
 }
+
+
+.rTable {    
+  display: table;    
+  border-spacing: 0px 10px;
+  width: 100%; 
+} 
+.rTableRow {    
+  display: table-row; 
+} 
+.rTableHeading {    
+  display: table-header-group;    
+  background-color: #dddddd; 
+} 
+.rTableHead {
+  display: table-cell;    
+  padding: 3px 10px;
+  background-color: #eeeeff;
+  font-weight: bold;
+}
+.rTableCell{    
+  display: table-cell;    
+  padding: 3px 10px;
+  background-color: #ddddee;     
+  border: 1px solid #999999; 
+} 
+.rTableCellLeft{
+  display: table-cell;    
+  padding: 3px 10px;
+  background-color: #ddddee;     
+  border: 1px solid #999999;
+  border-radius: 5px 0px 0px 5px;
+}
+.rTableCellRight{
+  display: table-cell;    
+  padding: 3px 10px;
+  background-color: #ddddee;     
+  border: 1px solid #999999;
+  border-radius: 0px 5px 5px 0px;
+}
+.rTableHeading {    
+  display: table-header-group;    
+  background-color: #ddd;    
+  font-weight: bold; 
+} 
+.rTableFoot {    
+  display: table-footer-group;    
+  font-weight: bold;    
+  background-color: #ddd; 
+} 
+.rTableBody {    
+  display: table-row-group; 
+}
