@@ -1,14 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Alveo Query Engine</title>
-	<link rel="stylesheet" type="text/css" href="/styles/style.css">
+	% include('bshead.tpl')
 </head>
 
 <body>
 
 <div class="navi">
-	% include('nav.tpl', apiKey=apiKey, title="Log In")
+	% include('nav.tpl', apiKey=apiKey, title="Log In",loggedin=False)
 </div>
 
 <div class="content">
@@ -19,6 +18,8 @@ in the top right corner menu. Copy and paste the key here:<form action="/login" 
 <p>Your API key will be saved for this session only.</p>
 </div>
 
+
+	% include('bsfoot.tpl')
 </body>
 
 </html>

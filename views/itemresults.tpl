@@ -1,14 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Item List</title>
-	<link rel="stylesheet" type="text/css" href="/styles/style.css">
+	% include('bshead.tpl')
 </head>
 
 <body>
 
 <div class="navi">
-	% include('nav.tpl', apiKey=apiKey, title="Search Results")
+	% include('nav.tpl', apiKey=apiKey, title="IResults",loggedin=True)
 </div>
 
 <div class="content">
@@ -26,6 +25,7 @@
 %end
 </form>
 </div>
+	% include('bsfoot.tpl')
 </body>
 
 </html>

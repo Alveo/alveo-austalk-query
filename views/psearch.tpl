@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Alveo Query Engine</title>
-	<link rel="stylesheet" type="text/css" href="/styles/style.css">
+	% include('bshead.tpl')
 </head>
 
 
@@ -10,7 +9,7 @@
 <body>
 
 <div class="navi">
-	% include('nav.tpl', apiKey=apiKey, title="Search Participants")
+	% include('nav.tpl', apiKey=apiKey, title="PSearch",loggedin=True)
 </div>
 
 <div class="message">
@@ -34,7 +33,7 @@
 			<option value = "female">Female</option>
 		</select>
 	  </td>
-	  <td>		
+	  <td>
 		Age: <input type="text" name="a">
 	  </td>
 	 </tr>
@@ -71,7 +70,7 @@
 	  		<option value="">Any</option>
 	  		%for prof in profCat:
 	  		<option value="{{prof}}">{{prof}}</option>
-	  		%end  
+	  		%end
 	  </td>
 	  <td>
 		Highest Qualification: <select name="highqual">
@@ -105,7 +104,7 @@
 			<option value="{{country}}">{{country}}</option>
 			%end
 	  </td>
-	 </tr>	 
+	 </tr>
 	 <tr>
 	  <td>
     <input value="Search" type="submit">
@@ -133,7 +132,7 @@
 	<tr>
 	  <td><b>Participants:</b></td>
 	  <td>You can search for individual speakers by entering their speaker id's. Similar to Other languages, you can search for multiple participants by separating them with a "," and partial searches also work. More information on it's special usage is below.</td>
-	</tr>					   
+	</tr>
 	<tr>
 	 <td><b>Professional Category:</b></td>
 	 <td>Searching for "clerical and service" or "intermediate clerical and service" will cause a server error. All other values work. No idea why this is happening, fixing it is on the to do list.</td>
@@ -200,9 +199,9 @@ Below explains the different ways you can utilize this along with examples.</p>
 		<td>If you search for ".*ap.*" without quotes in other languages, it will look for anything that somewhere in the word has "ap"</td>
 	</tr>
 </table>
-	 
+
 </div>
-	 
+	% include('bsfoot.tpl')
 </body>
 
 </html>

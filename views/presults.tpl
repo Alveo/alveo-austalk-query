@@ -1,14 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Participant List</title>
-	<link rel="stylesheet" type="text/css" href="/styles/style.css">
+	% include('bshead.tpl')
 </head>
 
 <body>
 
 <div class="navi">
-	% include('nav.tpl', apiKey=apiKey, title="Search Results")
+	% include('nav.tpl', apiKey=apiKey, title="PResults",loggedin=True)
 </div>
 
 <div class="content">
@@ -66,5 +65,7 @@ all participants). Please be patient.</b></p>
 </form>
 
 </div>
+	% include('bsfoot.tpl')
 </body>
+
 </html>
