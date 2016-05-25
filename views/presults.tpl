@@ -35,10 +35,36 @@ all participants). Please be patient.</b></p>
 
 <form action="/removeparts" method="POST">
 	<input value="Remove Selected Participants" type="submit">
-{{!resultsTable}}
+
+<div class="rTable">
+
+<div class="rTableBody">
+
+<div class="rTableRow">
+<div class="rTableHead" style="width:40px;">Selected</div>
+<div class="rTableHead">Participant</div>
+<div class="rTableHead">Gender</div>
+<div class="rTableHead">Age</div>
+<div class="rTableHead">Recorded In</div>
+<div class="rTableHead">Birth City</div>
+<div class="rTableHead">Birth Country</div>
+</div>
+
+% for row in resultsList:
+<div class="rTableRow">
+<div class="rTableCellLeft"><input name="selected" type="checkbox" value="{{row['participant']}}" /></div>
+<div class="rTableCell"><b>{{row['participant'].split('/')[-1]}}</b></div>
+<div class="rTableCell">{{row['gender']}}</div>
+<div class="rTableCell">{{row['age']}}</div>
+<div class="rTableCell">{{row['city']}}</div>
+<div class="rTableCell">{{row['btown']}}</div>
+<div class="rTableCellRight">{{row['bcountry']}}</div>
+</div>
+% end
+</div>
+</div>
 </form>
 
 </div>
 </body>
-
 </html>

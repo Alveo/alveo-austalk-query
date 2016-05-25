@@ -139,10 +139,10 @@ def results():
         
     query = PREFIXES+ """
     
-    SELECT ?participant ?gender (str(?a) as ?age) ?city ?bcountry"""
+    SELECT ?participant ?gender (str(?a) as ?age) ?city ?bcountry ?btown"""
     
     #Building up the "Select" clause of the query from formdata for columns we only want to include if there's formdata.
-    query = query + qbuilder.select_list(['olangs', 'bstate', 'btown', 'ses', 'heritage',
+    query = query + qbuilder.select_list(['olangs', 'bstate', 'ses', 'heritage',
                                          'profcat', 'highqual','speakerid'])
            
     query = query + """
@@ -154,6 +154,7 @@ def results():
         ?participant foaf:gender ?gender .
         ?participant austalk:first_language ?flang .
         ?participant austalk:pob_country ?bcountry .   
+        ?participant austalk:pob_town ?btown .
     """
     #Building up the "Where" clause of the query from formdata for columns we only want to include if there's formdata.
     if bottle.request.forms.get('ses'):
@@ -162,8 +163,6 @@ def results():
         query = query + """?participant austalk:other_languages ?olangs ."""
     if bottle.request.forms.get('bstate'):
         query = query + """?participant austalk:pob_state ?bstate ."""
-    if bottle.request.forms.get('btown'):
-        query = query + """?participant austalk:pob_town ?btown ."""
     if bottle.request.forms.get('heritage'):
         query = query + """?participant austalk:cultural_heritage ?heritage ."""
     if bottle.request.forms.get('profcat'):
@@ -186,14 +185,15 @@ def results():
     query = query + qbuilder.regex_filter('participant',toString=True,prepend="http://id.austalk.edu.au/participant/")
                          
     query = query + "} ORDER BY ?participant"
-    resultsTable = quer.html_table("austalk", query)
+    
+    resultsList = quer.results_dict_list("austalk", query)
     
     session['partlist'] = session['lastresults']
-    session['parthtml'] = resultsTable
+    session['parthtml'] = resultsList
     session['partcount'] = session['resultscount']
     session.save()
     
-    return bottle.template('presults', resultsTable=resultsTable, resultCount=session['partcount'], apiKey=apiKey)
+    return bottle.template('presults', resultsList=resultsList, resultCount=session['partcount'], apiKey=apiKey)
 
 @bottle.get('/presults')
 def part_list():

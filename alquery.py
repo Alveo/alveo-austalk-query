@@ -79,6 +79,47 @@ class AlQuery(object):
         return html
     
     
+    def results_dict_list(self, collection, query):
+        """
+        @summary: Queries the Alveo database and returns the results as a list of dictionaries.
+        
+        @type collection: String
+        @param collection: The collection to be searched.            
+        @type query: String
+        @param query: The SPARQL query to be used.
+        @returns: A list of all results.
+        """
+        session = bottle.request.environ.get('beaker.session') #@UndefinedVariable
+        
+        searchResults = self.client.sparql_query(collection, query)
+   
+        head = searchResults['head']['vars']     
+        rlist = []
+        
+        for column in head:
+            for result in searchResults['results']['bindings']:
+                rlist.append(result[column]['value'])
+                
+        if len(rlist) == 0:
+            session['lastresults'] = []
+            session['resultscount'] = 0
+            session.save()
+            return "No search results."
+        
+        x = len(rlist)/len(head)
+        
+        results = []
+        for i in range(x):
+            item = {}
+            for col in range(i,len(rlist),x):
+                item[head[col/x]] = rlist[col]
+            results.append(item)
+            
+        session['lastresults'] = results
+        session['resultscount'] = x
+        session.save()
+        
+        return results
     
     def results_list(self, collection, query):
         """
@@ -90,15 +131,24 @@ class AlQuery(object):
         @param query: The SPARQL query to be used.
         @returns: A list of all results.
         """
-        
+        session = bottle.request.environ.get('beaker.session') #@UndefinedVariable
         searchResults = self.client.sparql_query(collection, query)      
         
         head = searchResults['head']['vars']     
-                
         rlist = []
+        session['lastresults'] = []
         
         for column in head:
             for result in searchResults['results']['bindings']:
                 rlist.append(result[column]['value'])
         
+        if len(rlist) == 0:
+            session['lastresults'] = []
+            session['resultscount'] = 0
+            session.save()
+            return "No search results."
+        
+        session['resultscount'] = len(rlist)/len(head)
+        session['lastresults'] = rlist
+        session.save()
         return rlist
