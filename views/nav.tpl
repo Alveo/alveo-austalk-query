@@ -18,6 +18,6 @@
               {{!'<li><a href="/login">Log out</a></li>' if loggedin else '<li><a href="/login">Log in</a></li>'}}
               <li><a>User: {{apiKey}}</a></li>
             </ul>
-          </div><!--/.nav-collapse -->
+          </div>
         </div>
       </nav>

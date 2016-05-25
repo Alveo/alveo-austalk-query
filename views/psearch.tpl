@@ -10,13 +10,18 @@
 
 <div class="navi">
 	% include('nav.tpl', apiKey=apiKey, title="PSearch",loggedin=True)
+
 </div>
 
-<div class="message">
-	<p style="margin-left:15px;"><b>{{message}}</b></p>
-</div>
+
+
 
 <div class="content">
+	%if len(message)>0:
+	<div class="alert alert-warning" role="alert">
+		<p><b>{{message}}</b></p>
+	</div>
+	%end
 <p>First, search by participants. You can then filter the items relating to these participants.</p>
 
 <div class="search_form">
