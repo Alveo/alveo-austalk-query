@@ -29,50 +29,29 @@ class AlQuery(object):
         @rtype: List
         @returns: A list with three elements: The HTML, a list of results for the first selected field, the number of search results, 
         """
-        
-        session = bottle.request.environ.get('beaker.session') #@UndefinedVariable
-        
-        searchResults = self.client.sparql_query(collection, query)
-   
-        head = searchResults['head']['vars']     
-                
-        rlist = []
-        
-        for column in head:
-            for result in searchResults['results']['bindings']:
-                rlist.append(result[column]['value'])
-                
-        if len(rlist) == 0:
-            session['lastresults'] = []
-            session['resultscount'] = 0
-            session.save()
-            return "No search results."
-  
+
+        results = self.results_dict_list(collection, query)
+        if isinstance(results, str):
+            return results
+            
         html = "<table><tr>"
         html = html + "<th>Selected</th>"
+        isItem = False
+        for i in results[0].items():       
+            #get the keys from this dict list from the first element. 
+            html = html + "<th>%s</th>" % (i[0])
+            if i[0]=='item':
+                isItem = True
         
-        for i in head:       
-            html = html + "<th>%s</th>" % (i)
-        
-        x = len(rlist)/len(head)
-        mlist = []
-        
-        for i in range(0, x):
-            mlist.append(rlist[i])
-            
-        session['lastresults'] = mlist
-        session['resultscount'] = x
-        session.save()
-        
-        for i in range(0, x):
+        for row in results:
             html = html + "</tr><tr>"
-            html = html + """<td><input type="checkbox" name="selected" value="%s">""" % (rlist[i])       
+            html = html + """<td><input type="checkbox" name="selected" value="%s">""" % ((row['item']) if isItem else (row['participant'])  )     
                  
-            for j in range(0, len(head)):               
-                if re.match("""http:|https:""", rlist[i + x*j]) != None:
-                    html = html + """<td><a href="%s">%s</a></td>""" % (rlist[i + x*j], rlist[i + x*j])
+            for item in row.items():               
+                if re.match("""http:|https:""", item[1]) != None:
+                    html = html + """<td><a href="%s">%s</a></td>""" % (item[1], item[1])
                 else:         
-                    html = html + "<td>%s</td>" % (rlist[i + x*j])
+                    html = html + "<td>%s</td>" % (item[1])
             
         html = html + "</tr></table>"
          

@@ -120,7 +120,7 @@ def search():
         where {
           ?part a foaf:Person .
           ?part austalk:pob_country ?val .}""")
-
+    print message
     return bottle.template('psearch', cities=cities, herit=herit, highQual=highQual, profCat=profCat, fLangDisp=fLangDisp, fLangInt=fLangInt, bCountries=bCountries, message=message,
                            apiKey=apiKey)
     
@@ -284,11 +284,9 @@ def item_results():
         query=query+"""FILTER regex(?prompt, "^hard$|^heared$|^herd$|^howd$|^hoyd$|^haired$", "i")"""
     
     query = query + "}"
-  
-    print query
     
-    for part in partList:
-        resultsList.append(quer.html_table("austalk", query % (part)))
+    for row in partList:
+        row['item_results'] = quer.results_dict_list("austalk", query % (row['participant']))
         resultsCount = resultsCount + session['resultscount']
         itemList = itemList + session['lastresults']
     
