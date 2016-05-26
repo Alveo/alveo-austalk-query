@@ -6,8 +6,8 @@
 <meta name="author" content="">
 <title>Alveo Query Engine</title>
 <!-- Bootstrap core CSS -->
-<link href="styles/bootstrap.min.css" rel="stylesheet">
+<link href="/styles/bootstrap.min.css" rel="stylesheet">
 <!-- Bootstrap theme -->
-<link href="styles/bootstrap-theme.min.css" rel="stylesheet">
+<link href="/styles/bootstrap-theme.min.css" rel="stylesheet">
 <!-- Our Styles -->
 <link rel="stylesheet" type="text/css" href="/styles/style.css">
