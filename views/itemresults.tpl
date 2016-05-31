@@ -67,12 +67,12 @@
        <div class="rTable" style="width:97.5%;float:right;">
        <div class="rTableBody">
 
-                   <div class="rTableRow">
-                     <div class="rTableCellLeft" style="width:6%;"><input name="selected" type="checkbox" value="{{item['item']}}" /></div>
+                   <label class="rTableRow" for="{{item['item']}}">
+                     <div class="rTableCellLeft" style="width:6%;"><input name="selected" type="checkbox" id="{{item['item']}}" value="{{item['item']}}" /></div>
                      <div class="rTableCell" style="width:17%;"><b>{{item['item'].split('/')[-1]}}</b></div>
                      <div class="rTableCell" style="width:17%;">{{item['compname']}}</div>
                      <div class="rTableCellRight" style="width:60%;">{{item['prompt']}}</div>
-                   </div>
+                   </label>
          </div>
        </div>
        % end
