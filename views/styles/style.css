@@ -84,7 +84,6 @@ label{
   background-color: #F8D939;
 }
 
-
 .rTable {
   display: table;
   border-spacing: 0px 5px;
@@ -143,4 +142,14 @@ label{
 }
 .rTableBody {
   display: table-row-group;
+}
+
+input[type=checkbox].hideme {
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+}
+
+input[type=checkbox]:checked + label .rTableCell, input[type=checkbox]:checked + label .rTableCellLeft, input[type=checkbox]:checked + label .rTableCellRight {
+  background-color: #eeeedd;
 }
