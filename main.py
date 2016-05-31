@@ -188,8 +188,7 @@ def results():
     
     resultsList = quer.results_dict_list("austalk", query)
     
-    session['partlist'] = session['lastresults']
-    session['parthtml'] = resultsList
+    session['partlist'] = resultsList
     session['partcount'] = session['resultscount']
     session.save()
     
@@ -207,13 +206,13 @@ def part_list():
         bottle.redirect('/login')
         
     try:
-        resultsTable = session['parthtml']
+        resultsList = session['partlist']
     except KeyError:
         session['message'] = "Perform a participant search first."
         session.save()
         redirect_home()
         
-    return bottle.template('presults', resultsTable=resultsTable, resultCount=session['partcount'], apiKey=apiKey)
+    return bottle.template('presults', resultsList=resultsList, resultCount=session['partcount'], apiKey=apiKey)
 
 @bottle.post('/removeparts')
 def remove_parts():
@@ -221,18 +220,14 @@ def remove_parts():
     
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
     
-    resultsTable = session['parthtml']
     partList = session['partlist']
     
     selectedParts = bottle.request.forms.getall('selected')
     
-    for part in selectedParts:
-        partList.remove(part)
-        resultsTable = re.sub("""<tr><td><input type="checkbox" name="selected" value="%s">.*?</tr>""" % (part), '', resultsTable)
+    newPartList = [p for p in partList if p['participant'] not in selectedParts]
     
     session['partcount'] = session['partcount'] - len(selectedParts)
-    session['parthtml'] = resultsTable
-    session['partlist'] = partList
+    session['partlist'] = newPartList
     session.save()
              
     bottle.redirect('/presults')
