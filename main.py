@@ -262,8 +262,6 @@ def item_results():
         query = query + """?ann dada:annotates ?item ."""
      
     partList = session['partlist']
-    resultsList = []
-    itemList = []
     resultsCount = 0
     
     query = query + qbuilder.regex_filter('prompt')
@@ -286,9 +284,7 @@ def item_results():
     for row in partList:
         row['item_results'] = quer.results_dict_list("austalk", query % (row['participant']))
         resultsCount = resultsCount + session['resultscount']
-        itemList = itemList + session['lastresults']
     
-    session['itemlist'] = itemList
     session['itemcount'] = resultsCount
     session.save()
     
@@ -306,13 +302,13 @@ def item_list():
         bottle.redirect('/login')
         
     try:
-        resultsTable = session['itemhtml']
+        partList = session['partlist']
     except KeyError:
         session['message'] = "Perform an item search first."
         session.save()
         redirect_home()
         
-    return bottle.template('itemresults', partList=session['partlist'],  resultsList=resultsTable, resultsCount=session['itemcount'], apiKey=apiKey)
+    return bottle.template('itemresults', partList=partList, resultsCount=session['itemcount'], apiKey=apiKey)
 
 @bottle.post('/removeitems')
 def remove_items():
@@ -320,25 +316,15 @@ def remove_items():
     
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
     
-    resultsTable = session['itemhtml']
-    itemList = session['itemlist']
+    partList = session['partlist']
     
     selectedItems = bottle.request.forms.getall('selected')
-    
-    for item in selectedItems:
-        itemList.remove(item)
-        for i in range(0, len(resultsTable)):
-            print item
-            print resultsTable[i]
-            if re.search("""<tr><td><input type="checkbox" name="selected" value="%s">.*?</tr>""" % (item), resultsTable[i]):
-                result = resultsTable.pop(i)
-                result = re.sub("""<tr><td><input type="checkbox" name="selected" value="%s">.*?</tr>""" % (item), '', result)
-                resultsTable.insert(i, result)
-
+    for p in partList:
+        newItemList = [item for item in p['item_results'] if item['item'] not in selectedItems]
+        p['item_results'] = newItemList
     
     session['itemcount'] = session['itemcount'] - len(selectedItems)
-    session['itemhtml'] = resultsTable
-    session['itemlist'] = itemList
+    session['partlist'] = partList
     session.save()
              
     bottle.redirect('/itemresults')
