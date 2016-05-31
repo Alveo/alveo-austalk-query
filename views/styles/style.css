@@ -100,19 +100,19 @@ body{
   padding: 3px 10px;
   background-color: #eeeeff;
   font-weight: bold;
-  width: 16.66%;
+  width: 14%;
 }
 .rTableCell{
   display: table-cell;
   padding: 2px 10px;
-  width: 16.66%;
+  width: 14%;
   background-color: #ddddee;
   border: 1px solid #999999;
 }
 .rTableCellLeft{
   display: table-cell;
   padding: 2px 10px;
-  width: 16.66%;
+  width: 14%;
   background-color: #ddddee;
   border: 1px solid #999999;
   border-radius: 5px 0px 0px 5px;
@@ -120,13 +120,14 @@ body{
 .rTableCellRight{
   display: table-cell;
   padding: 2px 10px;
-  width: 16.66%;
+  width: 14%;
   background-color: #ddddee;
   border: 1px solid #999999;
   border-radius: 0px 5px 5px 0px;
 }
 .rTableRow:hover .rTableCell,.rTableRow:hover .rTableCellLeft,.rTableRow:hover .rTableCellRight {
 	background-color: #ccccdd;
+	cursor: pointer;
 }
 .rTableHeading {
   display: table-header-group;

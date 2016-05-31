@@ -207,6 +207,9 @@ def part_list():
         
     try:
         resultsList = session['partlist']
+        #incase the list was created but for some reason the user removes all elements or searches nothing.
+        if len(resultsList)==0:
+            raise KeyError
     except KeyError:
         session['message'] = "Perform a participant search first."
         session.save()
@@ -287,10 +290,9 @@ def item_results():
     
     session['itemlist'] = itemList
     session['itemcount'] = resultsCount
-    session['itemhtml'] = resultsList
     session.save()
     
-    return bottle.template('itemresults', partList=partList, resultsList=resultsList, resultsCount=resultsCount, apiKey=apiKey)
+    return bottle.template('itemresults', partList=partList, resultsCount=resultsCount, apiKey=apiKey)
 
 @bottle.get('/itemresults')
 def item_list():

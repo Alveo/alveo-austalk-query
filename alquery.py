@@ -83,7 +83,7 @@ class AlQuery(object):
             session['lastresults'] = []
             session['resultscount'] = 0
             session.save()
-            return "No search results."
+            return []
         
         x = len(rlist)/len(head)
         
@@ -125,7 +125,7 @@ class AlQuery(object):
             session['lastresults'] = []
             session['resultscount'] = 0
             session.save()
-            return "No search results."
+            return []
         
         session['resultscount'] = len(rlist)/len(head)
         session['lastresults'] = rlist
