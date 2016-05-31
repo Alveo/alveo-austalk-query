@@ -73,9 +73,9 @@
                    </div>
          </div>
        </div>
-       <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
        % end
        % end
+       <p style="padding-left:50em; margin-top: 0em; margin-bottom: 0em;">&nbsp;</p>
      </div>
 % end
 
