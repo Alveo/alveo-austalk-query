@@ -14,6 +14,9 @@ import re
 
 BASE_URL = 'https://app.alveo.edu.au/' #Normal Server
 #BASE_URL = 'https://alveo-staging1.intersect.org.au/' #Staging Server
+
+#used to inform the user when they're not logged in.
+USER_MESSAGE = ""
 PREFIXES = """
         PREFIX dc:<http://purl.org/dc/terms/>
         PREFIX austalk:<http://ns.austalk.edu.au/>
@@ -59,6 +62,8 @@ def search():
         client = pyalveo.Client(apiKey, BASE_URL)
         quer = alquery.AlQuery(client)
     except KeyError:
+        global USER_MESSAGE
+        USER_MESSAGE = "You must log in to view this page!"
         bottle.redirect('/login')
         
     try:
@@ -135,6 +140,8 @@ def results():
         client = pyalveo.Client(apiKey, BASE_URL)
         quer = alquery.AlQuery(client)
     except KeyError:
+        global USER_MESSAGE
+        USER_MESSAGE = "You must log in to view this page!"
         bottle.redirect('/login')
         
     query = PREFIXES+ """
@@ -203,6 +210,8 @@ def part_list():
     try:
         apiKey = session['apikey']
     except KeyError:
+        global USER_MESSAGE
+        USER_MESSAGE = "You must log in to view this page!"
         bottle.redirect('/login')
         
     try:
@@ -222,6 +231,13 @@ def remove_parts():
     '''Removes selected participants from the list of participants and saves the edited list back into the session.'''
     
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
+    
+    try:
+        apiKey = session['apikey']
+    except KeyError:
+        global USER_MESSAGE
+        USER_MESSAGE = "You must log in to view this page!"
+        bottle.redirect('/login')
     
     partList = session['partlist']
     
@@ -247,6 +263,8 @@ def item_results():
         client = pyalveo.Client(apiKey, BASE_URL)
         quer = alquery.AlQuery(client)
     except KeyError:
+        global USER_MESSAGE
+        USER_MESSAGE = "You must log in to view this page!"
         bottle.redirect('/login')
     
     query = PREFIXES + """   
@@ -299,6 +317,8 @@ def item_list():
     try:
         apiKey = session['apikey']
     except KeyError:
+        global USER_MESSAGE
+        USER_MESSAGE = "You must log in to view this page!"
         bottle.redirect('/login')
         
     try:
@@ -315,6 +335,13 @@ def remove_items():
     '''Like remove_parts but for items. Again, not functionally identical.'''
     
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
+    
+    try:
+        apiKey = session['apikey']
+    except KeyError:
+        global USER_MESSAGE
+        USER_MESSAGE = "You must log in to view this page!"
+        bottle.redirect('/login')
     
     partList = session['partlist']
     
@@ -340,6 +367,8 @@ def item_search():
     try:
         apiKey = session['apikey']
     except KeyError:
+        global USER_MESSAGE
+        USER_MESSAGE = "You must log in to view this page!"
         bottle.redirect('/login')
         
     try:
@@ -363,6 +392,8 @@ def export():
         apiKey = session['apikey']
         client = pyalveo.Client(apiKey, BASE_URL)
     except KeyError:
+        global USER_MESSAGE
+        USER_MESSAGE = "You must log in to view this page!"
         bottle.redirect('/login')
     
     
@@ -391,7 +422,19 @@ def export():
 @bottle.get('/login')
 def login():
     '''Login page.'''
+    global USER_MESSAGE
+    session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
     
+    try:
+        apiKey = session['apikey']
+    except KeyError:
+        apiKey = 'Not logged in.'
+    
+    msg = USER_MESSAGE
+    USER_MESSAGE = ""
+        
+    return bottle.template('login', message=msg, apiKey=apiKey)
+
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
     
     try:
