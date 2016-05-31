@@ -435,6 +435,17 @@ def login():
         
     return bottle.template('login', message=msg, apiKey=apiKey)
 
+@bottle.get('/logout')
+def logout():
+    '''Logout and redirect to login page
+    '''
+    session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
+    session.delete()
+    USER_MESSAGE = "You have successfully logged out!"
+    bottle.redirect('/login')
+
+@bottle.get('/about')
+def about():
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
     
     try:
@@ -442,7 +453,18 @@ def login():
     except KeyError:
         apiKey = 'Not logged in.'
     
-    return bottle.template('login', apiKey=apiKey)
+    return bottle.template('about', apiKey=apiKey)
+
+@bottle.get('/help')
+def help():
+    session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
+    
+    try:
+        apiKey = session['apikey']
+    except KeyError:
+        apiKey = 'Not logged in.'
+        
+    return bottle.template('help', apiKey=apiKey)
 
 @bottle.post('/login')
 def logged_in():  
