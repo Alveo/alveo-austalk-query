@@ -153,3 +153,19 @@ input[type=checkbox].hideme {
 input[type=checkbox]:checked + label .rTableCell, input[type=checkbox]:checked + label .rTableCellLeft, input[type=checkbox]:checked + label .rTableCellRight {
   background-color: #eeeedd;
 }
+
+.panel-group table {
+	width:98%;
+	margin:auto;
+}
+
+td.left {
+	width: 30%;
+	padding-right: 20px;
+}
+td.right {
+	width: 70%;
+}
+.panel-heading {
+	cursor: pointer;
+}
