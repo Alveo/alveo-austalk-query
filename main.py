@@ -74,32 +74,36 @@ def search():
         session['message'] = ""
         message = session['message']
     
-    cities = quer.results_list("austalk", PREFIXES+
+    
+    
+    results = {}
+    
+    results['cities'] = quer.results_list("austalk", PREFIXES+
     """    
         SELECT distinct ?val 
         where {
           ?part a foaf:Person .
           ?part austalk:recording_site ?site .
           ?site austalk:city ?val .}""")
-    herit = quer.results_list("austalk", PREFIXES+
+    results['herit'] = quer.results_list("austalk", PREFIXES+
     """    
         SELECT distinct ?val 
         where {
           ?part a foaf:Person .
           ?part austalk:cultural_heritage ?val .}""")
-    highQual = quer.results_list("austalk", PREFIXES+
+    results['highQual'] = quer.results_list("austalk", PREFIXES+
     """    
         SELECT distinct ?val 
         where {
           ?part a foaf:Person .
           ?part austalk:education_level ?val .}""")
-    profCat = quer.results_list("austalk", PREFIXES+
+    results['profCat'] = quer.results_list("austalk", PREFIXES+
     """
         SELECT distinct ?val 
         where {
           ?part a foaf:Person .
           ?part austalk:professional_category ?val . } """)
-    fLangDisp = quer.results_list("austalk", PREFIXES+
+    results['fLangDisp'] = quer.results_list("austalk", PREFIXES+
     """                            
         SELECT distinct ?flang
         WHERE {{
@@ -112,21 +116,66 @@ def search():
             MINUS{
                 ?flang iso639schema:name ?y}}}
         ORDER BY ?part""")
-    fLangInt = quer.results_list("austalk", PREFIXES+
+    results['fLangInt'] = quer.results_list("austalk", PREFIXES+
     """                            
         SELECT distinct ?val
         WHERE {
             ?part a foaf:Person .
             ?part austalk:first_language ?val .}
         ORDER BY ?part""")
-    bCountries = quer.results_list("austalk", PREFIXES+
+    results['bCountries'] = quer.results_list("austalk", PREFIXES+
         """
         SELECT distinct ?val 
         where {
           ?part a foaf:Person .
           ?part austalk:pob_country ?val .}""")
+    
+    results['mother_fLangDisp'] = quer.results_list("austalk", PREFIXES+
+    """                            
+        SELECT distinct ?flang
+        WHERE {{
+            ?part a foaf:Person .
+            ?part austalk:mother_first_language ?x .
+            ?x iso639schema:name ?flang .
+        } 
+        UNION {
+            ?part austalk:mother_first_language ?flang .
+            MINUS{
+                ?flang iso639schema:name ?y}}}
+        ORDER BY ?part""")
+    
+    results['mother_fLangInt'] = quer.results_list("austalk", PREFIXES+
+    """                            
+        SELECT distinct ?val
+        WHERE {
+            ?part a foaf:Person .
+            ?part austalk:mother_first_language ?val .}
+        ORDER BY ?part""")
+    
+    results['father_fLangDisp'] = quer.results_list("austalk", PREFIXES+
+    """                            
+        SELECT distinct ?flang
+        WHERE {{
+            ?part a foaf:Person .
+            ?part austalk:father_first_language ?x .
+            ?x iso639schema:name ?flang .
+        } 
+        UNION {
+            ?part austalk:father_first_language ?flang .
+            MINUS{
+                ?flang iso639schema:name ?y}}}
+        ORDER BY ?part""")
+    
+    results['father_fLangInt'] = quer.results_list("austalk", PREFIXES+
+    """                            
+        SELECT distinct ?val
+        WHERE {
+            ?part a foaf:Person .
+            ?part austalk:father_first_language ?val .}
+        ORDER BY ?part""")
+    
     print message
-    return bottle.template('psearch', cities=cities, herit=herit, highQual=highQual, profCat=profCat, fLangDisp=fLangDisp, fLangInt=fLangInt, bCountries=bCountries, message=message,
+    return bottle.template('psearch', results=results, message=message,
                            apiKey=apiKey)
     
 @bottle.post('/presults')
@@ -479,5 +528,7 @@ def logged_in():
 if __name__ == '__main__':
     '''Runs the app. Listens on localhost:8080.'''
     bottle.run(app=app, host='localhost', port=8080, debug=True)
+    #bottle.run(app=app, host='192.168.0.7', port=8080, debug=True)
+    
 
 
