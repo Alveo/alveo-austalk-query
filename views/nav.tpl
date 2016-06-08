@@ -17,7 +17,7 @@
               {{!'<li class="active"><a href="/export">Export</a></li>' if title=='Export' else '<li><a href="/export">Export</a></li>'}}
               {{!'<li class="active"><a href="/help">Help</a></li>' if title=='Help' else '<li><a href="/help">Help</a></li>'}}
               {{!'<li class="active"><a href="/about">About</a></li>' if title=='About' else '<li><a href="/about">About</a></li>'}}
-              {{!'<li><a href="/logout">Log out</a></li>' if loggedin else '<li><a href="/login">Log in</a></li>'}}
+              {{!'<li><a href="/logout">Log out</a></li>' if apiKey!='Not logged in.' else '<li><a href="/login">Log in</a></li>'}}
               <li><a>User: {{apiKey}}</a></li>
             </ul>
           </div>
