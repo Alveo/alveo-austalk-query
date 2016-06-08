@@ -37,24 +37,34 @@
 					<table>
 						<tr>
 							<td class="left">
+								<label for="participant"><b>Participant Id:</b></label>
+							</td>
+							<td class="mid">
 								<div class="form-group">
-									<label for="participant">Speaker Id:</label>
 									<input type="text" class="form-control" name="participant" id="participant" placeholder="1_114">
 								</div>
 							</td>
 							<td class="right">
-								<p>You can search for individual speakers by entering their speaker id's. You can also use SPARQL's regular expression syntax. Some examples, '.' is a wildcard character, '*' matches 0-many of the previous expression. Partial searches can also work using "^" and/or "$" at the beginning and the end respectively. Searches are not case-sensitive. More information on it's special usage is below.</p>
+								<p>You can search for individual speakers by entering their participant id's. You can also use SPARQL's regular expression syntax. Some examples, '.' is a wildcard character, '*' matches 0-many of the previous expression. Partial searches can also work using "^" and/or "$" at the beginning and the end respectively. Searches are not case-sensitive. More information on it's special usage is below.</p>
 							</td>
 						</tr>
 						<tr>
 							<td class="left">
+								<label for="gender"><b>Gender:</b></label>
+							</td>
+							<td class="mid">
 								<div class="form-group">
-									<label for="gender">Gender:</label>
-									<select class="form-control" id="gender" name="gender">
-										<option value = "">Any</option>
-										<option value = "male">Male</option>
-										<option value = "female">Female</option>
-									</select>
+									<div class="btn-group" data-toggle="buttons" id="gender" name="gender">
+										<label class="btn btn-custom active">
+											<input type="radio" value = "" id="gender" name="gender" autocomplete="off" checked>Any
+										</label>
+										<label class="btn btn-custom">
+											<input type="radio" value = "male" id="gender" name="gender" autocomplete="off">Male
+										</label>
+										<label class="btn btn-custom">
+											<input type="radio" value = "female" id="gender" name="gender" autocomplete="off">Female
+										</label>
+									</div>
 								</div>
 							</td>
 							<td class="right">
@@ -63,8 +73,10 @@
 						</tr>
 						<tr>
 							<td class="left">
+								<label for="a"><b>Age:</b></label>
+							</td>
+							<td class="mid">
 								<div class="form-group">
-									<label for="a">Age:</label>
 									<input type="text" class="form-control" name="a" id="a" placeholder="-25">
 								</div>
 							</td>
@@ -74,8 +86,10 @@
 						</tr>
 						<tr>
 							<td class="left">
+								<label for="city"><b>Test Location:</b></label>
+							</td>
+							<td class="mid">
 								<div class="form-group">
-									<label for="city">Test Location:</label>
 									<select class="form-control" name="city" id="city">
 									    <option value = "">Any</option>
 										% for city in results['cities']:
@@ -101,8 +115,10 @@
 					<table>
 						<tr>
 							<td class="left">
+								<label for="btown"><b>Birth Town:</b></label>
+							</td>
+							<td class="mid">
 								<div class="form-group">
-									<label for="btown">Birth Town:</label>
 									<input type="text" class="form-control" name="btown" id="btown" placeholder="Sydney">
 								</div>
 							</td>
@@ -112,8 +128,10 @@
 						</tr>
 						<tr>
 							<td class="left">
+								<label for="bstate"><b>Birth State:</b></label>
+							</td>
+							<td class="mid">
 								<div class="form-group">
-									<label for="bstate">Birth State:</label>
 									<input type="text" class="form-control" name="bstate" id="bstate" placeholder="NSW">
 								</div>
 							</td>
@@ -123,8 +141,10 @@
 						</tr>
 						<tr>
 							<td class="left">
+								<label for="bcountry"><b>Birth Country:</b></label>
+							</td>
+							<td class="mid">
 								<div class="form-group">
-									<label for="bcountry">Birth Country:</label>
 									<select multiple size=4 class="form-control" name="bcountry" id="bcountry">
 										<option value = "">Any</option>
 										%for country in results['bCountries']:
@@ -150,8 +170,10 @@
 					<table>
 						<tr>
 							<td class="left">
+								<label for="profcat"><b>Professional Category:</b></label>
+							</td>
+							<td class="mid">
 								<div class="form-group">
-									<label for="profcat">Professional Category:</label>
 									<select class="form-control" name="profcat" id="profcat">
 								  		<option value="">Any</option>
 								  		%for prof in results['profCat']:
@@ -169,8 +191,10 @@
 						</tr>
 						<tr>
 							<td class="left">
+								<label for="highqual"><b>Highest Qualification:</b></label>
+							</td>
+							<td class="mid">
 								<div class="form-group">
-									<label for="highqual">Highest Qualification:</label>
 									<select class="form-control" name="highqual" id="highqual">
 										<option value="">Any</option>
 										%for qual in results['highQual']:
@@ -185,8 +209,10 @@
 						</tr>
 						<tr>
 							<td class="left">
+								<label for="ses"><b>Socio-economic Status:</b></label>
+							</td>
+							<td class="mid">
 								<div class="form-group">
-									<label for="ses">Socio-economic Status:</label>
 									<select class="form-control" name="ses" id="ses">
 										<option value="">Any</option>
 										<option value="professional">Professional</option>
@@ -211,8 +237,10 @@
 					<table>
 						<tr>
 							<td class="left">
+								<label for="flang"><b>First Language:</b></label>
+							</td>
+							<td class="mid">
 								<div class="form-group">
-									<label for="flang">First Language:</label>
 									<select type="text" class="form-control" name="flang" id="flang">
 										<option value = "">Any</option>
 										% for i in range(0, len(results['fLangInt'])):
@@ -227,8 +255,10 @@
 						</tr>
 						<tr>
 							<td class="left">
+								<label for="olangs"><b>Other Languages:</b></label>
+							</td>
+							<td class="mid">
 								<div class="form-group">
-									<label for="olangs">Other Languages:</label>
 									<input type="text" class="form-control" name="olangs" id="olangs" placeholder="German">
 								</div>
 							</td>
@@ -238,8 +268,10 @@
 						</tr>
 						<tr>
 							<td class="left">
+								<label for="heritage"><b>Cultural Heritage:</b></label>
+							</td>
+							<td class="mid">
 								<div class="form-group">
-									<label for="city">Cultural Heritage:</label>
 									<select class="form-control" name="heritage" id="heritage">
 										<option value = "">Any</option>
 										%for place in results['herit']:
@@ -265,129 +297,209 @@
 					<table>
 						<tr>
 							<td class="left">
-								<label for="is_student">Is Student:</label>
-									<select class="form-control" id="is_student" name="is_student">
-										<option value = "">Any</option>
-										<option value = "true">True</option>
-										<option value = "false">False</option>
-									</select>
+								<label for="is_student"><b>Is Student:</b></label>
+							</td>
+							<td class="mid">
+									<div class="btn-group" data-toggle="buttons" id="gender" name="gender">
+										<label class="btn btn-custom active">
+											<input type="radio" id="is_student" name="is_student" value = "" autocomplete="off" checked>Any
+										</label>
+										<label class="btn btn-custom">
+											<input type="radio" id="is_student" name="is_student" value = "true" autocomplete="off">True
+										</label>
+										<label class="btn btn-custom">
+											<input type="radio" id="is_student" name="is_student" value = "false" autocomplete="off">False
+										</label>
+									</div>
 							</td>
 							<td class="right">
-								<p>Is student</p>
+								<p></p>
 							</td>
 						</tr>
 						<tr>
 							<td class="left">
-								<label for="is_smoker">Is Smoker:</label>
-									<select class="form-control" id="is_smoker" name="is_smoker">
-										<option value = "">Any</option>
-										<option value = "true">True</option>
-										<option value = "false">False</option>
-									</select>
+								<label for="is_smoker"><b>Is Smoker:</b></label>
+							</td>
+							<td class="mid">
+									<div class="btn-group" data-toggle="buttons" id="gender" name="gender">
+										<label class="btn btn-custom active">
+											<input type="radio" id="is_smoker" name="is_smoker" value = "" autocomplete="off" checked>Any
+										</label>
+										<label class="btn btn-custom">
+											<input type="radio" id="is_smoker" name="is_smoker" value = "true" autocomplete="off">True
+										</label>
+										<label class="btn btn-custom">
+											<input type="radio" id="is_smoker" name="is_smoker" value = "false" autocomplete="off">False
+										</label>
+									</div>
 							</td>
 							<td class="right">
-								<p>Is smoker</p>
+								<p></p>
 							</td>
 						</tr>
 						<tr>
 							<td class="left">
-								<label for="has_speech_problems">Has Speech Problems:</label>
-									<select class="form-control" id="has_speech_problems" name="has_speech_problems">
-										<option value = "">Any</option>
-										<option value = "true">True</option>
-										<option value = "false">False</option>
-									</select>
+								<label for="has_speech_problems"><b>Has Speech Problems:</b></label>
+							</td>
+							<td class="mid">
+									<div class="btn-group" data-toggle="buttons" id="gender" name="gender">
+										<label class="btn btn-custom active">
+											<input type="radio" id="has_speech_problems" name="has_speech_problems" value = "" autocomplete="off" checked>Any
+										</label>
+										<label class="btn btn-custom">
+											<input type="radio" id="has_speech_problems" name="has_speech_problems" value = "true" autocomplete="off">True
+										</label>
+										<label class="btn btn-custom">
+											<input type="radio" id="has_speech_problems" name="has_speech_problems" value = "false" autocomplete="off">False
+										</label>
+									</div>
 							</td>
 							<td class="right">
-								<p>Has speech problems</p>
+								<p></p>
 							</td>
 						</tr>
 						<tr>
 							<td class="left">
-								<label for="has_hearing_problems">Has Hearing Problems:</label>
-									<select class="form-control" id="has_hearing_problems" name="has_hearing_problems">
-										<option value = "">Any</option>
-										<option value = "true">True</option>
-										<option value = "false">False</option>
-									</select>
+								<label for="has_hearing_problems"><b>Has Hearing Problems:</b></label>
+							</td>
+							<td class="mid">
+									<div class="btn-group" data-toggle="buttons" id="gender" name="gender">
+										<label class="btn btn-custom active">
+											<input type="radio" id="has_hearing_problems" name="has_hearing_problems" value = "" autocomplete="off" checked>Any
+										</label>
+										<label class="btn btn-custom">
+											<input type="radio" id="has_hearing_problems" name="has_hearing_problems" value = "true" autocomplete="off">True
+										</label>
+										<label class="btn btn-custom">
+											<input type="radio" id="has_hearing_problems" name="has_hearing_problems" value = "false" autocomplete="off">False
+										</label>
+									</div>
 							</td>
 							<td class="right">
-								<p>Has hearing problems</p>
+								<p></p>
 							</td>
 						</tr>
 						<tr>
 							<td class="left">
-								<label for="has_reading_problems">Has Reading Problems:</label>
-									<select class="form-control" id="has_reading_problems" name="has_reading_problems">
-										<option value = "">Any</option>
-										<option value = "true">True</option>
-										<option value = "false">False</option>
-									</select>
+								<label for="has_reading_problems"><b>Has Reading Problems:</b></label>
+							</td>
+							<td class="mid">
+									<div class="btn-group" data-toggle="buttons" id="gender" name="gender">
+										<label class="btn btn-custom active">
+											<input type="radio" id="has_reading_problems" name="has_reading_problems" value = "" autocomplete="off" checked>Any
+										</label>
+										<label class="btn btn-custom">
+											<input type="radio" id="has_reading_problems" name="has_reading_problems" value = "true" autocomplete="off">True
+										</label>
+										<label class="btn btn-custom">
+											<input type="radio" id="has_reading_problems" name="has_reading_problems" value = "false" autocomplete="off">False
+										</label>
+									</div>
 							</td>
 							<td class="right">
-								<p>Has reading problems</p>
+								<p></p>
 							</td>
 						</tr>
 						<tr>
 							<td class="left">
-								<label for="has_vocal_training">Has Vocal Training:</label>
-									<select class="form-control" id="has_vocal_training" name="has_vocal_training">
-										<option value = "">Any</option>
-										<option value = "true">True</option>
-										<option value = "false">False</option>
-									</select>
+								<label for="has_vocal_training"><b>Has Vocal Training:</b></label>
+							</td>
+							<td class="mid">
+									<div class="btn-group" data-toggle="buttons" id="gender" name="gender">
+										<label class="btn btn-custom active">
+											<input type="radio" id="has_vocal_training" name="has_vocal_training" value = "" autocomplete="off" checked>Any
+										</label>
+										<label class="btn btn-custom">
+											<input type="radio" id="has_vocal_training" name="has_vocal_training" value = "true" autocomplete="off">True
+										</label>
+										<label class="btn btn-custom">
+											<input type="radio" id="has_vocal_training" name="has_vocal_training" value = "false" autocomplete="off">False
+										</label>
+									</div>
 							</td>
 							<td class="right">
-								<p>Has vocal training</p>
+								<p></p>
 							</td>
 						</tr>
 						<tr>
 							<td class="left">
-								<label for="has_dentures">Has Dentures:</label>
-									<select class="form-control" id="has_dentures" name="has_dentures">
-										<option value = "">Any</option>
-										<option value = "true">True</option>
-										<option value = "false">False</option>
-									</select>
+								<label for="has_dentures"><b>Has Dentures:</b></label>
+							</td>
+							<td class="mid">
+									<div class="btn-group" data-toggle="buttons" id="gender" name="gender">
+										<label class="btn btn-custom active">
+											<input type="radio" id="has_dentures" name="has_dentures" value = "" autocomplete="off" checked>Any
+										</label>
+										<label class="btn btn-custom">
+											<input type="radio" id="has_dentures" name="has_dentures" value = "true" autocomplete="off">True
+										</label>
+										<label class="btn btn-custom">
+											<input type="radio" id="has_dentures" name="has_dentures" value = "false" autocomplete="off">False
+										</label>
+									</div>
 							</td>
 							<td class="right">
-								<p>Has Dentures</p>
+								<p></p>
 							</td>
 						</tr>
 						<tr>
 							<td class="left">
-								<label for="has_health_problems">Has Health Problems:</label>
-									<select class="form-control" id="has_health_problems" name="has_health_problems">
-										<option value = "">Any</option>
-										<option value = "true">True</option>
-										<option value = "false">False</option>
-									</select>
+								<label for="has_health_problems"><b>Has Health Problems:</b></label>
+							</td>
+							<td class="mid">
+									<div class="btn-group" data-toggle="buttons" id="gender" name="gender">
+										<label class="btn btn-custom active">
+											<input type="radio" id="has_health_problems" name="has_health_problems" value = "" autocomplete="off" checked>Any
+										</label>
+										<label class="btn btn-custom">
+											<input type="radio" id="has_health_problems" name="has_health_problems" value = "true" autocomplete="off">True
+										</label>
+										<label class="btn btn-custom">
+											<input type="radio" id="has_health_problems" name="has_health_problems" value = "false" autocomplete="off">False
+										</label>
+									</div>
 							</td>
 							<td class="right">
-								<p>Had health problems on the day</p>
+								<p></p>
 							</td>
 						</tr>
 						<tr>
 							<td class="left">
-								<label for="is_left_handed">Is Left Handed:</label>
-									<select class="form-control" id="is_left_handed" name="is_left_handed">
-										<option value = "">Any</option>
-										<option value = "true">True</option>
-										<option value = "false">False</option>
-									</select>
+								<label for="is_left_handed"><b>Is Left Handed:</b></label>
+							</td>
+							<td class="mid">
+									<div class="btn-group" data-toggle="buttons" id="gender" name="gender">
+										<label class="btn btn-custom active">
+											<input type="radio" id="is_left_handed" name="is_left_handed" value = "" autocomplete="off" checked>Any
+										</label>
+										<label class="btn btn-custom">
+											<input type="radio" id="is_left_handed" name="is_left_handed" value = "true" autocomplete="off">True
+										</label>
+										<label class="btn btn-custom">
+											<input type="radio" id="is_left_handed" name="is_left_handed" value = "false" autocomplete="off">False
+										</label>
+									</div>
 							</td>
 							<td class="right">
-								<p>Left handed</p>
+								<p></p>
 							</td>
 						</tr>
 						<tr>
 							<td class="left">
-								<label for="has_piercings">Has Piercings:</label>
-									<select class="form-control" id="has_piercings" name="has_piercings">
-										<option value = "">Any</option>
-										<option value = "true">True</option>
-										<option value = "false">False</option>
-									</select>
+								<label for="has_piercings"><b>Has Piercings:</b></label>
+							</td>
+							<td class="mid">
+									<div class="btn-group" data-toggle="buttons" id="gender" name="gender">
+										<label class="btn btn-custom active">
+											<input type="radio" id="has_piercings" name="has_piercings" value = "" autocomplete="off" checked>Any
+										</label>
+										<label class="btn btn-custom">
+											<input type="radio" id="has_piercings" name="has_piercings" value = "true" autocomplete="off">True
+										</label>
+										<label class="btn btn-custom">
+											<input type="radio" id="has_piercings" name="has_piercings" value = "false" autocomplete="off">False
+										</label>
+									</div>
 							</td>
 							<td class="right">
 								<p>Looking at the available data there are only 38 results, 24 have nose piercings, only 4 have lip piecings, 4 eyebrows, 4 None and 4 other.</p>
@@ -395,8 +507,10 @@
 						</tr>
 						<tr>
 							<td class="left">
+								<label for="hobbies"><b>Hobbies:</b></label>
+							</td>
+							<td class="mid">
 								<div class="form-group">
-									<label for="hobbies">Hobbies:</label>
 									<input type="text" class="form-control" name="hobbies" id="hobbies" placeholder="Photography">
 								</div>
 							</td>
@@ -417,27 +531,31 @@
 					<table>
 						<tr>
 							<td class="left">
+								<label for="mother_heritage"><b>Cultural Heritage:</b></label>
+							</td>
+							<td class="mid">
 								<div class="form-group">
-									<label for="city">Cultural Heritage:</label>
-									<select class="form-control" name="heritage" id="heritage">
+									<select class="form-control" name="mother_heritage" id="mother_heritage">
 										<option value = "">Any</option>
-										%for place in results['herit']:
+										%for place in results['mother_herit']:
 											<option value="{{place}}">{{place}}</option>
 										% end
 									</select>
 								</div>
 							</td>
 							<td class="right">
-								<p>Cultural Heritage TODO</p>
+								<p></p>
 							</td>
 						</tr>
 						<tr>
 							<td class="left">
+								<label for="mother_profcat"><b>Professional Category:</b></label>
+							</td>
+							<td class="mid">
 								<div class="form-group">
-									<label for="profcat">Professional Category:</label>
-									<select class="form-control" name="profcat" id="profcat">
+									<select class="form-control" name="mother_profcat" id="mother_profcat">
 								  		<option value="">Any</option>
-								  		%for prof in results['profCat']:
+								  		%for prof in results['mother_profCat']:
 								  			%#This is due to a weird api error when searching for these values
 								  			%if prof!="clerical and service" and prof!="intermediate clerical and service":
 								  				<option value="{{prof}}">{{prof}}</option>
@@ -447,88 +565,88 @@
 								</div>
 							</td>
 							<td class="right">
-								<p>Professional catagory TODO</p>
+								<p></p>
 							</td>
 						</tr>
 						<tr>
 							<td class="left">
+								<label for="mother_flang"><b>First Language:</b></label>
+							</td>
+							<td class="mid">
 								<div class="form-group">
-									<label for="mother_flang">First Language:</label>
 									<select type="text" class="form-control" name="mother_flang" id="mother_flang">
 										<option value = "">Any</option>
-										%for i in range(0,46):
-										%	print "Count:%d \t Disp: %s \t\tInt: %s" % (i,results['mother_fLangDisp'][i],results['mother_fLangInt'][i])
-										%end
-										%for i in range(46,len(results['mother_fLangInt'])):
-										%	print "Extra Int: %s" % results['mother_fLangInt'][i]
-										%end
-										%for i in range(46,len(results['mother_fLangDisp'])):
-										%	print "Extra Disp: %s" % results['mother_fLangDisp'][i]
-										%end
 										%for i in range(0, len(results['mother_fLangInt'])):
-										%#for i in range(0, 1): #because of some bug, see logbook 07/06/2016
 											<option value="{{results['mother_fLangInt'][i]}}">{{results['mother_fLangDisp'][i]}}</option>
 										% end
 									</select>
 								</div>
 							</td>
 							<td class="right">
-								<p>First language</p>
+								<p></p>
 							</td>
 						</tr>
 						<tr>
 							<td class="left">
+								<label for="mother_highqual"><b>Highest Qualification:</b></label>
+							</td>
+							<td class="mid">
 								<div class="form-group">
-									<label for="highqual">Highest Qualification:</label>
-									<select class="form-control" name="highqual" id="highqual">
+									<select class="form-control" name="mother_highqual" id="mother_highqual">
 										<option value="">Any</option>
-										%for qual in results['highQual']:
+										%for qual in results['mother_highQual']:
 											<option value="{{qual}}">{{qual}}</option>
 										%end
 									</select>
 								</div>
 							</td>
 							<td class="right">
-								<p>Education Level TODO</p>
+								<p></p>
 							</td>
 						</tr>
 						<tr>
 							<td class="left">
+								<label for="mother_btown"><b>Birth Town:</b></label>
+							</td>
+							<td class="mid">
 								<div class="form-group">
-									<label for="btown">Birth Town:</label>
-									<input type="text" class="form-control" name="btown" id="btown" placeholder="Sydney">
+									<input type="text" class="form-control" name="mother_btown" id="mother_btown" placeholder="Sydney">
 								</div>
 							</td>
 							</td>
 							<td class="right">
-								<p>Town of birth TODO</p>
+								<p></p>
 							</td>
 						</tr>
 						<tr>
 							<td class="left">
+								<label for="mother_bstate"><b>Birth State:</b></label>
+							</td>
+							<td class="mid">
 								<div class="form-group">
-									<label for="bstate">Birth State:</label>
-									<input type="text" class="form-control" name="bstate" id="bstate" placeholder="NSW">
+									<input type="text" class="form-control" name="mother_bstate" id="mother_bstate" placeholder="NSW">
 								</div>
 							</td>
 							<td class="right">
-								<p>State of Birth TODO</p>
+								<p></p>
 							</td>
 						</tr>
 						<tr>
 							<td class="left">
+								<label for="mother_bcountry"><b>Birth Country:</b></label>
+							</td>
+							<td class="mid">
 								<div class="form-group">
-									<label for="bcountry">Birth Country:</label>
-									<select multiple size=4 class="form-control" name="bcountry" id="bcountry">
+									<select multiple size=4 class="form-control" name="mother_bcountry" id="mother_bcountry">
 										<option value = "">Any</option>
-										%for country in results['bCountries']:
+										%for country in results['mother_bCountries']:
 											<option value="{{country}}">{{country}}</option>
 										%end
 									</select>
 								</div>
 							</td>
 							<td class="right">
-								<p>Country of Birth TODO</p>
+								<p></p>
 							</td>
 						</tr>
 					</table>
@@ -544,27 +662,31 @@
 					<table>
 						<tr>
 							<td class="left">
+								<label for="father_heritage"><b>Cultural Heritage:</b></label>
+							</td>
+							<td class="mid">
 								<div class="form-group">
-									<label for="city">Cultural Heritage:</label>
-									<select class="form-control" name="heritage" id="heritage">
+									<select class="form-control" name="father_heritage" id="father_heritage">
 										<option value = "">Any</option>
-										%for place in results['herit']:
+										%for place in results['father_herit']:
 											<option value="{{place}}">{{place}}</option>
 										% end
 									</select>
 								</div>
 							</td>
 							<td class="right">
-								<p>Cultural Heritage TODO</p>
+								<p></p>
 							</td>
 						</tr>
 						<tr>
 							<td class="left">
+								<label for="father_profcat"><b>Professional Category:</b></label>
+							</td>
+							<td class="mid">
 								<div class="form-group">
-									<label for="profcat">Professional Category:</label>
-									<select class="form-control" name="profcat" id="profcat">
+									<select class="form-control" name="father_profcat" id="father_profcat">
 								  		<option value="">Any</option>
-								  		%for prof in results['profCat']:
+								  		%for prof in results['father_profCat']:
 								  			%#This is due to a weird api error when searching for these values
 								  			%if prof!="clerical and service" and prof!="intermediate clerical and service":
 								  				<option value="{{prof}}">{{prof}}</option>
@@ -574,78 +696,87 @@
 								</div>
 							</td>
 							<td class="right">
-								<p>Professional catagory TODO</p>
+								<p></p>
 							</td>
 						</tr>
 						<tr>
 							<td class="left">
+								<label for="father_flang"><b>First Language:</b></label>
+							</td>
+							<td class="mid">
 								<div class="form-group">
-									<label for="father_flang">First Language:</label>
 									<select type="text" class="form-control" name="father_flang" id="father_flang">
 										<option value = "">Any</option>
-										%# for i in range(0, len(results['father_fLangInt'])):
-										% for i in range(0, 1): #because of some bug, see logbook 07/06/2016
+										% for i in range(0, len(results['father_fLangInt'])):
 											<option value="{{results['father_fLangInt'][i]}}">{{results['father_fLangDisp'][i]}}</option>
 										% end
 									</select>
 								</div>
 							</td>
 							<td class="right">
-								<p>First language TODO</p>
+								<p></p>
 							</td>
 						</tr>
 						<tr>
 							<td class="left">
+								<label for="father_highqual"><b>Highest Qualification:</b></label>
+							</td>
+							<td class="mid">
 								<div class="form-group">
-									<label for="highqual">Highest Qualification:</label>
-									<select class="form-control" name="highqual" id="highqual">
+									<select class="form-control" name="father_highqual" id="father_highqual">
 										<option value="">Any</option>
-										%for qual in results['highQual']:
+										%for qual in results['father_highQual']:
 											<option value="{{qual}}">{{qual}}</option>
 										%end
 									</select>
 								</div>
 							</td>
 							<td class="right">
-								<p>Education Level TODO</p>
+								<p></p>
 							</td>
 						</tr>
 						<tr>
 							<td class="left">
+								<label for="father_btown"><b>Birth Town:</b></label>
+							</td>
+							<td class="mid">
 								<div class="form-group">
-									<label for="btown">Birth Town:</label>
-									<input type="text" class="form-control" name="btown" id="btown" placeholder="Sydney">
+									<input type="text" class="form-control" name="father_btown" id="father_btown" placeholder="Sydney">
 								</div>
 							</td>
 							<td class="right">
-								<p>Town of birth TODO</p>
+								<p></p>
 							</td>
 						</tr>
 						<tr>
 							<td class="left">
+								<label for="father_bstate"><b>Birth State:</b></label>
+							</td>
+							<td class="mid">
 								<div class="form-group">
-									<label for="bstate">Birth State:</label>
-									<input type="text" class="form-control" name="bstate" id="bstate" placeholder="NSW">
+									<input type="text" class="form-control" name="father_bstate" id="father_bstate" placeholder="NSW">
 								</div>
 							</td>
 							<td class="right">
-								<p>State of Birth TODO</p>
+								<p></p>
 							</td>
 						</tr>
 						<tr>
 							<td class="left">
+								<label for="father_bcountry"><b>Birth Country:</b></label>
+							</td>
+							<td class="mid">
 								<div class="form-group">
-									<label for="bcountry">Birth Country:</label>
-									<select multiple size=4 class="form-control" name="bcountry" id="bcountry">
+									<select multiple size=4 class="form-control" name="father_bcountry" id="father_bcountry">
 										<option value = "">Any</option>
-										%for country in results['bCountries']:
+										%for country in results['father_bCountries']:
 											<option value="{{country}}">{{country}}</option>
 										%end
 									</select>
 								</div>
 							</td>
 							<td class="right">
-								<p>Country of Birth TODO</p>
+								<p></p>
 							</td>
 						</tr>
 					</table>

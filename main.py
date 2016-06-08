@@ -130,6 +130,34 @@ def search():
           ?part a foaf:Person .
           ?part austalk:pob_country ?val .}""")
     
+    results['mother_bCountries'] = quer.results_list("austalk", PREFIXES+
+        """
+        SELECT distinct ?val 
+        where {
+          ?part a foaf:Person .
+          ?part austalk:mother_pob_country ?val .}""")
+    
+    results['mother_profCat'] = quer.results_list("austalk", PREFIXES+
+    """
+        SELECT distinct ?val 
+        where {
+          ?part a foaf:Person .
+          ?part austalk:mother_professional_category ?val . } """)
+    
+    results['mother_highQual'] = quer.results_list("austalk", PREFIXES+
+    """    
+        SELECT distinct ?val 
+        where {
+          ?part a foaf:Person .
+          ?part austalk:mother_education_level ?val .}""")
+    
+    results['mother_herit'] = quer.results_list("austalk", PREFIXES+
+    """    
+        SELECT distinct ?val 
+        where {
+          ?part a foaf:Person .
+          ?part austalk:mother_cultural_heritage ?val .}""")
+    
     results['mother_fLangDisp'] = quer.results_list("austalk", PREFIXES+
     """                            
         SELECT distinct ?flang
@@ -151,6 +179,34 @@ def search():
             ?part a foaf:Person .
             ?part austalk:mother_first_language ?val .}
         ORDER BY ?part""")
+    
+    results['father_bCountries'] = quer.results_list("austalk", PREFIXES+
+        """
+        SELECT distinct ?val 
+        where {
+          ?part a foaf:Person .
+          ?part austalk:father_pob_country ?val .}""")
+    
+    results['father_profCat'] = quer.results_list("austalk", PREFIXES+
+    """
+        SELECT distinct ?val 
+        where {
+          ?part a foaf:Person .
+          ?part austalk:father_professional_category ?val . } """)
+    
+    results['father_highQual'] = quer.results_list("austalk", PREFIXES+
+    """    
+        SELECT distinct ?val 
+        where {
+          ?part a foaf:Person .
+          ?part austalk:father_education_level ?val .}""")
+    
+    results['father_herit'] = quer.results_list("austalk", PREFIXES+
+    """    
+        SELECT distinct ?val 
+        where {
+          ?part a foaf:Person .
+          ?part austalk:father_cultural_heritage ?val .}""")
     
     results['father_fLangDisp'] = quer.results_list("austalk", PREFIXES+
     """                            
@@ -528,8 +584,8 @@ def logged_in():
 
 if __name__ == '__main__':
     '''Runs the app. Listens on localhost:8080.'''
-    bottle.run(app=app, host='localhost', port=8080, debug=True)
-    #bottle.run(app=app, host='192.168.0.7', port=8080, debug=True)
+    #bottle.run(app=app, host='localhost', port=8080, debug=True)
+    bottle.run(app=app, host='10.126.99.194', port=8080, debug=True)
     
 
 

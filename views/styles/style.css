@@ -155,17 +155,18 @@ input[type=checkbox]:checked + label .rTableCell, input[type=checkbox]:checked +
   background-color: #eeeedd;
 }
 
-/* Mostly for the search participant page to get accordian to work as desired */
+/* Mostly for the search participant page 
+	to get accordian to work as desired */
 .panel-group table {
 	width:98%;
 	margin:auto;
 }
 
 td.left {
-	width: 12%;
+	width: 10%;
 }
 td.mid {
-	width: 18%;
+	width: 20%;
 }
 td.right {
 	width: 70%;
