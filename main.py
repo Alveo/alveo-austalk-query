@@ -75,34 +75,22 @@ def search():
         message = session['message']
     
     
+    simple_relations = ['cultural_heritage','education_level','professional_category',
+                     'pob_country','mother_pob_country','mother_professional_category',
+                     'mother_education_level','mother_cultural_heritage','father_pob_country',
+                     'father_professional_category','father_education_level','father_cultural_heritage']
+
+    results = qbuilder.simple_values_search(quer,'austalk',simple_relations,sortAlphabetically=True)
     
-    results = {}
-    
-    results['cities'] = quer.results_list("austalk", PREFIXES+
+    results['city'] = quer.results_list("austalk", PREFIXES+
     """    
         SELECT distinct ?val 
         where {
           ?part a foaf:Person .
           ?part austalk:recording_site ?site .
-          ?site austalk:city ?val .}""")
-    results['herit'] = quer.results_list("austalk", PREFIXES+
-    """    
-        SELECT distinct ?val 
-        where {
-          ?part a foaf:Person .
-          ?part austalk:cultural_heritage ?val .}""")
-    results['highQual'] = quer.results_list("austalk", PREFIXES+
-    """    
-        SELECT distinct ?val 
-        where {
-          ?part a foaf:Person .
-          ?part austalk:education_level ?val .}""")
-    results['profCat'] = quer.results_list("austalk", PREFIXES+
-    """
-        SELECT distinct ?val 
-        where {
-          ?part a foaf:Person .
-          ?part austalk:professional_category ?val . } """)
+          ?site austalk:city ?val .}
+          order by asc(ucase(str(?val)))""")
+    
     results['fLangDisp'] = quer.results_list("austalk", PREFIXES+
     """                            
         SELECT distinct ?flang
@@ -123,40 +111,6 @@ def search():
             ?part a foaf:Person .
             ?part austalk:first_language ?val .}
         ORDER BY ?part""")
-    results['bCountries'] = quer.results_list("austalk", PREFIXES+
-        """
-        SELECT distinct ?val 
-        where {
-          ?part a foaf:Person .
-          ?part austalk:pob_country ?val .}""")
-    
-    results['mother_bCountries'] = quer.results_list("austalk", PREFIXES+
-        """
-        SELECT distinct ?val 
-        where {
-          ?part a foaf:Person .
-          ?part austalk:mother_pob_country ?val .}""")
-    
-    results['mother_profCat'] = quer.results_list("austalk", PREFIXES+
-    """
-        SELECT distinct ?val 
-        where {
-          ?part a foaf:Person .
-          ?part austalk:mother_professional_category ?val . } """)
-    
-    results['mother_highQual'] = quer.results_list("austalk", PREFIXES+
-    """    
-        SELECT distinct ?val 
-        where {
-          ?part a foaf:Person .
-          ?part austalk:mother_education_level ?val .}""")
-    
-    results['mother_herit'] = quer.results_list("austalk", PREFIXES+
-    """    
-        SELECT distinct ?val 
-        where {
-          ?part a foaf:Person .
-          ?part austalk:mother_cultural_heritage ?val .}""")
     
     results['mother_fLangDisp'] = quer.results_list("austalk", PREFIXES+
     """                            
@@ -179,35 +133,7 @@ def search():
             ?part a foaf:Person .
             ?part austalk:mother_first_language ?val .}
         ORDER BY ?part""")
-    
-    results['father_bCountries'] = quer.results_list("austalk", PREFIXES+
-        """
-        SELECT distinct ?val 
-        where {
-          ?part a foaf:Person .
-          ?part austalk:father_pob_country ?val .}""")
-    
-    results['father_profCat'] = quer.results_list("austalk", PREFIXES+
-    """
-        SELECT distinct ?val 
-        where {
-          ?part a foaf:Person .
-          ?part austalk:father_professional_category ?val . } """)
-    
-    results['father_highQual'] = quer.results_list("austalk", PREFIXES+
-    """    
-        SELECT distinct ?val 
-        where {
-          ?part a foaf:Person .
-          ?part austalk:father_education_level ?val .}""")
-    
-    results['father_herit'] = quer.results_list("austalk", PREFIXES+
-    """    
-        SELECT distinct ?val 
-        where {
-          ?part a foaf:Person .
-          ?part austalk:father_cultural_heritage ?val .}""")
-    
+
     results['father_fLangDisp'] = quer.results_list("austalk", PREFIXES+
     """                            
         SELECT distinct ?flang

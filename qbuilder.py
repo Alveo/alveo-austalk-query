@@ -6,6 +6,37 @@
 
 from bottle import request
 import re
+from main import PREFIXES
+
+def simple_values_search(quer,collection,relations,sortAlphabetically=False):
+    '''
+    @summery: Used to provide a list of all the available distinct values for each relation in the list.
+    
+    @param quer: An instance of the AlQuery class
+    @type quer: AlQuery
+    @param collection: The collection to be searched.              
+    @type query: String
+    @param relations: A list of all relations to be searched
+    @type relations: List
+    @param sortAlphabetically: Will return the values in alphabetical order for all relations
+    @type sortAlphabetically: Boolean
+    @return: A dict with a key for each item in relations and the value being a list of all distinct values for that relation.
+    @rtype: Dict
+    '''
+    results = {}
+    for item in relations:
+        q = PREFIXES+"""    
+                            SELECT distinct ?val 
+                            where {
+                              ?part a foaf:Person .
+                              ?site austalk:%s ?val .}""" % item
+        if sortAlphabetically:
+            q += '''order by asc(ucase(str(?val)))'''
+        
+        results[item] = quer.results_list(collection,q)
+    
+    return results
+    
 
 def simple_filter(fName):
     '''
