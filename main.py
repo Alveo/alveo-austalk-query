@@ -448,10 +448,11 @@ def export():
     
     #create a single item list so it can be passed to pyalveo
     iList = []
-    for part in session['partlist']:
-        [iList.append(item['item']) for item in part['item_results']]
-        
+    
     try:
+        for part in session['partlist']:
+            [iList.append(item['item']) for item in part['item_results']]
+        
         itemList = pyalveo.ItemGroup(iList, client)
     except KeyError:
         session['message'] = "Select some items first."
