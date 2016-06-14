@@ -49,14 +49,14 @@ all participants). Please be patient.</b></p>
 			</div>
 		
 			% for row in resultsList:
-			<input name="selected" class="hideme" type="checkbox" id="{{row['participant']}}" value="{{row['participant']}}" />
-				<label class="rTableRow" for="{{row['participant']}}">
-					<div class="rTableCellLeft"><b>{{row['participant'].split('/')[-1]}}</b></div>
+			<input name="selected" class="hideme" type="checkbox" id="{{row['id']}}" value="{{row['id']}}" />
+				<label class="rTableRow" for="{{row['id']}}">
+					<div class="rTableCellLeft"><b>{{row['id'].split('/')[-1]}}</b></div>
 					<div class="rTableCell">{{row['gender']}}</div>
 					<div class="rTableCell">{{row['age']}}</div>
 					<div class="rTableCell">{{row['city']}}</div>
-					<div class="rTableCell">{{row['btown']}}</div>
-					<div class="rTableCellRight">{{row['bcountry']}}</div>
+					<div class="rTableCell">{{row['pob_town']}}</div>
+					<div class="rTableCellRight">{{row['pob_country']}}</div>
 				</label>
 			% end
 		</div>

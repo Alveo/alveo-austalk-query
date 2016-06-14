@@ -37,11 +37,11 @@
 					<table>
 						<tr>
 							<td class="left">
-								<label for="participant"><b>Participant Id:</b></label>
+								<label for="id"><b>Participant Id:</b></label>
 							</td>
 							<td class="mid">
 								<div class="form-group">
-									<input type="text" class="form-control" name="participant" id="participant" placeholder="1_114">
+									<input type="text" class="form-control" name="id" id="id" placeholder="1_114">
 								</div>
 							</td>
 							<td class="right">
@@ -73,11 +73,11 @@
 						</tr>
 						<tr>
 							<td class="left">
-								<label for="a"><b>Age:</b></label>
+								<label for="age"><b>Age:</b></label>
 							</td>
 							<td class="mid">
 								<div class="form-group">
-									<input type="text" class="form-control" name="a" id="a" placeholder="-25">
+									<input type="text" class="form-control" name="age" id="age" placeholder="-25">
 								</div>
 							</td>
 							<td class="right">
@@ -90,9 +90,9 @@
 							</td>
 							<td class="mid">
 								<div class="form-group">
-									<select class="form-control" name="city" id="city">
+									<select class="form-control" name="recording_site" id="recording_site">
 									    <option value = "">Any</option>
-										% for city in results['cities']:
+										% for city in results['recording_site']:
 											<option value="{{city}}">{{city}}</option>
 										% end
 									</select>
@@ -115,11 +115,11 @@
 					<table>
 						<tr>
 							<td class="left">
-								<label for="btown"><b>Birth Town:</b></label>
+								<label for="pob_town"><b>Birth Town:</b></label>
 							</td>
 							<td class="mid">
 								<div class="form-group">
-									<input type="text" class="form-control" name="btown" id="btown" placeholder="Sydney">
+									<input type="text" class="form-control" name="pob_town" id="pob_town" placeholder="Sydney">
 								</div>
 							</td>
 							<td class="right">
@@ -128,11 +128,11 @@
 						</tr>
 						<tr>
 							<td class="left">
-								<label for="bstate"><b>Birth State:</b></label>
+								<label for="pob_state"><b>Birth State:</b></label>
 							</td>
 							<td class="mid">
 								<div class="form-group">
-									<input type="text" class="form-control" name="bstate" id="bstate" placeholder="NSW">
+									<input type="text" class="form-control" name="pob_state" id="pob_state" placeholder="NSW">
 								</div>
 							</td>
 							<td class="right">
@@ -141,13 +141,13 @@
 						</tr>
 						<tr>
 							<td class="left">
-								<label for="bcountry"><b>Birth Country:</b></label>
+								<label for="pob_country"><b>Birth Country:</b></label>
 							</td>
 							<td class="mid">
 								<div class="form-group">
-									<select multiple size=4 class="form-control" name="bcountry" id="bcountry">
+									<select multiple size=4 class="form-control" name="pob_country" id="pob_country">
 										<option value = "">Any</option>
-										%for country in results['bCountries']:
+										%for country in results['pob_country']:
 											<option value="{{country}}">{{country}}</option>
 										%end
 									</select>
@@ -174,9 +174,9 @@
 							</td>
 							<td class="mid">
 								<div class="form-group">
-									<select class="form-control" name="profcat" id="profcat">
+									<select class="form-control" name="professional_category" id="professional_category">
 								  		<option value="">Any</option>
-								  		%for prof in results['profCat']:
+								  		%for prof in results['professional_category']:
 								  			%#This is due to a weird api error when searching for these values
 								  			%if prof!="clerical and service" and prof!="intermediate clerical and service":
 								  				<option value="{{prof}}">{{prof}}</option>
@@ -195,9 +195,9 @@
 							</td>
 							<td class="mid">
 								<div class="form-group">
-									<select class="form-control" name="highqual" id="highqual">
+									<select class="form-control" name="education_level" id="education_level">
 										<option value="">Any</option>
-										%for qual in results['highQual']:
+										%for qual in results['education_level']:
 											<option value="{{qual}}">{{qual}}</option>
 										%end
 									</select>
@@ -237,14 +237,14 @@
 					<table>
 						<tr>
 							<td class="left">
-								<label for="flang"><b>First Language:</b></label>
+								<label for="first_language"><b>First Language:</b></label>
 							</td>
 							<td class="mid">
 								<div class="form-group">
-									<select type="text" class="form-control" name="flang" id="flang">
+									<select type="text" class="form-control" name="first_language" id="first_language">
 										<option value = "">Any</option>
-										% for i in range(0, len(results['fLangInt'])):
-											<option value="{{results['fLangInt'][i]}}">{{results['fLangDisp'][i]}}</option>
+										% for i in range(0, len(results['first_language_int'])):
+											<option value="{{results['first_language_int'][i]}}">{{results['first_language'][i]}}</option>
 										% end
 									</select>
 								</div>
@@ -255,11 +255,11 @@
 						</tr>
 						<tr>
 							<td class="left">
-								<label for="olangs"><b>Other Languages:</b></label>
+								<label for="other_languages"><b>Other Languages:</b></label>
 							</td>
 							<td class="mid">
 								<div class="form-group">
-									<input type="text" class="form-control" name="olangs" id="olangs" placeholder="German">
+									<input type="text" class="form-control" name="other_languages" id="other_languages" placeholder="German">
 								</div>
 							</td>
 							<td class="right">
@@ -268,13 +268,13 @@
 						</tr>
 						<tr>
 							<td class="left">
-								<label for="heritage"><b>Cultural Heritage:</b></label>
+								<label for="cultural_heritage"><b>Cultural Heritage:</b></label>
 							</td>
 							<td class="mid">
 								<div class="form-group">
-									<select class="form-control" name="heritage" id="heritage">
+									<select class="form-control" name="cultural_heritage" id="cultural_heritage">
 										<option value = "">Any</option>
-										%for place in results['herit']:
+										%for place in results['cultural_heritage']:
 											<option value="{{place}}">{{place}}</option>
 										% end
 									</select>
@@ -531,13 +531,13 @@
 					<table>
 						<tr>
 							<td class="left">
-								<label for="mother_heritage"><b>Cultural Heritage:</b></label>
+								<label for="mother_cultural_heritage"><b>Cultural Heritage:</b></label>
 							</td>
 							<td class="mid">
 								<div class="form-group">
-									<select class="form-control" name="mother_heritage" id="mother_heritage">
+									<select class="form-control" name="mother_cultural_heritage" id="mother_cultural_heritage">
 										<option value = "">Any</option>
-										%for place in results['mother_herit']:
+										%for place in results['mother_cultural_heritage']:
 											<option value="{{place}}">{{place}}</option>
 										% end
 									</select>
@@ -549,13 +549,13 @@
 						</tr>
 						<tr>
 							<td class="left">
-								<label for="mother_profcat"><b>Professional Category:</b></label>
+								<label for="mother_professional_category"><b>Professional Category:</b></label>
 							</td>
 							<td class="mid">
 								<div class="form-group">
-									<select class="form-control" name="mother_profcat" id="mother_profcat">
+									<select class="form-control" name="mother_professional_category" id="mother_professional_category">
 								  		<option value="">Any</option>
-								  		%for prof in results['mother_profCat']:
+								  		%for prof in results['mother_professional_category']:
 								  			%#This is due to a weird api error when searching for these values
 								  			%if prof!="clerical and service" and prof!="intermediate clerical and service":
 								  				<option value="{{prof}}">{{prof}}</option>
@@ -570,14 +570,14 @@
 						</tr>
 						<tr>
 							<td class="left">
-								<label for="mother_flang"><b>First Language:</b></label>
+								<label for="mother_first_language"><b>First Language:</b></label>
 							</td>
 							<td class="mid">
 								<div class="form-group">
-									<select type="text" class="form-control" name="mother_flang" id="mother_flang">
+									<select type="text" class="form-control" name="mother_first_language" id="mother_first_language">
 										<option value = "">Any</option>
-										%for i in range(0, len(results['mother_fLangInt'])):
-											<option value="{{results['mother_fLangInt'][i]}}">{{results['mother_fLangDisp'][i]}}</option>
+										%for i in range(0, len(results['mother_first_language_int'])):
+											<option value="{{results['mother_first_language_int'][i]}}">{{results['mother_first_language'][i]}}</option>
 										% end
 									</select>
 								</div>
@@ -588,13 +588,13 @@
 						</tr>
 						<tr>
 							<td class="left">
-								<label for="mother_highqual"><b>Highest Qualification:</b></label>
+								<label for="mother_education_level"><b>Highest Qualification:</b></label>
 							</td>
 							<td class="mid">
 								<div class="form-group">
-									<select class="form-control" name="mother_highqual" id="mother_highqual">
+									<select class="form-control" name="mother_education_level" id="mother_education_level">
 										<option value="">Any</option>
-										%for qual in results['mother_highQual']:
+										%for qual in results['mother_education_level']:
 											<option value="{{qual}}">{{qual}}</option>
 										%end
 									</select>
@@ -606,11 +606,11 @@
 						</tr>
 						<tr>
 							<td class="left">
-								<label for="mother_btown"><b>Birth Town:</b></label>
+								<label for="mother_pob_town"><b>Birth Town:</b></label>
 							</td>
 							<td class="mid">
 								<div class="form-group">
-									<input type="text" class="form-control" name="mother_btown" id="mother_btown" placeholder="Sydney">
+									<input type="text" class="form-control" name="mother_pob_town" id="mother_pob_town" placeholder="Sydney">
 								</div>
 							</td>
 							</td>
@@ -620,11 +620,11 @@
 						</tr>
 						<tr>
 							<td class="left">
-								<label for="mother_bstate"><b>Birth State:</b></label>
+								<label for="mother_pob_state"><b>Birth State:</b></label>
 							</td>
 							<td class="mid">
 								<div class="form-group">
-									<input type="text" class="form-control" name="mother_bstate" id="mother_bstate" placeholder="NSW">
+									<input type="text" class="form-control" name="mother_pob_state" id="mother_pob_state" placeholder="NSW">
 								</div>
 							</td>
 							<td class="right">
@@ -633,13 +633,13 @@
 						</tr>
 						<tr>
 							<td class="left">
-								<label for="mother_bcountry"><b>Birth Country:</b></label>
+								<label for="mother_pob_country"><b>Birth Country:</b></label>
 							</td>
 							<td class="mid">
 								<div class="form-group">
-									<select multiple size=4 class="form-control" name="mother_bcountry" id="mother_bcountry">
+									<select multiple size=4 class="form-control" name="mother_pob_country" id="mother_pob_country">
 										<option value = "">Any</option>
-										%for country in results['mother_bCountries']:
+										%for country in results['mother_pob_country']:
 											<option value="{{country}}">{{country}}</option>
 										%end
 									</select>
@@ -662,13 +662,13 @@
 					<table>
 						<tr>
 							<td class="left">
-								<label for="father_heritage"><b>Cultural Heritage:</b></label>
+								<label for="father_cultural_heritage"><b>Cultural Heritage:</b></label>
 							</td>
 							<td class="mid">
 								<div class="form-group">
-									<select class="form-control" name="father_heritage" id="father_heritage">
+									<select class="form-control" name="father_cultural_heritage" id="father_cultural_heritage">
 										<option value = "">Any</option>
-										%for place in results['father_herit']:
+										%for place in results['father_cultural_heritage']:
 											<option value="{{place}}">{{place}}</option>
 										% end
 									</select>
@@ -680,13 +680,13 @@
 						</tr>
 						<tr>
 							<td class="left">
-								<label for="father_profcat"><b>Professional Category:</b></label>
+								<label for="father_professional_category"><b>Professional Category:</b></label>
 							</td>
 							<td class="mid">
 								<div class="form-group">
-									<select class="form-control" name="father_profcat" id="father_profcat">
+									<select class="form-control" name="father_professional_category" id="father_professional_category">
 								  		<option value="">Any</option>
-								  		%for prof in results['father_profCat']:
+								  		%for prof in results['father_professional_category']:
 								  			%#This is due to a weird api error when searching for these values
 								  			%if prof!="clerical and service" and prof!="intermediate clerical and service":
 								  				<option value="{{prof}}">{{prof}}</option>
@@ -701,14 +701,14 @@
 						</tr>
 						<tr>
 							<td class="left">
-								<label for="father_flang"><b>First Language:</b></label>
+								<label for="father_first_language"><b>First Language:</b></label>
 							</td>
 							<td class="mid">
 								<div class="form-group">
-									<select type="text" class="form-control" name="father_flang" id="father_flang">
+									<select type="text" class="form-control" name="father_first_language" id="father_first_language">
 										<option value = "">Any</option>
-										% for i in range(0, len(results['father_fLangInt'])):
-											<option value="{{results['father_fLangInt'][i]}}">{{results['father_fLangDisp'][i]}}</option>
+										% for i in range(0, len(results['father_first_language_int'])):
+											<option value="{{results['father_first_language_int'][i]}}">{{results['father_first_language'][i]}}</option>
 										% end
 									</select>
 								</div>
@@ -719,13 +719,13 @@
 						</tr>
 						<tr>
 							<td class="left">
-								<label for="father_highqual"><b>Highest Qualification:</b></label>
+								<label for="father_education_level"><b>Highest Qualification:</b></label>
 							</td>
 							<td class="mid">
 								<div class="form-group">
-									<select class="form-control" name="father_highqual" id="father_highqual">
+									<select class="form-control" name="father_education_level" id="father_education_level">
 										<option value="">Any</option>
-										%for qual in results['father_highQual']:
+										%for qual in results['father_education_level']:
 											<option value="{{qual}}">{{qual}}</option>
 										%end
 									</select>
@@ -737,11 +737,11 @@
 						</tr>
 						<tr>
 							<td class="left">
-								<label for="father_btown"><b>Birth Town:</b></label>
+								<label for="father_pob_town"><b>Birth Town:</b></label>
 							</td>
 							<td class="mid">
 								<div class="form-group">
-									<input type="text" class="form-control" name="father_btown" id="father_btown" placeholder="Sydney">
+									<input type="text" class="form-control" name="father_pob_town" id="father_pob_town" placeholder="Sydney">
 								</div>
 							</td>
 							<td class="right">
@@ -750,11 +750,11 @@
 						</tr>
 						<tr>
 							<td class="left">
-								<label for="father_bstate"><b>Birth State:</b></label>
+								<label for="father_pob_state"><b>Birth State:</b></label>
 							</td>
 							<td class="mid">
 								<div class="form-group">
-									<input type="text" class="form-control" name="father_bstate" id="father_bstate" placeholder="NSW">
+									<input type="text" class="form-control" name="father_pob_state" id="father_pob_state" placeholder="NSW">
 								</div>
 							</td>
 							<td class="right">
@@ -763,13 +763,13 @@
 						</tr>
 						<tr>
 							<td class="left">
-								<label for="father_bcountry"><b>Birth Country:</b></label>
+								<label for="father_pob_country"><b>Birth Country:</b></label>
 							</td>
 							<td class="mid">
 								<div class="form-group">
-									<select multiple size=4 class="form-control" name="father_bcountry" id="father_bcountry">
+									<select multiple size=4 class="form-control" name="father_pob_country" id="father_pob_country">
 										<option value = "">Any</option>
-										%for country in results['father_bCountries']:
+										%for country in results['father_pob_country']:
 											<option value="{{country}}">{{country}}</option>
 										%end
 									</select>

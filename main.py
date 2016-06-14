@@ -10,7 +10,7 @@ from beaker.middleware import SessionMiddleware
 import alquery
 import qbuilder
 import pyalveo
-import re
+import re,time
 
 BASE_URL = 'https://app.alveo.edu.au/' #Normal Server
 #BASE_URL = 'https://alveo-staging1.intersect.org.au/' #Staging Server
@@ -81,8 +81,8 @@ def search():
                      'father_professional_category','father_education_level','father_cultural_heritage']
 
     results = qbuilder.simple_values_search(quer,'austalk',simple_relations,sortAlphabetically=True)
-    
-    results['city'] = quer.results_list("austalk", PREFIXES+
+
+    results['recording_site'] = quer.results_list("austalk", PREFIXES+
     """    
         SELECT distinct ?val 
         where {
@@ -90,8 +90,8 @@ def search():
           ?part austalk:recording_site ?site .
           ?site austalk:city ?val .}
           order by asc(ucase(str(?val)))""")
-    
-    results['fLangDisp'] = quer.results_list("austalk", PREFIXES+
+
+    results['first_language'] = quer.results_list("austalk", PREFIXES+
     """                            
         SELECT distinct ?flang
         WHERE {{
@@ -104,15 +104,16 @@ def search():
             MINUS{
                 ?flang iso639schema:name ?y}}}
         ORDER BY ?part""")
-    results['fLangInt'] = quer.results_list("austalk", PREFIXES+
+
+    results['first_language_int'] = quer.results_list("austalk", PREFIXES+
     """                            
         SELECT distinct ?val
         WHERE {
             ?part a foaf:Person .
             ?part austalk:first_language ?val .}
         ORDER BY ?part""")
-    
-    results['mother_fLangDisp'] = quer.results_list("austalk", PREFIXES+
+
+    results['mother_first_language'] = quer.results_list("austalk", PREFIXES+
     """                            
         SELECT distinct ?flang
         WHERE {{
@@ -125,8 +126,8 @@ def search():
             MINUS{
                 ?flang iso639schema:name ?y}}}
         ORDER BY ?part""")
-    
-    results['mother_fLangInt'] = quer.results_list("austalk", PREFIXES+
+
+    results['mother_first_language_int'] = quer.results_list("austalk", PREFIXES+
     """                            
         SELECT distinct ?val
         WHERE {
@@ -134,7 +135,7 @@ def search():
             ?part austalk:mother_first_language ?val .}
         ORDER BY ?part""")
 
-    results['father_fLangDisp'] = quer.results_list("austalk", PREFIXES+
+    results['father_first_language'] = quer.results_list("austalk", PREFIXES+
     """                            
         SELECT distinct ?flang
         WHERE {{
@@ -147,8 +148,8 @@ def search():
             MINUS{
                 ?flang iso639schema:name ?y}}}
         ORDER BY ?part""")
-    
-    results['father_fLangInt'] = quer.results_list("austalk", PREFIXES+
+
+    results['father_first_language_int'] = quer.results_list("austalk", PREFIXES+
     """                            
         SELECT distinct ?val
         WHERE {
@@ -177,53 +178,81 @@ def results():
         
     query = PREFIXES+ """
     
-    SELECT ?participant ?gender (str(?a) as ?age) ?city ?bcountry ?btown"""
-    
-    #Building up the "Select" clause of the query from formdata for columns we only want to include if there's formdata.
-    query = query + qbuilder.select_list(['olangs', 'bstate', 'ses', 'heritage',
-                                         'profcat', 'highqual','speakerid'])
-           
+    SELECT ?id ?gender ?age ?city ?pob_country ?pob_town"""
+          
     query = query + """
     WHERE {
-        ?participant a foaf:Person .
-        ?participant austalk:recording_site ?site .
-        ?site austalk:city ?city .
-        ?participant foaf:age ?a .
-        ?participant foaf:gender ?gender .
-        ?participant austalk:first_language ?flang .
-        ?participant austalk:pob_country ?bcountry .   
-        ?participant austalk:pob_town ?btown .
+        ?id a foaf:Person .
+        ?id austalk:recording_site ?recording_site .
+        ?recording_site austalk:city ?city .
+        ?id foaf:age ?age .
+        ?id foaf:gender ?gender .
+        ?id austalk:first_language ?first_language .
+        ?id austalk:pob_country ?pob_country .   
+        ?id austalk:pob_town ?pob_town .
     """
-    #Building up the "Where" clause of the query from formdata for columns we only want to include if there's formdata.
-    if bottle.request.forms.get('ses'):
-        query = query + """?participant austalk:ses ?ses ."""
-    if bottle.request.forms.get('olangs'):
-        query = query + """?participant austalk:other_languages ?olangs ."""
-    if bottle.request.forms.get('bstate'):
-        query = query + """?participant austalk:pob_state ?bstate ."""
-    if bottle.request.forms.get('heritage'):
-        query = query + """?participant austalk:cultural_heritage ?heritage ."""
-    if bottle.request.forms.get('profcat'):
-        query = query + """?participant austalk:professional_category ?profcat ."""
-    if bottle.request.forms.get('highqual'):
-        query = query + """?participant austalk:education_level ?highqual ."""
+    #special args is anything all the form arguments that need something more than a simple filter.
+    filterTable = {
+                   'simple':['gender','recording_site','pob_state','cultural_heritage','ses','professional_category',
+                             'education_level','mother_cultural_heritage','father_cultural_heritage','pob_town',
+                             'mother_professional_category','father_professional_category','mother_education_level',
+                             'father_education_level','mother_pob_state','mother_pob_town','father_pob_state',
+                             'father_pob_town'],
+                   'regex':['id','other_languages','hobbies'],
+                   'boolean':['has_vocal_training','is_smoker','has_speech_problems','has_piercings','has_health_problems',
+                             'has_hearing_problems','has_dentures','is_student','is_left_handed','has_reading_problems',],
+                   'multiselect':['pob_country','father_pob_country','mother_pob_country'],
+                   'to_str':['first_language','mother_first_language','father_first_language'],
+                   'num_range':['age'],
+                   'original_where':['recording_site','age','gender','first_language','pob_country','pob_town']
+                }
+    
+    searchArgs = [arg for arg in bottle.request.forms.allitems() if len(arg[1])>0]
+    
+    #build up the where clause
+    for item in searchArgs:
+        #to avoid having two lines of the same thing rfom multiselect and the predefined elements.
+        if item[0] in filterTable['multiselect'] or item[0] in filterTable['original_where']:
+            if query.find(item[0])==-1:
+                query = query + """?id austalk:%s ?%s .\n""" % (item[0],item[0])
+        else:
+            query = query + """?id austalk:%s ?%s .\n""" % (item[0],item[0])
+    
+    #now build the filters
+    regexList = [arg for arg in searchArgs if arg[0] in filterTable['regex']]
+    for item in regexList:
+        if item[0]=='id':
+            query = query + qbuilder.regex_filter('id',toString=True,prepend="http://id.austalk.edu.au/participant/")
+        else:
+            query = query + qbuilder.regex_filter(item[0])
+    
+    
+    multiselectList = [arg for arg in searchArgs if arg[0] in filterTable['multiselect']]
+    for item in multiselectList:
+        #since birth country is a multipple select, it can be gotten as a list. We can now put it together so it's as
+        #if it's a normal user entered list of items.
+        customStr = "".join('''"%s",''' % s for s in bottle.request.forms.getall(item[0]))[0:-1]
         
-          
-    #Building filters.       
-    query = query + qbuilder.simple_filter_list(['city', 'gender', 'heritage', 'ses', 'highqual',
-                                             'profcat', 'bstate', 'btown'])
-    query = query + qbuilder.to_str_filter('flang')
-    query = query + qbuilder.num_range_filter('a')
-    query = query + qbuilder.regex_filter('olangs')
-    #since birth country is a multipple select, it can be gotten as a list. We can now put it together so it's as
-    #if it's a normal user entered list of items.
-    customStr = "".join('''"%s",''' % s for s in bottle.request.forms.getall('bcountry'))[0:-1]
+        query = query + qbuilder.regex_filter(item[0],custom=customStr)
+        
+    numRangeList = [arg for arg in searchArgs if arg[0] in filterTable['num_range']]
+    for item in numRangeList:
+        query = query + qbuilder.num_range_filter(item[0])
     
-    query = query + qbuilder.regex_filter('bcountry',custom=customStr)
-    query = query + qbuilder.regex_filter('participant',toString=True,prepend="http://id.austalk.edu.au/participant/")
-                         
-    query = query + "} ORDER BY ?participant"
+    toStrList = [arg for arg in searchArgs if arg[0] in filterTable['to_str']]
+    for item in toStrList:
+        query = query + qbuilder.to_str_filter(item[0])
     
+    booleanList = [arg for arg in searchArgs if arg[0] in filterTable['boolean']]
+    for item in booleanList:
+        query = query + qbuilder.boolean_filter(item[0])
+    
+    simpleList = [arg for arg in searchArgs if arg[0] in filterTable['simple']]
+    for item in simpleList:
+        query = query + qbuilder.simple_filter(item[0])
+                    
+    query = query + "} \nORDER BY ?id"
+    print query
     resultsList = quer.results_dict_list("austalk", query)
     
     session['partlist'] = resultsList
@@ -510,8 +539,8 @@ def logged_in():
 
 if __name__ == '__main__':
     '''Runs the app. Listens on localhost:8080.'''
-    #bottle.run(app=app, host='localhost', port=8080, debug=True)
-    bottle.run(app=app, host='10.126.99.194', port=8080, debug=True)
+    bottle.run(app=app, host='localhost', port=8080, debug=True)
+    #bottle.run(app=app, host='192.168.0.7', port=8080, debug=True)
     
 
 

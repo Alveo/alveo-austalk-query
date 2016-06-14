@@ -5,7 +5,7 @@
 '''
 
 from bottle import request
-import re
+import re,time
 from main import PREFIXES
 
 def simple_values_search(quer,collection,relations,sortAlphabetically=False):
@@ -29,10 +29,9 @@ def simple_values_search(quer,collection,relations,sortAlphabetically=False):
                             SELECT distinct ?val 
                             where {
                               ?part a foaf:Person .
-                              ?site austalk:%s ?val .}""" % item
+                              ?part austalk:%s ?val .}""" % item
         if sortAlphabetically:
             q += '''order by asc(ucase(str(?val)))'''
-        
         results[item] = quer.results_list(collection,q)
     
     return results
@@ -50,9 +49,25 @@ def simple_filter(fName):
 
     if request.forms.get(fName):
         val = request.forms.get(fName)
-        return """FILTER regex(?%s, "^%s$", "i")""" % (fName, val)
+        return """FILTER regex(?%s, "^%s$", "i")\n""" % (fName, val)
     else:
-        return ''       
+        return ''     
+    
+def boolean_filter(fName):  
+    '''
+    @summary: Used to add a simple boolean filter to a SPARQL query.
+    
+    @param fName: The name of the field being filtered. Make sure that this matches the name of the input in the HTML form.
+    @type fName: String
+    @return: A FILTER line to be added to a SPARQL query.
+    @rtype: String
+    '''
+
+    if request.forms.get(fName):
+        val = request.forms.get(fName)
+        return """FILTER(?%s="%s"^^xsd:boolean)\n""" % (fName, val)
+    else:
+        return ''     
     
 def to_str_filter(fName):
     '''
@@ -66,7 +81,7 @@ def to_str_filter(fName):
     
     if request.forms.get(fName):
         val = request.forms.get(fName)
-        return """FILTER regex(str(?%s), "^%s$", "i")""" % (fName, val)
+        return """FILTER regex(str(?%s), "^%s$", "i")\n""" % (fName, val)
     else:
         return ''
     
@@ -103,17 +118,17 @@ def num_range_filter(fName):
             val = val.rstrip("-")
             if re.match("-", val):
                 val = val.strip("-")
-                return """FILTER (?%s <= xsd:integer(%s))""" % (fName, int(val))
+                return """FILTER (?%s <= xsd:integer(%s))\n""" % (fName, int(val))
             if re.match(".+\+", val):
                 val = val.strip("+")
-                return """FILTER (?%s >= xsd:integer(%s))""" % (fName, int(val))
+                return """FILTER (?%s >= xsd:integer(%s))\n""" % (fName, int(val))
             if re.match(".*-.*", val):
                 vals = re.split("-", val, maxsplit=1)
                 if vals[0] > vals[1]:
                     vals.reverse()
-                return """FILTER (xsd:integer(%s) <= ?%s && ?%s <= xsd:integer(%s))""" % (int(vals[0]), fName, fName, int(vals[1]))
+                return """FILTER (xsd:integer(%s) <= ?%s && ?%s <= xsd:integer(%s))\n""" % (int(vals[0]), fName, fName, int(vals[1]))
             else:        
-                return """FILTER (?%s = xsd:integer(%s))""" % (fName, int(val))
+                return """FILTER (?%s = xsd:integer(%s))\n""" % (fName, int(val))
         except(ValueError):
             return ''
     else:
@@ -141,7 +156,7 @@ def regex_filter(fName,toString=False,prepend="",custom=None):
             val = custom
         else:
             val = request.forms.get(fName)
-             
+            
         #check first to see if it's a list of some sort
         if re.match(".*,.*", val):
             vals = ""
@@ -156,18 +171,18 @@ def regex_filter(fName,toString=False,prepend="",custom=None):
                     vals = vals + str(x) +"|"
             vals = vals.rstrip("|")
             if toString:
-                return """FILTER regex(str(?%s), "%s", "i")""" % (fName, vals)
-            return """FILTER regex(?%s, "%s", "i")""" % (fName, vals)
+                return """FILTER regex(str(?%s), "%s", "i")\n""" % (fName, vals)
+            return """FILTER regex(?%s, "%s", "i")\n""" % (fName, vals)
         #if it's no list then we check for quotes
         elif re.match("""\".*\"""", val):
             val = prepend+val.strip("\"")
             if toString:
-                return """FILTER regex(str(?%s), "^%s$", "i")""" % (fName, val) 
-            return """FILTER regex(?%s, "^%s$", "i")""" % (fName, val)      
+                return """FILTER regex(str(?%s), "^%s$", "i")\n""" % (fName, val) 
+            return """FILTER regex(?%s, "^%s$", "i")\n""" % (fName, val)      
         else:
             if toString:    
-                return """FILTER regex(str(?%s), "%s", "i")""" % (fName, prepend+val)
-            return """FILTER regex(?%s, "%s", "i")""" % (fName, prepend+val)
+                return """FILTER regex(str(?%s), "%s", "i")\n""" % (fName, prepend+val)
+            return """FILTER regex(?%s, "%s", "i")\n""" % (fName, prepend+val)
     else:
         return ''
     
