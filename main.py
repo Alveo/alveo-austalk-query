@@ -188,6 +188,14 @@ def results():
         USER_MESSAGE = "You must log in to view this page!"
         bottle.redirect('/login')
         
+    try:
+        message = session['message']
+        session['message'] = ""
+        session.save()
+    except KeyError:
+        session['message'] = ""
+        message = session['message']
+        
     query = PREFIXES+ """
     
     SELECT ?id ?gender ?age ?city ?pob_country ?pob_town"""
@@ -271,7 +279,9 @@ def results():
     session['partcount'] = session['resultscount']
     session.save()
     
-    return bottle.template('presults', resultsList=resultsList, resultCount=session['partcount'], apiKey=apiKey)
+    undoExists = 'backupPartList' in session.itervalues()
+    
+    return bottle.template('presults', resultsList=resultsList, resultCount=session['partcount'],message=message,undo=undoExists, apiKey=apiKey)
 
 @bottle.get('/presults')
 def part_list():
@@ -296,7 +306,17 @@ def part_list():
         session.save()
         redirect_home()
         
-    return bottle.template('presults', resultsList=resultsList, resultCount=session['partcount'], apiKey=apiKey)
+    try:
+        message = session['message']
+        session['message'] = ""
+        session.save()
+    except KeyError:
+        session['message'] = ""
+        message = session['message']
+    
+    undoExists = 'backupPartList' in session and len(session['backupPartList'])>0
+        
+    return bottle.template('presults', resultsList=resultsList, resultCount=session['partcount'],message=message,undo=undoExists, apiKey=apiKey)
 
 @bottle.post('/handleparts')
 def handle_parts():
@@ -318,12 +338,14 @@ def handle_parts():
     
     if function=='remove':
         newPartList = [p for p in partList if p['id'] not in selectedParts]
-    
+        session['backupPartList'] = [p for p in partList if p['id'] in selectedParts]
         session['partcount'] = session['partcount'] - len(selectedParts)
         session['partlist'] = newPartList
+        if len(selectedParts)>1:
+            session['message'] = 'Removed %d items.' % len(selectedParts)
+        elif len(selectedParts==1):
+            session['message'] = 'Removed one item.' 
         session.save()
-    
-        bottle.redirect('/presults')
     elif function=='getall':
         #goto /itemresults with selected items
         #removed this option as it crashes to go directly to item results without a search
@@ -344,7 +366,17 @@ def handle_parts():
         session.save()
     
         bottle.redirect('/itemsearch')
-    #if something weird just go back
+    elif function=='undo':
+        #undo most recent remove if there was one.
+        try:
+            partList.extend(session['backupPartList'])
+            session['partcount'] += len(session['backupPartList'])
+            session['backupPartList']=[]
+            session.save()
+            session['message'] = 'Reversed last remove.'
+        except KeyError:
+            #was nothing to undo
+            session['message'] = 'Nothing to Undo.'
     bottle.redirect('/presults')
 
 @bottle.post('/itemresults')

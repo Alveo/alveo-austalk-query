@@ -11,6 +11,11 @@
 </div>
 
 <div class="content">
+	%if len(message)>0:
+		<div class="alert alert-warning" role="alert">
+			<p><b>{{message}}</b></p>
+		</div>
+	%end
 <h4>Number of Participants Found: {{resultCount}}</h4>
 <p>You can now search for items related to the selected participants, or select all items for this list of
 participants.</p>
@@ -23,11 +28,10 @@ all participants). Please be patient.</b></p>
 		<button type="button" class="btn btn-default" onClick="selectNone()" >Select None</button>
 	</div>
 	<div class="form-group" style="float:right;">
-		
+		%if undo:
+		<button type="submit" class="btn btn-default" name="submit" value="undo">Undo</button>
+		%end
 		<button type="submit" class="btn btn-default" name="submit" value="remove">Remove Selected</button>
-		<!--
-		<button type="submit" class="btn btn-default" name="submit" value="getall">Get All Items From Selected</button>
-		-->
 		<button type="submit" class="btn btn-default" name="submit" value="search">Search Items From Selected</button>
 	</div>
 	
