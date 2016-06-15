@@ -1,14 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Search by Item</title>
-	<link rel="stylesheet" type="text/css" href="/styles/style.css">
+	% include('bshead.tpl')
 </head>
 
 <body>
 
 <div class="navi">
-	% include('nav.tpl', apiKey=apiKey, title="Search Items")
+	% include('nav.tpl', apiKey=apiKey, title="ISearch",loggedin=True)
 </div>
 
 <div class="content">
@@ -69,13 +68,14 @@
 						   <li>Entering "hid" (with quotes) will return ONLY the prompt "hid"</li>
 						   <li>Entering "hid, hod" (without quotes) will return the prompts hode, hod, hid, hide, whod</li></ul>
 		<p>You can also use SPARQL's regular expression syntax ('.' is a wildcard character, '*' matches 0-many of the previous expression, etc.). Searches are not case-sensitive.</p></td>
-	</tr>	
+	</tr>
 	<tr>
 	<td><b>Component/Component Type:</b></td>
 	<td>Using the Component field you can search for a specific component if desired (i.e, "yes-no-opening-2".<br>
 	The Component Type drop-down menu will select by a broader category of components (all "yes-no" type components.</td>
 	</tr>
 </div>
+	% include('bsfoot.tpl')
 </body>
 
 </html>

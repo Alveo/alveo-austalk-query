@@ -29,13 +29,50 @@ class AlQuery(object):
         @rtype: List
         @returns: A list with three elements: The HTML, a list of results for the first selected field, the number of search results, 
         """
+
+        results = self.results_dict_list(collection, query)
+        if isinstance(results, str):
+            return results
+            
+        html = "<table><tr>"
+        html = html + "<th>Selected</th>"
+        isItem = False
+        for i in results[0].items():       
+            #get the keys from this dict list from the first element. 
+            html = html + "<th>%s</th>" % (i[0])
+            if i[0]=='item':
+                isItem = True
         
+        for row in results:
+            html = html + "</tr><tr>"
+            html = html + """<td><input type="checkbox" name="selected" value="%s">""" % ((row['item']) if isItem else (row['participant'])  )     
+                 
+            for item in row.items():               
+                if re.match("""http:|https:""", item[1]) != None:
+                    html = html + """<td><a href="%s">%s</a></td>""" % (item[1], item[1])
+                else:         
+                    html = html + "<td>%s</td>" % (item[1])
+            
+        html = html + "</tr></table>"
+         
+        return html
+    
+    
+    def results_dict_list(self, collection, query):
+        """
+        @summary: Queries the Alveo database and returns the results as a list of dictionaries.
+        
+        @type collection: String
+        @param collection: The collection to be searched.            
+        @type query: String
+        @param query: The SPARQL query to be used.
+        @returns: A list of all results.
+        """
         session = bottle.request.environ.get('beaker.session') #@UndefinedVariable
         
         searchResults = self.client.sparql_query(collection, query)
    
         head = searchResults['head']['vars']     
-                
         rlist = []
         
         for column in head:
@@ -46,39 +83,22 @@ class AlQuery(object):
             session['lastresults'] = []
             session['resultscount'] = 0
             session.save()
-            return "No search results."
-  
-        html = "<table><tr>"
-        html = html + "<th>Selected</th>"
-        
-        for i in head:       
-            html = html + "<th>%s</th>" % (i)
+            return []
         
         x = len(rlist)/len(head)
-        mlist = []
         
-        for i in range(0, x):
-            mlist.append(rlist[i])
+        results = []
+        for i in range(x):
+            item = {}
+            for col in range(i,len(rlist),x):
+                item[head[col/x]] = rlist[col]
+            results.append(item)
             
-        session['lastresults'] = mlist
+        session['lastresults'] = results
         session['resultscount'] = x
         session.save()
         
-        for i in range(0, x):
-            html = html + "</tr><tr>"
-            html = html + """<td><input type="checkbox" name="selected" value="%s">""" % (rlist[i])       
-                 
-            for j in range(0, len(head)):               
-                if re.match("""http:|https:""", rlist[i + x*j]) != None:
-                    html = html + """<td><a href="%s">%s</a></td>""" % (rlist[i + x*j], rlist[i + x*j])
-                else:         
-                    html = html + "<td>%s</td>" % (rlist[i + x*j])
-            
-        html = html + "</tr></table>"
-         
-        return html
-    
-    
+        return results
     
     def results_list(self, collection, query):
         """
@@ -90,15 +110,24 @@ class AlQuery(object):
         @param query: The SPARQL query to be used.
         @returns: A list of all results.
         """
-        
+        session = bottle.request.environ.get('beaker.session') #@UndefinedVariable
         searchResults = self.client.sparql_query(collection, query)      
         
         head = searchResults['head']['vars']     
-                
         rlist = []
+        session['lastresults'] = []
         
         for column in head:
             for result in searchResults['results']['bindings']:
                 rlist.append(result[column]['value'])
         
+        if len(rlist) == 0:
+            session['lastresults'] = []
+            session['resultscount'] = 0
+            session.save()
+            return []
+        
+        session['resultscount'] = len(rlist)/len(head)
+        session['lastresults'] = rlist
+        session.save()
         return rlist

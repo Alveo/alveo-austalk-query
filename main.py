@@ -10,9 +10,13 @@ from beaker.middleware import SessionMiddleware
 import alquery
 import qbuilder
 import pyalveo
-import re
+import re,time
 
-BASE_URL = 'https://app.alveo.edu.au/'
+BASE_URL = 'https://app.alveo.edu.au/' #Normal Server
+#BASE_URL = 'https://alveo-staging1.intersect.org.au/' #Staging Server
+
+#used to inform the user when they're not logged in.
+USER_MESSAGE = ""
 PREFIXES = """
         PREFIX dc:<http://purl.org/dc/terms/>
         PREFIX austalk:<http://ns.austalk.edu.au/>
@@ -32,7 +36,7 @@ PREFIXES = """
         PREFIX dada: <http://purl.org/dada/schema/0.2#>"""
         
 session_opts = {
-    'session.cookie_expires': True
+    'session.cookie_expires': False
 }
 
 app = SessionMiddleware(bottle.app(), session_opts)
@@ -58,6 +62,8 @@ def search():
         client = pyalveo.Client(apiKey, BASE_URL)
         quer = alquery.AlQuery(client)
     except KeyError:
+        global USER_MESSAGE
+        USER_MESSAGE = "You must log in to view this page!"
         bottle.redirect('/login')
         
     try:
@@ -68,32 +74,24 @@ def search():
         session['message'] = ""
         message = session['message']
     
-    cities = quer.results_list("austalk", PREFIXES+
+    
+    simple_relations = ['cultural_heritage','education_level','professional_category',
+                     'pob_country','mother_pob_country','mother_professional_category',
+                     'mother_education_level','mother_cultural_heritage','father_pob_country',
+                     'father_professional_category','father_education_level','father_cultural_heritage']
+
+    results = qbuilder.simple_values_search(quer,'austalk',simple_relations,sortAlphabetically=True)
+
+    results['recording_site'] = quer.results_list("austalk", PREFIXES+
     """    
         SELECT distinct ?val 
         where {
           ?part a foaf:Person .
           ?part austalk:recording_site ?site .
-          ?site austalk:city ?val .}""")
-    herit = quer.results_list("austalk", PREFIXES+
-    """    
-        SELECT distinct ?val 
-        where {
-          ?part a foaf:Person .
-          ?part austalk:cultural_heritage ?val .}""")
-    highQual = quer.results_list("austalk", PREFIXES+
-    """    
-        SELECT distinct ?val 
-        where {
-          ?part a foaf:Person .
-          ?part austalk:education_level ?val .}""")
-    profCat = quer.results_list("austalk", PREFIXES+
-    """
-        SELECT distinct ?val 
-        where {
-          ?part a foaf:Person .
-          ?part austalk:professional_category ?val . } """)
-    fLangDisp = quer.results_list("austalk", PREFIXES+
+          ?site austalk:city ?val .}
+          order by asc(ucase(str(?val)))""")
+
+    results['first_language'] = quer.results_list("austalk", PREFIXES+
     """                            
         SELECT distinct ?flang
         WHERE {{
@@ -106,21 +104,61 @@ def search():
             MINUS{
                 ?flang iso639schema:name ?y}}}
         ORDER BY ?part""")
-    fLangInt = quer.results_list("austalk", PREFIXES+
+
+    results['first_language_int'] = quer.results_list("austalk", PREFIXES+
     """                            
         SELECT distinct ?val
         WHERE {
             ?part a foaf:Person .
             ?part austalk:first_language ?val .}
         ORDER BY ?part""")
-    bCountries = quer.results_list("austalk", PREFIXES+
-        """
-        SELECT distinct ?val 
-        where {
-          ?part a foaf:Person .
-          ?part austalk:pob_country ?val .}""")
 
-    return bottle.template('psearch', cities=cities, herit=herit, highQual=highQual, profCat=profCat, fLangDisp=fLangDisp, fLangInt=fLangInt, bCountries=bCountries, message=message,
+    results['mother_first_language'] = quer.results_list("austalk", PREFIXES+
+    """                            
+        SELECT distinct ?flang
+        WHERE {{
+            ?part a foaf:Person .
+            ?part austalk:mother_first_language ?x .
+            ?x iso639schema:name ?flang .
+        } 
+        UNION {
+            ?part austalk:mother_first_language ?flang .
+            MINUS{
+                ?flang iso639schema:name ?y}}}
+        ORDER BY ?part""")
+
+    results['mother_first_language_int'] = quer.results_list("austalk", PREFIXES+
+    """                            
+        SELECT distinct ?val
+        WHERE {
+            ?part a foaf:Person .
+            ?part austalk:mother_first_language ?val .}
+        ORDER BY ?part""")
+
+    results['father_first_language'] = quer.results_list("austalk", PREFIXES+
+    """                            
+        SELECT distinct ?flang
+        WHERE {{
+            ?part a foaf:Person .
+            ?part austalk:father_first_language ?x .
+            ?x iso639schema:name ?flang .
+        } 
+        UNION {
+            ?part austalk:father_first_language ?flang .
+            MINUS{
+                ?flang iso639schema:name ?y}}}
+        ORDER BY ?part""")
+
+    results['father_first_language_int'] = quer.results_list("austalk", PREFIXES+
+    """                            
+        SELECT distinct ?val
+        WHERE {
+            ?part a foaf:Person .
+            ?part austalk:father_first_language ?val .}
+        ORDER BY ?part""")
+    
+    print message
+    return bottle.template('psearch', results=results, message=message,
                            apiKey=apiKey)
     
 @bottle.post('/presults')
@@ -134,59 +172,94 @@ def results():
         client = pyalveo.Client(apiKey, BASE_URL)
         quer = alquery.AlQuery(client)
     except KeyError:
+        global USER_MESSAGE
+        USER_MESSAGE = "You must log in to view this page!"
         bottle.redirect('/login')
         
     query = PREFIXES+ """
     
-    SELECT ?participant ?gender (str(?a) as ?age) ?city ?bcountry"""
-    
-    #Building up the "Select" clause of the query from formdata for columns we only want to include if there's formdata.
-    query = query + qbuilder.select_list(['olangs', 'bstate', 'btown', 'ses', 'heritage',
-                                         'profcat', 'highqual'])
-           
+    SELECT ?id ?gender ?age ?city ?pob_country ?pob_town"""
+          
     query = query + """
     WHERE {
-        ?participant a foaf:Person .
-        ?participant austalk:recording_site ?site .
-        ?site austalk:city ?city .
-        ?participant foaf:age ?a .
-        ?participant foaf:gender ?gender .
-        ?participant austalk:first_language ?flang .
-        ?participant austalk:pob_country ?bcountry .   
+        ?id a foaf:Person .
+        ?id austalk:recording_site ?recording_site .
+        ?recording_site austalk:city ?city .
+        ?id foaf:age ?age .
+        ?id foaf:gender ?gender .
+        ?id austalk:first_language ?first_language .
+        ?id austalk:pob_country ?pob_country .   
+        ?id austalk:pob_town ?pob_town .
     """
-    #Building up the "Where" clause of the query from formdata for columns we only want to include if there's formdata.
-    if bottle.request.forms.get('ses'):
-        query = query + """?participant austalk:ses ?ses ."""
-    if bottle.request.forms.get('olangs'):
-        query = query + """?participant austalk:other_languages ?olangs ."""
-    if bottle.request.forms.get('bstate'):
-        query = query + """?participant austalk:pob_state ?bstate ."""
-    if bottle.request.forms.get('btown'):
-        query = query + """?participant austalk:pob_town ?btown ."""
-    if bottle.request.forms.get('heritage'):
-        query = query + """?participant austalk:cultural_heritage ?heritage ."""
-    if bottle.request.forms.get('profcat'):
-        query = query + """?participant austalk:professional_category ?profcat ."""
-    if bottle.request.forms.get('highqual'):
-        query = query + """?participant austalk:education_level ?highqual ."""
-          
-    #Building filters.       
-    query = query + qbuilder.simple_filter_list(['city', 'gender', 'heritage', 'ses', 'highqual',
-                                             'profcat', 'bcountry', 'bstate', 'btown'])
-    query = query + qbuilder.to_str_filter('flang')
-    query = query + qbuilder.num_range_filter('a')
-    query = query + qbuilder.regex_filter('olangs')
-                         
-    query = query + "} ORDER BY ?participant"
-
-    resultsTable = quer.html_table("austalk", query)
+    #special args is anything all the form arguments that need something more than a simple filter.
+    filterTable = {
+                   'simple':['gender','recording_site','pob_state','cultural_heritage','ses','professional_category',
+                             'education_level','mother_cultural_heritage','father_cultural_heritage','pob_town',
+                             'mother_professional_category','father_professional_category','mother_education_level',
+                             'father_education_level','mother_pob_state','mother_pob_town','father_pob_state',
+                             'father_pob_town'],
+                   'regex':['id','other_languages','hobbies_details'],
+                   'boolean':['has_vocal_training','is_smoker','has_speech_problems','has_piercings','has_health_problems',
+                             'has_hearing_problems','has_dentures','is_student','is_left_handed','has_reading_problems',],
+                   'multiselect':['pob_country','father_pob_country','mother_pob_country'],
+                   'to_str':['first_language','mother_first_language','father_first_language'],
+                   'num_range':['age'],
+                   'original_where':['recording_site','age','gender','first_language','pob_country','pob_town']
+                }
     
-    session['partlist'] = session['lastresults']
-    session['parthtml'] = resultsTable
+    searchArgs = [arg for arg in bottle.request.forms.allitems() if len(arg[1])>0]
+    
+    #build up the where clause
+    for item in searchArgs:
+        #to avoid having two lines of the same thing rfom multiselect and the predefined elements.
+        if item[0] in filterTable['multiselect'] or item[0] in filterTable['original_where']:
+            if query.find(item[0])==-1:
+                query = query + """?id austalk:%s ?%s .\n""" % (item[0],item[0])
+        else:
+            query = query + """?id austalk:%s ?%s .\n""" % (item[0],item[0])
+    
+    #now build the filters
+    regexList = [arg for arg in searchArgs if arg[0] in filterTable['regex']]
+    for item in regexList:
+        if item[0]=='id':
+            query = query + qbuilder.regex_filter('id',toString=True,prepend="http://id.austalk.edu.au/participant/")
+        else:
+            query = query + qbuilder.regex_filter(item[0])
+    
+    
+    multiselectList = [arg for arg in searchArgs if arg[0] in filterTable['multiselect']]
+    for item in multiselectList:
+        #since birth country is a multipple select, it can be gotten as a list. We can now put it together so it's as
+        #if it's a normal user entered list of items.
+        customStr = "".join('''"%s",''' % s for s in bottle.request.forms.getall(item[0]))[0:-1]
+        
+        query = query + qbuilder.regex_filter(item[0],custom=customStr)
+        
+    numRangeList = [arg for arg in searchArgs if arg[0] in filterTable['num_range']]
+    for item in numRangeList:
+        query = query + qbuilder.num_range_filter(item[0])
+    
+    toStrList = [arg for arg in searchArgs if arg[0] in filterTable['to_str']]
+    for item in toStrList:
+        query = query + qbuilder.to_str_filter(item[0])
+    
+    booleanList = [arg for arg in searchArgs if arg[0] in filterTable['boolean']]
+    for item in booleanList:
+        query = query + qbuilder.boolean_filter(item[0])
+    
+    simpleList = [arg for arg in searchArgs if arg[0] in filterTable['simple']]
+    for item in simpleList:
+        query = query + qbuilder.simple_filter(item[0])
+                    
+    query = query + "} \nORDER BY ?id"
+    print query
+    resultsList = quer.results_dict_list("austalk", query)
+    
+    session['partlist'] = resultsList
     session['partcount'] = session['resultscount']
     session.save()
     
-    return bottle.template('presults', resultsTable=resultsTable, resultCount=session['partcount'], apiKey=apiKey)
+    return bottle.template('presults', resultsList=resultsList, resultCount=session['partcount'], apiKey=apiKey)
 
 @bottle.get('/presults')
 def part_list():
@@ -197,16 +270,21 @@ def part_list():
     try:
         apiKey = session['apikey']
     except KeyError:
+        global USER_MESSAGE
+        USER_MESSAGE = "You must log in to view this page!"
         bottle.redirect('/login')
         
     try:
-        resultsTable = session['parthtml']
+        resultsList = session['partlist']
+        #incase the list was created but for some reason the user removes all elements or searches nothing.
+        if len(resultsList)==0:
+            raise KeyError
     except KeyError:
         session['message'] = "Perform a participant search first."
         session.save()
         redirect_home()
         
-    return bottle.template('presults', resultsTable=resultsTable, resultCount=session['partcount'], apiKey=apiKey)
+    return bottle.template('presults', resultsList=resultsList, resultCount=session['partcount'], apiKey=apiKey)
 
 @bottle.post('/removeparts')
 def remove_parts():
@@ -214,18 +292,21 @@ def remove_parts():
     
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
     
-    resultsTable = session['parthtml']
+    try:
+        apiKey = session['apikey']
+    except KeyError:
+        global USER_MESSAGE
+        USER_MESSAGE = "You must log in to view this page!"
+        bottle.redirect('/login')
+    
     partList = session['partlist']
     
     selectedParts = bottle.request.forms.getall('selected')
     
-    for part in selectedParts:
-        partList.remove(part)
-        resultsTable = re.sub("""<tr><td><input type="checkbox" name="selected" value="%s">.*?</tr>""" % (part), '', resultsTable)
+    newPartList = [p for p in partList if p['participant'] not in selectedParts]
     
     session['partcount'] = session['partcount'] - len(selectedParts)
-    session['parthtml'] = resultsTable
-    session['partlist'] = partList
+    session['partlist'] = newPartList
     session.save()
              
     bottle.redirect('/presults')
@@ -242,6 +323,8 @@ def item_results():
         client = pyalveo.Client(apiKey, BASE_URL)
         quer = alquery.AlQuery(client)
     except KeyError:
+        global USER_MESSAGE
+        USER_MESSAGE = "You must log in to view this page!"
         bottle.redirect('/login')
     
     query = PREFIXES + """   
@@ -257,8 +340,6 @@ def item_results():
         query = query + """?ann dada:annotates ?item ."""
      
     partList = session['partlist']
-    resultsList = []
-    itemList = []
     resultsCount = 0
     
     query = query + qbuilder.regex_filter('prompt')
@@ -277,20 +358,15 @@ def item_results():
         query=query+"""FILTER regex(?prompt, "^hard$|^heared$|^herd$|^howd$|^hoyd$|^haired$", "i")"""
     
     query = query + "}"
-  
-    print query
     
-    for part in partList:
-        resultsList.append(quer.html_table("austalk", query % (part)))
+    for row in partList:
+        row['item_results'] = quer.results_dict_list("austalk", query % (row['participant']))
         resultsCount = resultsCount + session['resultscount']
-        itemList = itemList + session['lastresults']
     
-    session['itemlist'] = itemList
     session['itemcount'] = resultsCount
-    session['itemhtml'] = resultsList
     session.save()
     
-    return bottle.template('itemresults', partList=partList, resultsList=resultsList, resultsCount=resultsCount, apiKey=apiKey)
+    return bottle.template('itemresults', partList=partList, resultsCount=resultsCount, apiKey=apiKey)
 
 @bottle.get('/itemresults')
 def item_list():
@@ -301,16 +377,18 @@ def item_list():
     try:
         apiKey = session['apikey']
     except KeyError:
+        global USER_MESSAGE
+        USER_MESSAGE = "You must log in to view this page!"
         bottle.redirect('/login')
         
     try:
-        resultsTable = session['itemhtml']
+        partList = session['partlist']
     except KeyError:
         session['message'] = "Perform an item search first."
         session.save()
         redirect_home()
         
-    return bottle.template('itemresults', partList=session['partlist'],  resultsList=resultsTable, resultsCount=session['itemcount'], apiKey=apiKey)
+    return bottle.template('itemresults', partList=partList, resultsCount=session['itemcount'], apiKey=apiKey)
 
 @bottle.post('/removeitems')
 def remove_items():
@@ -318,25 +396,22 @@ def remove_items():
     
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
     
-    resultsTable = session['itemhtml']
-    itemList = session['itemlist']
+    try:
+        apiKey = session['apikey']
+    except KeyError:
+        global USER_MESSAGE
+        USER_MESSAGE = "You must log in to view this page!"
+        bottle.redirect('/login')
+    
+    partList = session['partlist']
     
     selectedItems = bottle.request.forms.getall('selected')
-    
-    for item in selectedItems:
-        itemList.remove(item)
-        for i in range(0, len(resultsTable)):
-            print item
-            print resultsTable[i]
-            if re.search("""<tr><td><input type="checkbox" name="selected" value="%s">.*?</tr>""" % (item), resultsTable[i]):
-                result = resultsTable.pop(i)
-                result = re.sub("""<tr><td><input type="checkbox" name="selected" value="%s">.*?</tr>""" % (item), '', result)
-                resultsTable.insert(i, result)
-
+    for p in partList:
+        newItemList = [item for item in p['item_results'] if item['item'] not in selectedItems]
+        p['item_results'] = newItemList
     
     session['itemcount'] = session['itemcount'] - len(selectedItems)
-    session['itemhtml'] = resultsTable
-    session['itemlist'] = itemList
+    session['partlist'] = partList
     session.save()
              
     bottle.redirect('/itemresults')
@@ -352,6 +427,8 @@ def item_search():
     try:
         apiKey = session['apikey']
     except KeyError:
+        global USER_MESSAGE
+        USER_MESSAGE = "You must log in to view this page!"
         bottle.redirect('/login')
         
     try:
@@ -375,10 +452,19 @@ def export():
         apiKey = session['apikey']
         client = pyalveo.Client(apiKey, BASE_URL)
     except KeyError:
+        global USER_MESSAGE
+        USER_MESSAGE = "You must log in to view this page!"
         bottle.redirect('/login')
-        
+    
+    
+    #create a single item list so it can be passed to pyalveo
+    iList = []
+    
     try:
-        itemList = pyalveo.ItemGroup(session['itemlist'], client)
+        for part in session['partlist']:
+            [iList.append(item['item']) for item in part['item_results']]
+        
+        itemList = pyalveo.ItemGroup(iList, client)
     except KeyError:
         session['message'] = "Select some items first."
         session.save()
@@ -397,7 +483,7 @@ def export():
 @bottle.get('/login')
 def login():
     '''Login page.'''
-    
+    global USER_MESSAGE
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
     
     try:
@@ -405,7 +491,41 @@ def login():
     except KeyError:
         apiKey = 'Not logged in.'
     
-    return bottle.template('login', apiKey=apiKey)
+    msg = USER_MESSAGE
+    USER_MESSAGE = ""
+        
+    return bottle.template('login', message=msg, apiKey=apiKey)
+
+@bottle.get('/logout')
+def logout():
+    '''Logout and redirect to login page
+    '''
+    session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
+    session.delete()
+    USER_MESSAGE = "You have successfully logged out!"
+    bottle.redirect('/login')
+
+@bottle.get('/about')
+def about():
+    session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
+    
+    try:
+        apiKey = session['apikey']
+    except KeyError:
+        apiKey = 'Not logged in.'
+    
+    return bottle.template('about', apiKey=apiKey)
+
+@bottle.get('/help')
+def help():
+    session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
+    
+    try:
+        apiKey = session['apikey']
+    except KeyError:
+        apiKey = 'Not logged in.'
+        
+    return bottle.template('help', apiKey=apiKey)
 
 @bottle.post('/login')
 def logged_in():  
@@ -420,5 +540,7 @@ def logged_in():
 if __name__ == '__main__':
     '''Runs the app. Listens on localhost:8080.'''
     bottle.run(app=app, host='localhost', port=8080, debug=True)
+    #bottle.run(app=app, host='192.168.0.7', port=8080, debug=True)
+    
 
 

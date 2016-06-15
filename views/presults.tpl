@@ -1,14 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Participant List</title>
-	<link rel="stylesheet" type="text/css" href="/styles/style.css">
+	% include('bshead.tpl')
 </head>
 
 <body>
 
 <div class="navi">
-	% include('nav.tpl', apiKey=apiKey, title="Search Results")
+	% include('nav.tpl', apiKey=apiKey, title="PResults",loggedin=True)
 </div>
 
 <div class="content">
@@ -35,10 +34,37 @@ all participants). Please be patient.</b></p>
 
 <form action="/removeparts" method="POST">
 	<input value="Remove Selected Participants" type="submit">
-{{!resultsTable}}
+
+	<div class="rTable">
+	
+		<div class="rTableBody">
+		
+			<div class="rTableRow">
+				<div class="rTableHead">Participant</div>
+				<div class="rTableHead">Gender</div>
+				<div class="rTableHead">Age</div>
+				<div class="rTableHead">Recorded In</div>
+				<div class="rTableHead">Birth City</div>
+				<div class="rTableHead">Birth Country</div>
+			</div>
+		
+			% for row in resultsList:
+			<input name="selected" class="hideme" type="checkbox" id="{{row['id']}}" value="{{row['id']}}" />
+				<label class="rTableRow" for="{{row['id']}}">
+					<div class="rTableCellLeft"><b>{{row['id'].split('/')[-1]}}</b></div>
+					<div class="rTableCell">{{row['gender']}}</div>
+					<div class="rTableCell">{{row['age']}}</div>
+					<div class="rTableCell">{{row['city']}}</div>
+					<div class="rTableCell">{{row['pob_town']}}</div>
+					<div class="rTableCellRight">{{row['pob_country']}}</div>
+				</label>
+			% end
+		</div>
+	</div>
 </form>
 
 </div>
+	% include('bsfoot.tpl')
 </body>
 
 </html>
