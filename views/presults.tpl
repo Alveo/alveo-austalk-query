@@ -11,30 +11,26 @@
 </div>
 
 <div class="content">
+<h4>Number of Participants Found: {{resultCount}}</h4>
 <p>You can now search for items related to the selected participants, or select all items for this list of
 participants.</p>
 <p><b>Selecting items for large numbers of participants can take a long time (up to 15 minutes if selecting for
 all participants). Please be patient.</b></p>
-<table>
- <tr>
-  <td>
-	<form action="/itemresults" method="POST">
-		<input value="Get All Items" type="submit">
-	</form>
-  </td>
-  <td>
-	<form action="/itemsearch" method="POST">
-		<input value="Search Items" type="submit">
-	</form>
-  </td>
- </tr>
-</table>
 
-<p>Selected participants: {{resultCount}}</p>
-
-<form action="/removeparts" method="POST">
-	<input value="Remove Selected Participants" type="submit">
-
+<form action="/handleparts" method="POST" class="form-inline" role="form">
+	<div class="form-group" style="float:left;">
+		<button type="button" class="btn btn-default" onClick="selectAll()"  >Select All</button>
+		<button type="button" class="btn btn-default" onClick="selectNone()" >Select None</button>
+	</div>
+	<div class="form-group" style="float:right;">
+		
+		<button type="submit" class="btn btn-default" name="submit" value="remove">Remove Selected</button>
+		<!--
+		<button type="submit" class="btn btn-default" name="submit" value="getall">Get All Items From Selected</button>
+		-->
+		<button type="submit" class="btn btn-default" name="submit" value="search">Search Items From Selected</button>
+	</div>
+	
 	<div class="rTable">
 	
 		<div class="rTableBody">

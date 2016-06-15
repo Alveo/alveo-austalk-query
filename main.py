@@ -44,7 +44,12 @@ app = SessionMiddleware(bottle.app(), session_opts)
 @bottle.route('/styles/<filename>')
 def serve_style(filename):
     '''Loads static files from views/styles. Store all .css files there.'''
-    return bottle.static_file(filename, root='./views/styles')
+    return bottle.static_file(filename, root='./styles')
+
+@bottle.route('/js/<filename>')
+def send_static(filename):
+    '''Loads static files from views/js. Store all .js files there.'''
+    return bottle.static_file(filename, root='./js/')
 
 def redirect_home():
     '''Redirects requests back to the homepage.'''
@@ -293,9 +298,9 @@ def part_list():
         
     return bottle.template('presults', resultsList=resultsList, resultCount=session['partcount'], apiKey=apiKey)
 
-@bottle.post('/removeparts')
-def remove_parts():
-    '''Removes selected participants from the list of participants and saves the edited list back into the session.'''
+@bottle.post('/handleparts')
+def handle_parts():
+    '''Removes selected participants or remove all non-selected and continue to search items or get all items.'''
     
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
     
@@ -307,17 +312,40 @@ def remove_parts():
         bottle.redirect('/login')
     
     partList = session['partlist']
-    
     selectedParts = bottle.request.forms.getall('selected')
     
-    newPartList = [p for p in partList if p['participant'] not in selectedParts]
+    function = bottle.request.forms.get('submit')
     
-    session['partcount'] = session['partcount'] - len(selectedParts)
-    session['partlist'] = newPartList
-    session.save()
-             
+    if function=='remove':
+        newPartList = [p for p in partList if p['id'] not in selectedParts]
+    
+        session['partcount'] = session['partcount'] - len(selectedParts)
+        session['partlist'] = newPartList
+        session.save()
+    
+        bottle.redirect('/presults')
+    elif function=='getall':
+        #goto /itemresults with selected items
+        #removed this option as it crashes to go directly to item results without a search
+        newPartList = [p for p in partList if p['id'] in selectedParts]
+    
+        session['partcount'] = len(selectedParts)
+        session['partlist'] = newPartList
+        session.save()
+    
+        bottle.redirect('/itemresults')
+        
+    elif function=='search':
+        #goto /itemsearch with selected items
+        newPartList = [p for p in partList if p['id'] in selectedParts]
+    
+        session['partcount'] = len(selectedParts)
+        session['partlist'] = newPartList
+        session.save()
+    
+        bottle.redirect('/itemsearch')
+    #if something weird just go back
     bottle.redirect('/presults')
-    
 
 @bottle.post('/itemresults')
 def item_results():
