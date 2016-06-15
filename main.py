@@ -198,7 +198,7 @@ def results():
                              'mother_professional_category','father_professional_category','mother_education_level',
                              'father_education_level','mother_pob_state','mother_pob_town','father_pob_state',
                              'father_pob_town'],
-                   'regex':['id','other_languages','hobbies'],
+                   'regex':['id','other_languages','hobbies_details'],
                    'boolean':['has_vocal_training','is_smoker','has_speech_problems','has_piercings','has_health_problems',
                              'has_hearing_problems','has_dentures','is_student','is_left_handed','has_reading_problems',],
                    'multiselect':['pob_country','father_pob_country','mother_pob_country'],

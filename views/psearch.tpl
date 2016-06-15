@@ -507,11 +507,11 @@
 						</tr>
 						<tr>
 							<td class="left">
-								<label for="hobbies"><b>Hobbies:</b></label>
+								<label for="hobbies_details"><b>Hobbies:</b></label>
 							</td>
 							<td class="mid">
 								<div class="form-group">
-									<input type="text" class="form-control" name="hobbies" id="hobbies" placeholder="Photography">
+									<input type="text" class="form-control" name="hobbies_details" id="hobbies_details" placeholder="Photography">
 								</div>
 							</td>
 							<td class="right">
