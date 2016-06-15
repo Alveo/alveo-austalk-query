@@ -90,9 +90,9 @@
 							</td>
 							<td class="mid">
 								<div class="form-group">
-									<select class="form-control" name="recording_site" id="recording_site">
+									<select class="form-control" name="city" id="city">
 									    <option value = "">Any</option>
-										% for city in results['recording_site']:
+										% for city in results['city']:
 											<option value="{{city}}">{{city}}</option>
 										% end
 									</select>
