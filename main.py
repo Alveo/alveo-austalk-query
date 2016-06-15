@@ -82,7 +82,7 @@ def search():
 
     results = qbuilder.simple_values_search(quer,'austalk',simple_relations,sortAlphabetically=True)
 
-    results['recording_site'] = quer.results_list("austalk", PREFIXES+
+    results['city'] = quer.results_list("austalk", PREFIXES+
     """    
         SELECT distinct ?val 
         where {
@@ -193,7 +193,7 @@ def results():
     """
     #special args is anything all the form arguments that need something more than a simple filter.
     filterTable = {
-                   'simple':['gender','recording_site','pob_state','cultural_heritage','ses','professional_category',
+                   'simple':['gender','city','pob_state','cultural_heritage','ses','professional_category',
                              'education_level','mother_cultural_heritage','father_cultural_heritage','pob_town',
                              'mother_professional_category','father_professional_category','mother_education_level',
                              'father_education_level','mother_pob_state','mother_pob_town','father_pob_state',
@@ -204,7 +204,7 @@ def results():
                    'multiselect':['pob_country','father_pob_country','mother_pob_country'],
                    'to_str':['first_language','mother_first_language','father_first_language'],
                    'num_range':['age'],
-                   'original_where':['recording_site','age','gender','first_language','pob_country','pob_town']
+                   'original_where':['city','age','gender','first_language','pob_country','pob_town']
                 }
     
     searchArgs = [arg for arg in bottle.request.forms.allitems() if len(arg[1])>0]
@@ -360,7 +360,7 @@ def item_results():
     query = query + "}"
     
     for row in partList:
-        row['item_results'] = quer.results_dict_list("austalk", query % (row['participant']))
+        row['item_results'] = quer.results_dict_list("austalk", query % (row['id']))
         resultsCount = resultsCount + session['resultscount']
     
     session['itemcount'] = resultsCount
@@ -539,8 +539,8 @@ def logged_in():
 
 if __name__ == '__main__':
     '''Runs the app. Listens on localhost:8080.'''
-    bottle.run(app=app, host='localhost', port=8080, debug=True)
-    #bottle.run(app=app, host='192.168.0.7', port=8080, debug=True)
+    #bottle.run(app=app, host='localhost', port=8080, debug=True)
+    bottle.run(app=app, host='10.126.102.130', port=8080, debug=True)
     
 
 

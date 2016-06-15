@@ -45,13 +45,13 @@
 % for row in partList:
 <div class="rTable">
 <div class="rTableBody">
-            <div class="rTableRow" data-toggle="collapse" data-parent="#accordion" href="#{{row['participant'].split('/')[-1]}}">
-              <div class="rTableCellLeft"><b>{{row['participant'].split('/')[-1]}}</b></div>
+            <div class="rTableRow" data-toggle="collapse" data-parent="#accordion" href="#{{row['id'].split('/')[-1]}}">
+              <div class="rTableCellLeft"><b>{{row['id'].split('/')[-1]}}</b></div>
 			  <div class="rTableCell">{{row['gender']}}</div>
 			  <div class="rTableCell">{{row['age']}}</div>
 			  <div class="rTableCell">{{row['city']}}</div>
-			  <div class="rTableCell">{{row['btown']}}</div>
-			  <div class="rTableCell">{{row['bcountry']}}</div>
+			  <div class="rTableCell">{{row['pob_town']}}</div>
+			  <div class="rTableCell">{{row['pob_country']}}</div>
 			  <div class="rTableCellRight">{{len(row['item_results'])}}</div>
             </div>
 
@@ -59,7 +59,7 @@
 </div>
 
 
-     <div id="{{row['participant'].split('/')[-1]}}" class="panel-collapse collapse">
+     <div id="{{row['id'].split('/')[-1]}}" class="panel-collapse collapse">
 		% if len(row['item_results'])==0:
 		<p><b>No search results.</b></p>
 		% else:
