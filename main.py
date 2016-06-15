@@ -75,91 +75,98 @@ def search():
         message = session['message']
     
     
-    simple_relations = ['cultural_heritage','education_level','professional_category',
-                     'pob_country','mother_pob_country','mother_professional_category',
-                     'mother_education_level','mother_cultural_heritage','father_pob_country',
-                     'father_professional_category','father_education_level','father_cultural_heritage']
-
-    results = qbuilder.simple_values_search(quer,'austalk',simple_relations,sortAlphabetically=True)
-
-    results['city'] = quer.results_list("austalk", PREFIXES+
-    """    
-        SELECT distinct ?val 
-        where {
-          ?part a foaf:Person .
-          ?part austalk:recording_site ?site .
-          ?site austalk:city ?val .}
-          order by asc(ucase(str(?val)))""")
-
-    results['first_language'] = quer.results_list("austalk", PREFIXES+
-    """                            
-        SELECT distinct ?flang
-        WHERE {{
-            ?part a foaf:Person .
-            ?part austalk:first_language ?x .
-            ?x iso639schema:name ?flang .
-        } 
-        UNION {
-            ?part austalk:first_language ?flang .
-            MINUS{
-                ?flang iso639schema:name ?y}}}
-        ORDER BY ?part""")
-
-    results['first_language_int'] = quer.results_list("austalk", PREFIXES+
-    """                            
-        SELECT distinct ?val
-        WHERE {
-            ?part a foaf:Person .
-            ?part austalk:first_language ?val .}
-        ORDER BY ?part""")
-
-    results['mother_first_language'] = quer.results_list("austalk", PREFIXES+
-    """                            
-        SELECT distinct ?flang
-        WHERE {{
-            ?part a foaf:Person .
-            ?part austalk:mother_first_language ?x .
-            ?x iso639schema:name ?flang .
-        } 
-        UNION {
-            ?part austalk:mother_first_language ?flang .
-            MINUS{
-                ?flang iso639schema:name ?y}}}
-        ORDER BY ?part""")
-
-    results['mother_first_language_int'] = quer.results_list("austalk", PREFIXES+
-    """                            
-        SELECT distinct ?val
-        WHERE {
-            ?part a foaf:Person .
-            ?part austalk:mother_first_language ?val .}
-        ORDER BY ?part""")
-
-    results['father_first_language'] = quer.results_list("austalk", PREFIXES+
-    """                            
-        SELECT distinct ?flang
-        WHERE {{
-            ?part a foaf:Person .
-            ?part austalk:father_first_language ?x .
-            ?x iso639schema:name ?flang .
-        } 
-        UNION {
-            ?part austalk:father_first_language ?flang .
-            MINUS{
-                ?flang iso639schema:name ?y}}}
-        ORDER BY ?part""")
-
-    results['father_first_language_int'] = quer.results_list("austalk", PREFIXES+
-    """                            
-        SELECT distinct ?val
-        WHERE {
-            ?part a foaf:Person .
-            ?part austalk:father_first_language ?val .}
-        ORDER BY ?part""")
+    #try getting cached results
+    try:
+        results = session['psearch_cache']
+    except KeyError:
+        #No results in cache, collect results
+        simple_relations = ['cultural_heritage','education_level','professional_category',
+                         'pob_country','mother_pob_country','mother_professional_category',
+                         'mother_education_level','mother_cultural_heritage','father_pob_country',
+                         'father_professional_category','father_education_level','father_cultural_heritage']
     
-    print message
+        results = qbuilder.simple_values_search(quer,'austalk',simple_relations,sortAlphabetically=True)
+    
+        results['city'] = quer.results_list("austalk", PREFIXES+
+        """    
+            SELECT distinct ?val 
+            where {
+              ?part a foaf:Person .
+              ?part austalk:recording_site ?site .
+              ?site austalk:city ?val .}
+              order by asc(ucase(str(?val)))""")
+    
+        results['first_language'] = quer.results_list("austalk", PREFIXES+
+        """                            
+            SELECT distinct ?flang
+            WHERE {{
+                ?part a foaf:Person .
+                ?part austalk:first_language ?x .
+                ?x iso639schema:name ?flang .
+            } 
+            UNION {
+                ?part austalk:first_language ?flang .
+                MINUS{
+                    ?flang iso639schema:name ?y}}}
+            ORDER BY ?part""")
+    
+        results['first_language_int'] = quer.results_list("austalk", PREFIXES+
+        """                            
+            SELECT distinct ?val
+            WHERE {
+                ?part a foaf:Person .
+                ?part austalk:first_language ?val .}
+            ORDER BY ?part""")
+    
+        results['mother_first_language'] = quer.results_list("austalk", PREFIXES+
+        """                            
+            SELECT distinct ?flang
+            WHERE {{
+                ?part a foaf:Person .
+                ?part austalk:mother_first_language ?x .
+                ?x iso639schema:name ?flang .
+            } 
+            UNION {
+                ?part austalk:mother_first_language ?flang .
+                MINUS{
+                    ?flang iso639schema:name ?y}}}
+            ORDER BY ?part""")
+    
+        results['mother_first_language_int'] = quer.results_list("austalk", PREFIXES+
+        """                            
+            SELECT distinct ?val
+            WHERE {
+                ?part a foaf:Person .
+                ?part austalk:mother_first_language ?val .}
+            ORDER BY ?part""")
+    
+        results['father_first_language'] = quer.results_list("austalk", PREFIXES+
+        """                            
+            SELECT distinct ?flang
+            WHERE {{
+                ?part a foaf:Person .
+                ?part austalk:father_first_language ?x .
+                ?x iso639schema:name ?flang .
+            } 
+            UNION {
+                ?part austalk:father_first_language ?flang .
+                MINUS{
+                    ?flang iso639schema:name ?y}}}
+            ORDER BY ?part""")
+    
+        results['father_first_language_int'] = quer.results_list("austalk", PREFIXES+
+        """                            
+            SELECT distinct ?val
+            WHERE {
+                ?part a foaf:Person .
+                ?part austalk:father_first_language ?val .}
+            ORDER BY ?part""")
+        
+        #cache the results
+        session['psearch_cache'] = results
+        
     return bottle.template('psearch', results=results, message=message,
-                           apiKey=apiKey)
+                               apiKey=apiKey)
     
 @bottle.post('/presults')
 def results():
