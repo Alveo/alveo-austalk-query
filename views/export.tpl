@@ -1,14 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Export to Alveo</title>
-	<link rel="stylesheet" type="text/css" href="/styles/style.css">
+	% include('bshead.tpl')
 </head>
 
 <body>
 
 <div class="navi">
-	% include('nav.tpl', apiKey=apiKey, title="Export to Alveo")
+	% include('nav.tpl', apiKey=apiKey, title="Export",loggedin=True)
 </div>
 
 <div class="content">
@@ -49,6 +48,7 @@
 <p>"Export to New List" Will add to an existing item list if one with the same name already exists.</p>
 
 </div>
+	% include('bsfoot.tpl')
 </body>
 
 </html>

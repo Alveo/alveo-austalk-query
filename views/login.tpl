@@ -1,17 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Alveo Query Engine</title>
-	<link rel="stylesheet" type="text/css" href="/styles/style.css">
+	% include('bshead.tpl')
 </head>
 
 <body>
 
 <div class="navi">
-	% include('nav.tpl', apiKey=apiKey, title="Log In")
+	% include('nav.tpl', apiKey=apiKey, title="Log In",loggedin=False)
 </div>
 
 <div class="content">
+	%if len(message)>0:
+	<div class="alert alert-warning" role="alert">
+		<p><b>{{message}}</b></p>
+	</div>
+	%end
+	
 <p>Please enter your Alveo API key. This can be found on the <a href="https://app.alveo.edu.au/" target="_blank">Alveo website</a>
 in the top right corner menu. Copy and paste the key here:<form action="/login" method="POST">
 <input type="text" name="apikey"><input value="Log in" type="submit"></form></p>
@@ -19,6 +24,8 @@ in the top right corner menu. Copy and paste the key here:<form action="/login" 
 <p>Your API key will be saved for this session only.</p>
 </div>
 
+
+	% include('bsfoot.tpl')
 </body>
 
 </html>
