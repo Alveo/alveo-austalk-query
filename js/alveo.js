@@ -11,3 +11,22 @@ function selectNone() {
     checkboxes[i].checked = false;
   }
 }
+//for expanding and collaping bootstrap accordion's
+function toggleExpand() {
+	accordions = document.getElementsByName('participant');
+	for(var i=0, n=accordions.length;i<n;i++) {
+		accordions[i].click();
+	}
+}
+function expandAll() {
+	accordions = document.getElementsByName('participant');
+	for(var i=0, n=accordions.length;i<n;i++) {
+		accordions[i].click();
+	}
+}
+function collapseAll() {
+	accordions = document.getElementsByName('participant');
+	for(var i=0, n=accordions.length;i<n;i++) {
+		accordions[i].click();
+	}
+}

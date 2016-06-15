@@ -343,7 +343,7 @@ def handle_parts():
         session['partlist'] = newPartList
         if len(selectedParts)>1:
             session['message'] = 'Removed %d items.' % len(selectedParts)
-        elif len(selectedParts==1):
+        elif len(selectedParts)==1:
             session['message'] = 'Removed one item.' 
         session.save()
     elif function=='getall':
@@ -433,7 +433,17 @@ def item_results():
     session['itemcount'] = resultsCount
     session.save()
     
-    return bottle.template('itemresults', partList=partList, resultsCount=resultsCount, apiKey=apiKey)
+    try:
+        message = session['message']
+        session['message'] = ""
+        session.save()
+    except KeyError:
+        session['message'] = ""
+        message = session['message']
+    
+    undoExists = 'backupItemList' in session and len(session['backupPartList'])>0
+    
+    return bottle.template('itemresults', partList=partList, resultsCount=resultsCount, message=message,undo=undoExists, apiKey=apiKey)
 
 @bottle.get('/itemresults')
 def item_list():
@@ -454,8 +464,18 @@ def item_list():
         session['message'] = "Perform an item search first."
         session.save()
         redirect_home()
-        
-    return bottle.template('itemresults', partList=partList, resultsCount=session['itemcount'], apiKey=apiKey)
+    
+    try:
+        message = session['message']
+        session['message'] = ""
+        session.save()
+    except KeyError:
+        session['message'] = ""
+        message = session['message']
+    
+    undoExists = 'backupItemList' in session and len(session['backupPartList'])>0
+    
+    return bottle.template('itemresults', partList=partList, resultsCount=session['itemcount'],message=message,undo=undoExists, apiKey=apiKey)
 
 @bottle.post('/removeitems')
 def remove_items():

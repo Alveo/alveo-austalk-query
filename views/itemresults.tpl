@@ -13,15 +13,30 @@
 
 
 <div class="content">
-<form method="GET" action="/export">
- <input value="Export to Alveo" type="submit">
-</form>
-
-<p>Selected items: {{resultsCount}}</p>
-
+	%if len(message)>0:
+		<div class="alert alert-warning" role="alert">
+			<p><b>{{message}}</b></p>
+		</div>
+	%end
+	
+<h4>Number of Items found: {{resultsCount}}</h4>
+<p>You can now browse all the items found by your search. Click on the participants to expand a list of all their recordings.</p>
 <form action="/removeitems" method="POST">
-	<input value="Remove Selected Items" type="submit">
 
+	<div class="form-group" style="float:left;">
+		<button type="button" class="btn btn-default" onClick="selectAll()"  >Select All</button>
+		<button type="button" class="btn btn-default" onClick="selectNone()" >Select None</button>
+		<button type="button" class="btn btn-default" onClick="toggleExpand()" >Toggle Collapse</button>
+	</div>
+	<div class="form-group" style="float:right;">
+		%if undo:
+		<button type="submit" class="btn btn-default" name="submit" value="undo">Undo</button>
+		%end
+		<button type="submit" class="btn btn-default" name="submit" value="remove">Remove Selected</button>
+		<form method="GET" action="/export">
+		<button type="submit" class="btn btn-default" name="submit" value="search">Export Selected</button>
+		</form>
+	</div>
 
 <div class="panel-group" id="accordion">
 
@@ -45,7 +60,7 @@
 % for row in partList:
 <div class="rTable">
 <div class="rTableBody">
-            <div class="rTableRow" data-toggle="collapse" data-parent="#accordion" href="#{{row['id'].split('/')[-1]}}">
+            <div name="participant" class="rTableRow" data-toggle="collapse" data-parent="#accordion" href="#{{row['id'].split('/')[-1]}}">
               <div class="rTableCellLeft"><b>{{row['id'].split('/')[-1]}}</b></div>
 			  <div class="rTableCell">{{row['gender']}}</div>
 			  <div class="rTableCell">{{row['age']}}</div>
