@@ -16,10 +16,10 @@
 <table>
  <tr>
   <td>
-	Item List Name: <input type="text" name="listname">
+	<label for="listname"><b>Item List Name: </b></label><input class="form-control"  type="text" name="listname" placeholder="My new List">
   </td>
   <td>
-   <input value="Export to New List" type="submit">
+   <br><button type="submit" class="btn btn-default" style="float:right;" name="submit" value="search">Export to New List</button>
   </td>
  </tr>
 </table>
@@ -29,14 +29,14 @@
 <table>
  <tr>
   <td>
-	Existing Item Lists: <select name="listname">
+	<label for="listname"><b>Existing Item Lists: </b></label><select class="form-control" name="listname">
 	% for list in itemLists['own']:
 	% name = list['name']
-	<option value="{{name}}">{{name}}</option>
+		<option value="{{name}}">{{name}}</option>
 	% end
   </td>
   <td>
-   <input value="Add to Existing List" type="submit">
+   <br><button type="submit" class="btn btn-default" style="float:right;" name="submit" value="search">Add to Existing List</button>
   </td>
  </tr>
 </table>
