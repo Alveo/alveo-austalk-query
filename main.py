@@ -204,7 +204,7 @@ def results():
                    'multiselect':['pob_country','father_pob_country','mother_pob_country'],
                    'to_str':['first_language','mother_first_language','father_first_language'],
                    'num_range':['age'],
-                   'original_where':['city','age','gender','first_language','pob_country','pob_town']
+                   'original_where':['id','city','age','gender','first_language','pob_country','pob_town']
                 }
     
     searchArgs = [arg for arg in bottle.request.forms.allitems() if len(arg[1])>0]
