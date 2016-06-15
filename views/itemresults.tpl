@@ -21,7 +21,7 @@
 	
 <h4>Number of Items found: {{resultsCount}}</h4>
 <p>You can now browse all the items found by your search. Click on the participants to expand a list of all their recordings.</p>
-<form action="/removeitems" method="POST">
+<form action="/handleitems" method="POST">
 
 	<div class="form-group" style="float:left;">
 		<button type="button" class="btn btn-default" onClick="selectAll()"  >Select All</button>
@@ -33,9 +33,7 @@
 		<button type="submit" class="btn btn-default" name="submit" value="undo">Undo</button>
 		%end
 		<button type="submit" class="btn btn-default" name="submit" value="remove">Remove Selected</button>
-		<form method="GET" action="/export">
-		<button type="submit" class="btn btn-default" name="submit" value="search">Export Selected</button>
-		</form>
+		<button type="submit" class="btn btn-default" name="submit" value="export">Export Selected</button>
 	</div>
 
 <div class="panel-group" id="accordion">

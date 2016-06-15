@@ -272,7 +272,7 @@ def results():
         query = query + qbuilder.simple_filter(item[0])
                     
     query = query + "} \nORDER BY ?id"
-    print query
+    
     resultsList = quer.results_dict_list("austalk", query)
     
     session['partlist'] = resultsList
@@ -314,8 +314,9 @@ def part_list():
         session['message'] = ""
         message = session['message']
     
-    undoExists = 'backupPartList' in session and len(session['backupPartList'])>0
-        
+    undoExists = 'backupPartList' in session
+    if undoExists:
+        undoExists = len(session['backupPartList'])>0   
     return bottle.template('presults', resultsList=resultsList, resultCount=session['partcount'],message=message,undo=undoExists, apiKey=apiKey)
 
 @bottle.post('/handleparts')
@@ -358,6 +359,10 @@ def handle_parts():
         bottle.redirect('/itemresults')
         
     elif function=='search':
+        #if nothing selected, tell them to select something first
+        if len(selectedParts)==0:
+            session['message'] = 'Please select some participants before continuing'
+            bottle.redirect('/presults')
         #goto /itemsearch with selected items
         newPartList = [p for p in partList if p['id'] in selectedParts]
     
@@ -369,6 +374,8 @@ def handle_parts():
     elif function=='undo':
         #undo most recent remove if there was one.
         try:
+            if len(session['backupPartList'])==0:
+                raise KeyError
             partList.extend(session['backupPartList'])
             session['partcount'] += len(session['backupPartList'])
             session['backupPartList']=[]
@@ -473,13 +480,14 @@ def item_list():
         session['message'] = ""
         message = session['message']
     
-    undoExists = 'backupItemList' in session and len(session['backupPartList'])>0
-    
+    undoExists = 'backupItemList' in session
+    if undoExists:
+        undoExists = len(session['backupItemList'])>0
     return bottle.template('itemresults', partList=partList, resultsCount=session['itemcount'],message=message,undo=undoExists, apiKey=apiKey)
 
-@bottle.post('/removeitems')
-def remove_items():
-    '''Like remove_parts but for items. Again, not functionally identical.'''
+@bottle.post('/handleitems')
+def handle_items():
+    '''Like handle_parts but for items. Not functionally identical.'''
     
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
     
@@ -493,14 +501,59 @@ def remove_items():
     partList = session['partlist']
     
     selectedItems = bottle.request.forms.getall('selected')
-    for p in partList:
-        newItemList = [item for item in p['item_results'] if item['item'] not in selectedItems]
-        p['item_results'] = newItemList
     
-    session['itemcount'] = session['itemcount'] - len(selectedItems)
-    session['partlist'] = partList
-    session.save()
-             
+    function = bottle.request.forms.get('submit')
+    
+    if function=='remove':
+        if len(selectedItems)==0:
+            session['message'] = 'Select something to remove'
+        #setup the undo portion which is the opposite list of above
+        #I'm making this a dict as I'll need to remember which participant the items
+        #belong to as well. Also it means I can easily store the count with it.
+        session['backupItemList'] = {}
+        #get new item list for each participant
+        for p in partList:
+            newItemList = []
+            removeItemList = []
+            for item in p['item_results']:
+                if item['item'] not in selectedItems:
+                    newItemList.append(item)
+                else:
+                    removeItemList.append(item)
+            session['backupItemList'][p['id']] = removeItemList
+            p['item_results'] = newItemList
+        
+        session['backupItemList']['count'] = len(selectedItems)
+        session['itemcount'] = session['itemcount'] - len(selectedItems)
+        session['partlist'] = partList
+        if len(selectedItems)>1:
+            session['message'] = 'Removed %d items.' % len(selectedItems)
+        elif len(selectedItems)==1:
+            session['message'] = 'Removed one item.' 
+        session.save()
+    elif function=='undo':
+        #undo most recent remove if there was one.
+        try:
+            #loop participants and extend each of their item lists
+            if len(session['backupItemList'])==0:
+                raise KeyError
+            for p in partList:
+                p['item_results'].extend(session['backupItemList'][p['id']])
+            
+            session['itemcount'] += session['backupItemList']['count']
+            session['backupItemList']={}
+            session.save()
+            session['message'] = 'Reversed last remove.'
+        except KeyError:
+            #was nothing to undo
+            session['message'] = 'Nothing to Undo.'
+    elif function=='export':
+        #remove all that isn't selected.
+        for p in partList:
+            newItemList = [item for item in p['item_results'] if item['item'] in selectedItems]
+            p['item_results'] = newItemList
+        
+        bottle.redirect('/export')
     bottle.redirect('/itemresults')
 
 
@@ -545,7 +598,7 @@ def export():
     
     
     #create a single item list so it can be passed to pyalveo
-    iList = []
+    iList = [] #iList, the expensive and non-functional but good looking version of list
     
     try:
         for part in session['partlist']:
