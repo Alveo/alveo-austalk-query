@@ -16,18 +16,19 @@
 <table>
  <tr>
   <td>
-	Prompt: <input type="text" name="prompt">
+	<label for="prompt"><b>Prompt:</b></label><input type="text" class="form-control" name="prompt" id="prompt" placeholder="animal">
   </td>
   <td>
-	Component: <input type="text" name="compname">
+	<label for="compname"><b>Component:</b></label><input type="text" class="form-control" name="compname" id="compname" placeholder="yes-no-opening-">
   </td>
   <td>
-   <input type="checkbox" name="anno" value="required"> Show annotated items only
+  <br><br>
+   <input type="checkbox" name="anno" value="required"><label for="anno"><b> Show annotated items only</b></label>
   </td>
  </tr>
  <tr>
   <td>
-	Word List: <select name="wlist">
+	<label for="prompt"><b>Word List:</b></label><select class="form-control" name="wlist">
 		<option value="">None</option>
 		<option value="hvdwords">hVd Words</option>
 		<option value="hvdmono">hVd Monophthongs</option>
@@ -35,7 +36,7 @@
 	</select>
   </td>
   <td>
-	Component Type: <select name="comptype">
+	<label for="prompt"><b>Component Type:</b></label><select class="form-control" name="comptype">
 		<option value="">Any</option>
 		<option value="sentences">Sentences</option>
 		<option value="yes-no">Yes-No</option>
@@ -48,10 +49,8 @@
 		<option value="conversation">Conversation</option>
 		</select>
   </td>
- </tr>
- <tr>
   <td>
-	<input value="Search" type="submit">
+  	<br><button type="submit" class="btn btn-default" style="float:right;" name="submit" value="search">Search</button>
   </td>
  </tr>
 </table>
