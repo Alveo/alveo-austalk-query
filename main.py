@@ -44,7 +44,12 @@ app = SessionMiddleware(bottle.app(), session_opts)
 @bottle.route('/styles/<filename>')
 def serve_style(filename):
     '''Loads static files from views/styles. Store all .css files there.'''
-    return bottle.static_file(filename, root='./views/styles')
+    return bottle.static_file(filename, root='./styles')
+
+@bottle.route('/js/<filename>')
+def send_static(filename):
+    '''Loads static files from views/js. Store all .js files there.'''
+    return bottle.static_file(filename, root='./js/')
 
 def redirect_home():
     '''Redirects requests back to the homepage.'''
@@ -75,91 +80,98 @@ def search():
         message = session['message']
     
     
-    simple_relations = ['cultural_heritage','education_level','professional_category',
-                     'pob_country','mother_pob_country','mother_professional_category',
-                     'mother_education_level','mother_cultural_heritage','father_pob_country',
-                     'father_professional_category','father_education_level','father_cultural_heritage']
-
-    results = qbuilder.simple_values_search(quer,'austalk',simple_relations,sortAlphabetically=True)
-
-    results['city'] = quer.results_list("austalk", PREFIXES+
-    """    
-        SELECT distinct ?val 
-        where {
-          ?part a foaf:Person .
-          ?part austalk:recording_site ?site .
-          ?site austalk:city ?val .}
-          order by asc(ucase(str(?val)))""")
-
-    results['first_language'] = quer.results_list("austalk", PREFIXES+
-    """                            
-        SELECT distinct ?flang
-        WHERE {{
-            ?part a foaf:Person .
-            ?part austalk:first_language ?x .
-            ?x iso639schema:name ?flang .
-        } 
-        UNION {
-            ?part austalk:first_language ?flang .
-            MINUS{
-                ?flang iso639schema:name ?y}}}
-        ORDER BY ?part""")
-
-    results['first_language_int'] = quer.results_list("austalk", PREFIXES+
-    """                            
-        SELECT distinct ?val
-        WHERE {
-            ?part a foaf:Person .
-            ?part austalk:first_language ?val .}
-        ORDER BY ?part""")
-
-    results['mother_first_language'] = quer.results_list("austalk", PREFIXES+
-    """                            
-        SELECT distinct ?flang
-        WHERE {{
-            ?part a foaf:Person .
-            ?part austalk:mother_first_language ?x .
-            ?x iso639schema:name ?flang .
-        } 
-        UNION {
-            ?part austalk:mother_first_language ?flang .
-            MINUS{
-                ?flang iso639schema:name ?y}}}
-        ORDER BY ?part""")
-
-    results['mother_first_language_int'] = quer.results_list("austalk", PREFIXES+
-    """                            
-        SELECT distinct ?val
-        WHERE {
-            ?part a foaf:Person .
-            ?part austalk:mother_first_language ?val .}
-        ORDER BY ?part""")
-
-    results['father_first_language'] = quer.results_list("austalk", PREFIXES+
-    """                            
-        SELECT distinct ?flang
-        WHERE {{
-            ?part a foaf:Person .
-            ?part austalk:father_first_language ?x .
-            ?x iso639schema:name ?flang .
-        } 
-        UNION {
-            ?part austalk:father_first_language ?flang .
-            MINUS{
-                ?flang iso639schema:name ?y}}}
-        ORDER BY ?part""")
-
-    results['father_first_language_int'] = quer.results_list("austalk", PREFIXES+
-    """                            
-        SELECT distinct ?val
-        WHERE {
-            ?part a foaf:Person .
-            ?part austalk:father_first_language ?val .}
-        ORDER BY ?part""")
+    #try getting cached results
+    try:
+        results = session['psearch_cache']
+    except KeyError:
+        #No results in cache, collect results
+        simple_relations = ['cultural_heritage','education_level','professional_category',
+                         'pob_country','mother_pob_country','mother_professional_category',
+                         'mother_education_level','mother_cultural_heritage','father_pob_country',
+                         'father_professional_category','father_education_level','father_cultural_heritage']
     
-    print message
+        results = qbuilder.simple_values_search(quer,'austalk',simple_relations,sortAlphabetically=True)
+    
+        results['city'] = quer.results_list("austalk", PREFIXES+
+        """    
+            SELECT distinct ?val 
+            where {
+              ?part a foaf:Person .
+              ?part austalk:recording_site ?site .
+              ?site austalk:city ?val .}
+              order by asc(ucase(str(?val)))""")
+    
+        results['first_language'] = quer.results_list("austalk", PREFIXES+
+        """                            
+            SELECT distinct ?flang
+            WHERE {{
+                ?part a foaf:Person .
+                ?part austalk:first_language ?x .
+                ?x iso639schema:name ?flang .
+            } 
+            UNION {
+                ?part austalk:first_language ?flang .
+                MINUS{
+                    ?flang iso639schema:name ?y}}}
+            ORDER BY ?part""")
+    
+        results['first_language_int'] = quer.results_list("austalk", PREFIXES+
+        """                            
+            SELECT distinct ?val
+            WHERE {
+                ?part a foaf:Person .
+                ?part austalk:first_language ?val .}
+            ORDER BY ?part""")
+    
+        results['mother_first_language'] = quer.results_list("austalk", PREFIXES+
+        """                            
+            SELECT distinct ?flang
+            WHERE {{
+                ?part a foaf:Person .
+                ?part austalk:mother_first_language ?x .
+                ?x iso639schema:name ?flang .
+            } 
+            UNION {
+                ?part austalk:mother_first_language ?flang .
+                MINUS{
+                    ?flang iso639schema:name ?y}}}
+            ORDER BY ?part""")
+    
+        results['mother_first_language_int'] = quer.results_list("austalk", PREFIXES+
+        """                            
+            SELECT distinct ?val
+            WHERE {
+                ?part a foaf:Person .
+                ?part austalk:mother_first_language ?val .}
+            ORDER BY ?part""")
+    
+        results['father_first_language'] = quer.results_list("austalk", PREFIXES+
+        """                            
+            SELECT distinct ?flang
+            WHERE {{
+                ?part a foaf:Person .
+                ?part austalk:father_first_language ?x .
+                ?x iso639schema:name ?flang .
+            } 
+            UNION {
+                ?part austalk:father_first_language ?flang .
+                MINUS{
+                    ?flang iso639schema:name ?y}}}
+            ORDER BY ?part""")
+    
+        results['father_first_language_int'] = quer.results_list("austalk", PREFIXES+
+        """                            
+            SELECT distinct ?val
+            WHERE {
+                ?part a foaf:Person .
+                ?part austalk:father_first_language ?val .}
+            ORDER BY ?part""")
+        
+        #cache the results
+        session['psearch_cache'] = results
+        
     return bottle.template('psearch', results=results, message=message,
-                           apiKey=apiKey)
+                               apiKey=apiKey)
     
 @bottle.post('/presults')
 def results():
@@ -175,6 +187,14 @@ def results():
         global USER_MESSAGE
         USER_MESSAGE = "You must log in to view this page!"
         bottle.redirect('/login')
+        
+    try:
+        message = session['message']
+        session['message'] = ""
+        session.save()
+    except KeyError:
+        session['message'] = ""
+        message = session['message']
         
     query = PREFIXES+ """
     
@@ -204,7 +224,7 @@ def results():
                    'multiselect':['pob_country','father_pob_country','mother_pob_country'],
                    'to_str':['first_language','mother_first_language','father_first_language'],
                    'num_range':['age'],
-                   'original_where':['city','age','gender','first_language','pob_country','pob_town']
+                   'original_where':['id','city','age','gender','first_language','pob_country','pob_town']
                 }
     
     searchArgs = [arg for arg in bottle.request.forms.allitems() if len(arg[1])>0]
@@ -252,14 +272,16 @@ def results():
         query = query + qbuilder.simple_filter(item[0])
                     
     query = query + "} \nORDER BY ?id"
-    print query
+    
     resultsList = quer.results_dict_list("austalk", query)
     
     session['partlist'] = resultsList
     session['partcount'] = session['resultscount']
     session.save()
     
-    return bottle.template('presults', resultsList=resultsList, resultCount=session['partcount'], apiKey=apiKey)
+    undoExists = 'backupPartList' in session.itervalues()
+    
+    return bottle.template('presults', resultsList=resultsList, resultCount=session['partcount'],message=message,undo=undoExists, apiKey=apiKey)
 
 @bottle.get('/presults')
 def part_list():
@@ -284,11 +306,22 @@ def part_list():
         session.save()
         redirect_home()
         
-    return bottle.template('presults', resultsList=resultsList, resultCount=session['partcount'], apiKey=apiKey)
+    try:
+        message = session['message']
+        session['message'] = ""
+        session.save()
+    except KeyError:
+        session['message'] = ""
+        message = session['message']
+    
+    undoExists = 'backupPartList' in session
+    if undoExists:
+        undoExists = len(session['backupPartList'])>0   
+    return bottle.template('presults', resultsList=resultsList, resultCount=session['partcount'],message=message,undo=undoExists, apiKey=apiKey)
 
-@bottle.post('/removeparts')
-def remove_parts():
-    '''Removes selected participants from the list of participants and saves the edited list back into the session.'''
+@bottle.post('/handleparts')
+def handle_parts():
+    '''Removes selected participants or remove all non-selected and continue to search items or get all items.'''
     
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
     
@@ -300,17 +333,58 @@ def remove_parts():
         bottle.redirect('/login')
     
     partList = session['partlist']
-    
     selectedParts = bottle.request.forms.getall('selected')
     
-    newPartList = [p for p in partList if p['participant'] not in selectedParts]
+    function = bottle.request.forms.get('submit')
     
-    session['partcount'] = session['partcount'] - len(selectedParts)
-    session['partlist'] = newPartList
-    session.save()
-             
+    if function=='remove':
+        newPartList = [p for p in partList if p['id'] not in selectedParts]
+        session['backupPartList'] = [p for p in partList if p['id'] in selectedParts]
+        session['partcount'] = session['partcount'] - len(selectedParts)
+        session['partlist'] = newPartList
+        if len(selectedParts)>1:
+            session['message'] = 'Removed %d items.' % len(selectedParts)
+        elif len(selectedParts)==1:
+            session['message'] = 'Removed one item.' 
+        session.save()
+    elif function=='getall':
+        #goto /itemresults with selected items
+        #removed this option as it crashes to go directly to item results without a search
+        newPartList = [p for p in partList if p['id'] in selectedParts]
+    
+        session['partcount'] = len(selectedParts)
+        session['partlist'] = newPartList
+        session.save()
+    
+        bottle.redirect('/itemresults')
+        
+    elif function=='search':
+        #if nothing selected, tell them to select something first
+        if len(selectedParts)==0:
+            session['message'] = 'Please select some participants before continuing'
+            bottle.redirect('/presults')
+        #goto /itemsearch with selected items
+        newPartList = [p for p in partList if p['id'] in selectedParts]
+    
+        session['partcount'] = len(selectedParts)
+        session['partlist'] = newPartList
+        session.save()
+    
+        bottle.redirect('/itemsearch')
+    elif function=='undo':
+        #undo most recent remove if there was one.
+        try:
+            if len(session['backupPartList'])==0:
+                raise KeyError
+            partList.extend(session['backupPartList'])
+            session['partcount'] += len(session['backupPartList'])
+            session['backupPartList']=[]
+            session.save()
+            session['message'] = 'Reversed last remove.'
+        except KeyError:
+            #was nothing to undo
+            session['message'] = 'Nothing to Undo.'
     bottle.redirect('/presults')
-    
 
 @bottle.post('/itemresults')
 def item_results():
@@ -366,7 +440,17 @@ def item_results():
     session['itemcount'] = resultsCount
     session.save()
     
-    return bottle.template('itemresults', partList=partList, resultsCount=resultsCount, apiKey=apiKey)
+    try:
+        message = session['message']
+        session['message'] = ""
+        session.save()
+    except KeyError:
+        session['message'] = ""
+        message = session['message']
+    
+    undoExists = 'backupItemList' in session and len(session['backupPartList'])>0
+    
+    return bottle.template('itemresults', partList=partList, resultsCount=resultsCount, message=message,undo=undoExists, apiKey=apiKey)
 
 @bottle.get('/itemresults')
 def item_list():
@@ -387,12 +471,23 @@ def item_list():
         session['message'] = "Perform an item search first."
         session.save()
         redirect_home()
-        
-    return bottle.template('itemresults', partList=partList, resultsCount=session['itemcount'], apiKey=apiKey)
+    
+    try:
+        message = session['message']
+        session['message'] = ""
+        session.save()
+    except KeyError:
+        session['message'] = ""
+        message = session['message']
+    
+    undoExists = 'backupItemList' in session
+    if undoExists:
+        undoExists = len(session['backupItemList'])>0
+    return bottle.template('itemresults', partList=partList, resultsCount=session['itemcount'],message=message,undo=undoExists, apiKey=apiKey)
 
-@bottle.post('/removeitems')
-def remove_items():
-    '''Like remove_parts but for items. Again, not functionally identical.'''
+@bottle.post('/handleitems')
+def handle_items():
+    '''Like handle_parts but for items. Not functionally identical.'''
     
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
     
@@ -406,14 +501,59 @@ def remove_items():
     partList = session['partlist']
     
     selectedItems = bottle.request.forms.getall('selected')
-    for p in partList:
-        newItemList = [item for item in p['item_results'] if item['item'] not in selectedItems]
-        p['item_results'] = newItemList
     
-    session['itemcount'] = session['itemcount'] - len(selectedItems)
-    session['partlist'] = partList
-    session.save()
-             
+    function = bottle.request.forms.get('submit')
+    
+    if function=='remove':
+        if len(selectedItems)==0:
+            session['message'] = 'Select something to remove'
+        #setup the undo portion which is the opposite list of above
+        #I'm making this a dict as I'll need to remember which participant the items
+        #belong to as well. Also it means I can easily store the count with it.
+        session['backupItemList'] = {}
+        #get new item list for each participant
+        for p in partList:
+            newItemList = []
+            removeItemList = []
+            for item in p['item_results']:
+                if item['item'] not in selectedItems:
+                    newItemList.append(item)
+                else:
+                    removeItemList.append(item)
+            session['backupItemList'][p['id']] = removeItemList
+            p['item_results'] = newItemList
+        
+        session['backupItemList']['count'] = len(selectedItems)
+        session['itemcount'] = session['itemcount'] - len(selectedItems)
+        session['partlist'] = partList
+        if len(selectedItems)>1:
+            session['message'] = 'Removed %d items.' % len(selectedItems)
+        elif len(selectedItems)==1:
+            session['message'] = 'Removed one item.' 
+        session.save()
+    elif function=='undo':
+        #undo most recent remove if there was one.
+        try:
+            #loop participants and extend each of their item lists
+            if len(session['backupItemList'])==0:
+                raise KeyError
+            for p in partList:
+                p['item_results'].extend(session['backupItemList'][p['id']])
+            
+            session['itemcount'] += session['backupItemList']['count']
+            session['backupItemList']={}
+            session.save()
+            session['message'] = 'Reversed last remove.'
+        except KeyError:
+            #was nothing to undo
+            session['message'] = 'Nothing to Undo.'
+    elif function=='export':
+        #remove all that isn't selected.
+        for p in partList:
+            newItemList = [item for item in p['item_results'] if item['item'] in selectedItems]
+            p['item_results'] = newItemList
+        
+        bottle.redirect('/export')
     bottle.redirect('/itemresults')
 
 
@@ -458,7 +598,7 @@ def export():
     
     
     #create a single item list so it can be passed to pyalveo
-    iList = []
+    iList = [] #iList, the expensive and non-functional but good looking version of list
     
     try:
         for part in session['partlist']:

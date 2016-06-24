@@ -11,3 +11,5 @@
 <link href="/styles/bootstrap-theme.min.css" rel="stylesheet">
 <!-- Our Styles -->
 <link rel="stylesheet" type="text/css" href="/styles/style.css">
+<!-- Our Scripts -->
+<script src="js/alveo.js" language="Javascript" type="text/javascript" ></script> 
