@@ -77,7 +77,10 @@ class AlQuery(object):
         
         for column in head:
             for result in searchResults['results']['bindings']:
-                rlist.append(result[column]['value'])
+                try:
+                    rlist.append(result[column]['value'])
+                except KeyError:
+                    rlist.append(u'')
                 
         if len(rlist) == 0:
             session['lastresults'] = []

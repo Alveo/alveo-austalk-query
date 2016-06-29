@@ -21,8 +21,8 @@
 participants.</p>
 <p><b>Selecting items for large numbers of participants can take a long time (up to 15 minutes if selecting for
 all participants). Please be patient.</b></p>
-
-<form action="/handleparts" method="POST" class="form-inline" role="form">
+<a type="button" class="btn btn-default" href="/download/participants.csv">Download all metadata as CSV</a>
+<form action="/handleparts" method="POST" class="form-inline" role="form"><br>
 	<div class="form-group" style="float:left;">
 		<button type="button" class="btn btn-default" onClick="selectAll()"  >Select All</button>
 		<button type="button" class="btn btn-default" onClick="selectNone()" >Select None</button>
@@ -61,6 +61,7 @@ all participants). Please be patient.</b></p>
 			% end
 		</div>
 	</div>
+	
 </form>
 
 </div>

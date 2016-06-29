@@ -10,7 +10,8 @@ from beaker.middleware import SessionMiddleware
 import alquery
 import qbuilder
 import pyalveo
-import re,time
+import re,time,csv
+from io import StringIO,BytesIO
 
 BASE_URL = 'https://app.alveo.edu.au/' #Normal Server
 #BASE_URL = 'https://alveo-staging1.intersect.org.au/' #Staging Server
@@ -228,23 +229,23 @@ def results():
                 }
     
     searchArgs = [arg for arg in bottle.request.forms.allitems() if len(arg[1])>0]
-    
+    qfilter=""
     #build up the where clause
     for item in searchArgs:
         #to avoid having two lines of the same thing rfom multiselect and the predefined elements.
         if item[0] in filterTable['multiselect'] or item[0] in filterTable['original_where']:
             if query.find(item[0])==-1:
-                query = query + """?id austalk:%s ?%s .\n""" % (item[0],item[0])
+                qfilter = qfilter + """?id austalk:%s ?%s .\n""" % (item[0],item[0])
         else:
-            query = query + """?id austalk:%s ?%s .\n""" % (item[0],item[0])
+            qfilter = qfilter + """?id austalk:%s ?%s .\n""" % (item[0],item[0])
     
     #now build the filters
     regexList = [arg for arg in searchArgs if arg[0] in filterTable['regex']]
     for item in regexList:
         if item[0]=='id':
-            query = query + qbuilder.regex_filter('id',toString=True,prepend="http://id.austalk.edu.au/participant/")
+            qfilter = qfilter + qbuilder.regex_filter('id',toString=True,prepend="http://id.austalk.edu.au/participant/")
         else:
-            query = query + qbuilder.regex_filter(item[0])
+            qfilter = qfilter + qbuilder.regex_filter(item[0])
     
     
     multiselectList = [arg for arg in searchArgs if arg[0] in filterTable['multiselect']]
@@ -253,28 +254,28 @@ def results():
         #if it's a normal user entered list of items.
         customStr = "".join('''"%s",''' % s for s in bottle.request.forms.getall(item[0]))[0:-1]
         
-        query = query + qbuilder.regex_filter(item[0],custom=customStr)
+        qfilter = qfilter + qbuilder.regex_filter(item[0],custom=customStr)
         
     numRangeList = [arg for arg in searchArgs if arg[0] in filterTable['num_range']]
     for item in numRangeList:
-        query = query + qbuilder.num_range_filter(item[0])
+        qfilter = qfilter + qbuilder.num_range_filter(item[0])
     
     toStrList = [arg for arg in searchArgs if arg[0] in filterTable['to_str']]
     for item in toStrList:
-        query = query + qbuilder.to_str_filter(item[0])
+        qfilter = qfilter + qbuilder.to_str_filter(item[0])
     
     booleanList = [arg for arg in searchArgs if arg[0] in filterTable['boolean']]
     for item in booleanList:
-        query = query + qbuilder.boolean_filter(item[0])
+        qfilter = qfilter + qbuilder.boolean_filter(item[0])
     
     simpleList = [arg for arg in searchArgs if arg[0] in filterTable['simple']]
     for item in simpleList:
-        query = query + qbuilder.simple_filter(item[0])
+        qfilter = qfilter + qbuilder.simple_filter(item[0])
                     
-    query = query + "} \nORDER BY ?id"
+    query = query + qfilter + "} \nORDER BY ?id"
     
     resultsList = quer.results_dict_list("austalk", query)
-    
+    session['partfilters'] = qfilter #so we can use the filters later again
     session['partlist'] = resultsList
     session['partcount'] = session['resultscount']
     session.save()
@@ -318,6 +319,75 @@ def part_list():
     if undoExists:
         undoExists = len(session['backupPartList'])>0   
     return bottle.template('presults', resultsList=resultsList, resultCount=session['partcount'],message=message,undo=undoExists, apiKey=apiKey)
+
+@bottle.get('/download/participants.csv')
+def download_participants_csv():
+    '''Returns a csv file download of the participants and all their meta data.'''
+    
+    session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
+
+    try:
+        apiKey = session['apikey']
+        client = pyalveo.Client(apiKey, BASE_URL)
+        quer = alquery.AlQuery(client)
+    except KeyError:
+        global USER_MESSAGE
+        USER_MESSAGE = "You must log in to view this page!"
+        bottle.redirect('/login')
+        
+    try:
+        resultsList = session['partlist']
+        #incase the list was created but for some reason the user removes all elements or searches nothing.
+        if len(resultsList)==0:
+            raise KeyError
+    except KeyError:
+        session['message'] = "Perform a participant search first."
+        session.save()
+        redirect_home()
+    
+    #create the dict list with more metadata than we're already keeping
+    metaList = ['pob_state','cultural_heritage','ses','professional_category',
+                        'education_level','mother_cultural_heritage','father_cultural_heritage','pob_town',
+                        'mother_professional_category','father_professional_category','mother_education_level',
+                        'father_education_level','mother_pob_state','mother_pob_town','father_pob_state',
+                        'father_pob_town','other_languages','hobbies_details','has_vocal_training','is_smoker',
+                        'has_speech_problems','has_piercings','has_health_problems','has_hearing_problems',
+                        'has_dentures','is_student','is_left_handed','has_reading_problems','pob_country',
+                        'father_pob_country','mother_pob_country']
+    select = 'SELECT ?id ?age ?city '
+    where = '''WHERE {
+        ?id a foaf:Person .
+        ?id austalk:recording_site ?recording_site .
+        ?recording_site austalk:city ?city .
+        ?id foaf:age ?age .
+        ?id foaf:gender ?gender .
+        ?id austalk:first_language ?fl .
+        ?fl iso639schema:name ?first_language .
+        ?id austalk:father_first_language ?ffl .
+        ?ffl iso639schema:name ?father_first_language .
+        ?id austalk:mother_first_language ?mfl .
+        ?mfl iso639schema:name ?mother_first_language .
+        '''
+    for x in metaList:
+        select = select + '?'+x+' '
+        where = where + 'OPTIONAL { ?id austalk:'+x+' ?'+x+' . }\n'
+    select = select + '\n'
+    
+    query = PREFIXES+ '\n' + select + where + session['partfilters'] + '\n} order by ?id'
+    
+    resultsList = quer.results_dict_list("austalk", query)
+    
+    #make response header so that file will be downloaded.
+    bottle.response.headers["Content-Disposition"] = "attachment; filename=participants.csv"
+    bottle.response.headers["Content-type"] = "text/csv"
+    
+    csvfile = BytesIO()
+    dict_writer = csv.DictWriter(csvfile,['id','age','city','gender','first_language','mother_first_language','father_first_language']+metaList)
+    dict_writer.writeheader()
+    dict_writer.writerows(resultsList)
+    
+    csvfile.seek(0)
+    return csvfile.read()
 
 @bottle.post('/handleparts')
 def handle_parts():
