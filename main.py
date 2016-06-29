@@ -402,12 +402,13 @@ def item_results():
         bottle.redirect('/login')
     
     query = PREFIXES + """   
-    SELECT distinct ?item ?prompt ?compname
+    SELECT distinct ?item ?prompt ?componentName
     WHERE {
       ?item a ausnc:AusNCObject .
       ?item olac:speaker <%s> .
       ?item austalk:prompt ?prompt .
-      ?item austalk:componentName ?compname .
+      ?item austalk:prototype ?prototype .
+      ?item austalk:componentName ?componentName .
      """
      
     if bottle.request.forms.get('anno') == "required":
@@ -417,10 +418,11 @@ def item_results():
     resultsCount = 0
     
     query = query + qbuilder.regex_filter('prompt')
-    query = query + qbuilder.regex_filter('compname')
+    query = query + qbuilder.simple_filter('componentName')
+    query = query + qbuilder.to_str_filter('prototype',prepend="http://id.austalk.edu.au/protocol/item/")
     
     if bottle.request.forms.get('comptype') != "":
-        query=query+"""FILTER regex(?compname, "%s", "i")""" % (bottle.request.forms.get('comptype'))
+        query=query+"""FILTER regex(?componentName, "%s", "i")""" % (bottle.request.forms.get('comptype'))
     
     if bottle.request.forms.get('wlist')=='hvdwords':
         query=query+"""FILTER regex(?prompt, "^head$|^had$|^hud$|^hard$|^heared$|^heed$|^hid$|^herd$|^howd$|^hoyd$|^haired$|^hood$|^hod$", "i")"""
@@ -432,6 +434,8 @@ def item_results():
         query=query+"""FILTER regex(?prompt, "^hard$|^heared$|^herd$|^howd$|^hoyd$|^haired$", "i")"""
     
     query = query + "}"
+    
+    print query % partList[0]['id']
     
     for row in partList:
         row['item_results'] = quer.results_dict_list("austalk", query % (row['id']))
@@ -566,6 +570,8 @@ def item_search():
     
     try:
         apiKey = session['apikey']
+        client = pyalveo.Client(apiKey, BASE_URL)
+        quer = alquery.AlQuery(client)
     except KeyError:
         global USER_MESSAGE
         USER_MESSAGE = "You must log in to view this page!"
@@ -577,9 +583,46 @@ def item_search():
         session['message'] = "Select some participants first."
         session.save()
         redirect_home()
-        
-    return bottle.template('itemsearch', apiKey=apiKey)
     
+    
+    #simple_relations = ['componentName'] #have hardcoded it's output for now
+    
+    #results = qbuilder.simple_values_search(quer,'austalk',simple_relations,isItem=True,sortAlphabetically=True)
+        
+    return bottle.template('itemsearch',results=results, apiKey=apiKey)
+
+
+@bottle.get('/itemsearch/sentences')
+def getSentences():
+    
+    session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
+    
+    try:
+        apiKey = session['apikey']
+        client = pyalveo.Client(apiKey, BASE_URL)
+        quer = alquery.AlQuery(client)
+    except KeyError:
+        return "<option value="">You must login to view results!</option>"
+    
+    try:
+        selectedComp = bottle.request.query['sentence']
+    except KeyError:
+        return ""
+    
+    if len(selectedComp)==0:
+        return ""
+    
+    query = PREFIXES+'''
+    SELECT ?prompt WHERE {
+        ?component a austalk:Component .
+        ?component austalk:shortname "%s" .
+        ?item dc:isPartOf ?component .
+        ?item austalk:prompt ?prompt .
+    }
+    ''' % selectedComp
+    results = quer.results_dict_list("austalk", query)
+    return '<option value="">Any</option>\n'+''.join('<option value="%s">%s</option>\n' % (s['prompt'],s['prompt']) for s in results)
+
 @bottle.get('/export')
 @bottle.post('/export')
 def export():
@@ -680,7 +723,7 @@ def logged_in():
 if __name__ == '__main__':
     '''Runs the app. Listens on localhost:8080.'''
     #bottle.run(app=app, host='localhost', port=8080, debug=True)
-    bottle.run(app=app, host='10.126.102.130', port=8080, debug=True)
+    bottle.run(app=app, host= '10.126.98.239', port=8080, debug=True)
     
 
 

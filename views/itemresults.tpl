@@ -82,7 +82,7 @@
 				   <input name="selected" class="hideme" type="checkbox" id="{{item['item']}}" value="{{item['item']}}" />
                    <label class="rTableRow" for="{{item['item']}}">
                      <div class="rTableCellLeft" style="width:15%;"><b>{{item['item'].split('/')[-1]}}</b></div>
-                     <div class="rTableCell" style="width:15%;">{{item['compname']}}</div>
+                     <div class="rTableCell" style="width:15%;">{{item['componentName']}}</div>
                      <div class="rTableCellRight" style="width:70%;">{{item['prompt']}}</div>
                    </label>
          </div>

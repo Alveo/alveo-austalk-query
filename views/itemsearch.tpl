@@ -2,6 +2,19 @@
 <html>
 <head>
 	% include('bshead.tpl')
+	
+	<script>
+		$(document).ready(function(){
+			$('[name="componentName"]').click(function(){
+				if($('[name=componentName]').val()!=""){
+					$.ajax({url: "/itemsearch/sentences?sentence="+$('[name=componentName]').val(), async: true, success: function(result){
+						$('[name="prompt"]').html(result);
+					}});
+					$('[name="prompt"]').html('<option value="">Loading Results...</option>\n');
+				}
+			});
+		});
+	</script>
 </head>
 
 <body>
@@ -17,8 +30,8 @@
 	<button type="submit" style="float:right;" class="btn btn-default">Submit</button><br><br>
 	<div class="panel-group" id="accordion" >
 		<div class="panel panel-default">
-			<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="" style="cursor:auto;">
-				<h4 class="panel-title">Item Search</h4>
+			<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#gitem">
+				<h4 class="panel-title">Search by Prompt</h4>
 			</div>
 			<div id="gitem" class="panel-collapse collapse in">
 				<div class="panel-body">
@@ -58,15 +71,61 @@
 						</tr>
 						<tr>
 							<td class="left">
-								<label for="compname"><b>Component:</b></label>
+								<label for="wlist"><b>Word List:</b></label>
 							</td>
 							<td class="mid">
 								<div class="form-group">
-									<input type="text" class="form-control" name="compname" id="compname" placeholder="yes-no-opening-1">
+									<select class="form-control" name="wlist">
+										<option value="">None</option>
+										<option value="hvdwords">hVd Words</option>
+										<option value="hvdmono">hVd Monophthongs</option>
+										<option value="hvddip">hVd Diphthongs</option>
+									</select>
 								</div>
 							</td>
 							<td class="right">
 								<p></p>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div class="panel panel-default">
+			<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#gcomp">
+				<h4 class="panel-title">Search by Component</h4>
+			</div>
+			<div id="gcomp" class="panel-collapse collapse">
+				<div class="panel-body">
+					<table>
+						<tr>
+							<td class="left">
+								<label for="componentName"><b>Component:</b></label>
+							</td>
+							<td class="mid">
+								<div class="form-group">
+									<select class="form-control" name="componentName">
+										<option value="">Any</option>
+										<option value="calibration">calibration</option>
+										<option value="digits">digits</option>
+										<option value="sentences">sentences</option>
+										<option value="sentences-e">sentences-e</option>
+										<option value="story">story</option>
+										<option value="words-1">words-1</option>
+										<option value="words-1-2">words-1-2</option>
+										<option value="words-2">words-2</option>
+										<option value="words-2-2">words-2-2</option>
+										<option value="words-3">words-3</option>
+										<option value="words-3-2">words-3-2</option>
+										<option value="yes-no-closing">yes-no-closing</option>
+										<option value="yes-no-opening-1">yes-no-opening-1</option>
+										<option value="yes-no-opening-2">yes-no-opening-2</option>
+										<option value="yes-no-opening-3">yes-no-opening-3</option>
+									</select>
+								</div>
+							</td>
+							<td class="right">
+								<p>Here you can select a component to search by or you can select the component which contains your desired sentence, then select the sentence from below.</p>
 							</td>
 						</tr>
 						<tr>
@@ -90,25 +149,35 @@
 								</div>
 							</td>
 							<td class="right">
-								<p></p>
+								<p>Here you can easily select groups of components that work well together</p>
 							</td>
 						</tr>
 						<tr>
 							<td class="left">
-								<label for="wlist"><b>Word List:</b></label>
+								<label for="prototype"><b>Prototype:</b></label>
 							</td>
 							<td class="mid">
 								<div class="form-group">
-									<select class="form-control" name="wlist">
-										<option value="">None</option>
-										<option value="hvdwords">hVd Words</option>
-										<option value="hvdmono">hVd Monophthongs</option>
-										<option value="hvddip">hVd Diphthongs</option>
+									<input type="text" class="form-control" name="prototype" id="prototype" placeholder="16_5">
+								</div>
+							</td>
+							<td class="right">
+								<p>Here you can specify any specific sentence by it's prototype code. It is the last 2 segments of the items id.</p>
+							</td>
+						</tr>
+						<tr>
+							<td class="left">
+								<label for="prompt"><b>Sentences:</b></label>
+							</td>
+							<td class="mid">
+								<div class="form-group">
+									<select class="form-control" name="prompt">
+										<option value="">Any</option>
 									</select>
 								</div>
 							</td>
 							<td class="right">
-								<p></p>
+								<p>Select the individual prompts you wish to use.</p>
 							</td>
 						</tr>
 					</table>

@@ -8,7 +8,7 @@ from bottle import request
 import re,time
 from main import PREFIXES
 
-def simple_values_search(quer,collection,relations,sortAlphabetically=False):
+def simple_values_search(quer,collection,relations,sortAlphabetically=False,isItem=False):
     '''
     @summery: Used to provide a list of all the available distinct values for each relation in the list.
     
@@ -28,8 +28,8 @@ def simple_values_search(quer,collection,relations,sortAlphabetically=False):
         q = PREFIXES+"""    
                             SELECT distinct ?val 
                             where {
-                              ?part a foaf:Person .
-                              ?part austalk:%s ?val .}""" % item
+                              ?part a %s .
+                              ?part austalk:%s ?val .}""" % ("foaf:Person" if not isItem else "ausnc:AusNCObject",item)
         if sortAlphabetically:
             q += '''order by asc(ucase(str(?val)))'''
         results[item] = quer.results_list(collection,q)
@@ -37,19 +37,23 @@ def simple_values_search(quer,collection,relations,sortAlphabetically=False):
     return results
     
 
-def simple_filter(fName):
+def simple_filter(fName,endWith=True,beginWith=True):
     '''
     @summary: Used to add a simple filter to a SPARQL query.
     
     @param fName: The name of the field being filtered. Make sure that this matches the name of the input in the HTML form.
     @type fName: String
+    @param endWith: True to ensure the value ends with the given input
+    @type endWith: Boolean
+    @param beginWith: True to ensure the value begins with the given input
+    @type beginWith: Boolean
     @return: A FILTER line to be added to a SPARQL query.
     @rtype: String
     '''
 
     if request.forms.get(fName):
         val = request.forms.get(fName)
-        return """FILTER regex(?%s, "^%s$", "i")\n""" % (fName, val)
+        return """FILTER regex(?%s, "%s%s%s", "i")\n""" % (fName,'^' if beginWith else '',val,'$' if endWith else '')
     else:
         return ''     
     
@@ -69,19 +73,23 @@ def boolean_filter(fName):
     else:
         return ''     
     
-def to_str_filter(fName):
+def to_str_filter(fName,prepend=""):
     '''
     @summary: Used to add a simple filter to a SPARQL query where the field needs to be converted to a string from another data type (such as a URI)
     
     @param fName: The name of the field being filtered. Make sure that this matches the name of the input in the HTML form.
     @type fName: String
+    @param prepend: Adds a string at the beginning of the query, use if the user input values is not the entire value that needs to be specified in SPARQL.
+                    Eg: User selects ?participant with a [0-9]_[0-9]^3 string rather than the entire url. 
+                    Necessary if the searched element can be a subset of another element. Ie: when you search for "1_114" yet "1_1441" also exists.
+    @type String
     @return: A FILTER line to be added to a SPARQL query.
     @rtype: String
     '''
     
     if request.forms.get(fName):
         val = request.forms.get(fName)
-        return """FILTER regex(str(?%s), "^%s$", "i")\n""" % (fName, val)
+        return """FILTER regex(str(?%s), "^%s%s$", "i")\n""" % (fName, prepend,val)
     else:
         return ''
     
