@@ -595,9 +595,8 @@ def download_items_csv():
         bottle.redirect('/')
         
     try:
-        test = session['partlist'][0]['item_results']
         #incase the list was created but for some reason the user removes all elements or searches nothing.
-        if len(test)==0:
+        if session['itemcount']==0:
             raise KeyError
     except KeyError:
         session['message'] = "Perform an item search first."
