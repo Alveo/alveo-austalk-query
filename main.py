@@ -355,19 +355,19 @@ def download_participants_csv():
                         'has_speech_problems','has_piercings','has_health_problems','has_hearing_problems',
                         'has_dentures','is_student','is_left_handed','has_reading_problems','pob_country',
                         'father_pob_country','mother_pob_country']
-    select = 'SELECT ?id ?age ?city '
+    select = 'SELECT ?id ?age ?city ?gender ?first_language ?mother_first_language ?father_first_language'
     where = '''WHERE {
         ?id a foaf:Person .
         ?id austalk:recording_site ?recording_site .
         ?recording_site austalk:city ?city .
         ?id foaf:age ?age .
         ?id foaf:gender ?gender .
-        ?id austalk:first_language ?fl .
-        ?fl iso639schema:name ?first_language .
-        ?id austalk:father_first_language ?ffl .
-        ?ffl iso639schema:name ?father_first_language .
-        ?id austalk:mother_first_language ?mfl .
-        ?mfl iso639schema:name ?mother_first_language .
+        OPTIONAL { ?id austalk:first_language ?fl . }
+        OPTIONAL { ?fl iso639schema:name ?first_language . }
+        OPTIONAL { ?id austalk:father_first_language ?ffl . }
+        OPTIONAL { ?ffl iso639schema:name ?father_first_language . }
+        OPTIONAL { ?id austalk:mother_first_language ?mfl . }
+        OPTIONAL { ?mfl iso639schema:name ?mother_first_language . }
         '''
     for x in metaList:
         select = select + '?'+x+' '
@@ -506,8 +506,6 @@ def item_results():
     
     query = query + "}"
     
-    print query % partList[0]['id']
-    
     for row in partList:
         row['item_results'] = quer.results_dict_list("austalk", query % (row['id']))
         resultsCount = resultsCount + session['resultscount']
@@ -542,6 +540,7 @@ def item_list():
         
     try:
         partList = session['partlist']
+        test = session['partlist'][0]['item_results']#should have something here
     except KeyError:
         session['message'] = "Perform an item search first."
         session.save()
@@ -559,6 +558,68 @@ def item_list():
     if undoExists:
         undoExists = len(session['backupItemList'])>0
     return bottle.template('itemresults', partList=partList, resultsCount=session['itemcount'],message=message,undo=undoExists, apiKey=apiKey)
+
+
+@bottle.get('/download/items.csv')
+@bottle.get('/download/itemswithpartdata.csv')
+def download_items_csv():
+    '''Returns a csv file download of the participants and all their meta data.'''
+    
+    session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
+
+    try:
+        apiKey = session['apikey']
+        client = pyalveo.Client(apiKey, BASE_URL)
+        quer = alquery.AlQuery(client)
+    except KeyError:
+        global USER_MESSAGE
+        USER_MESSAGE = "You must log in to view this page!"
+        bottle.redirect('/login')
+        
+    try:
+        test = session['partlist'][0]['item_results']
+        #incase the list was created but for some reason the user removes all elements or searches nothing.
+        if len(test)==0:
+            raise KeyError
+    except KeyError:
+        session['message'] = "Perform an item search first."
+        session.save()
+        redirect_home()
+    
+    resultsList = []
+    if str(bottle.request.path).split('/')[-1]=='itemswithpartdata.csv':
+        #add more participant meta data
+        for part in session['partlist']:
+            for x in part['item_results']:
+                new = x.copy()
+                new[u'participant'] = part['id']
+                new[u'gender'] = part['gender']
+                new[u'age'] = part['age']
+                new[u'first_language'] = part['first_language']
+                new[u'city'] = part['city']
+                new[u'pob_city'] = part['pob_town']
+                new[u'pob_country'] = part['pob_country']
+                resultsList.append(new)
+        print resultsList[0].keys()
+    else:
+        #add only participant id
+        for part in session['partlist']:
+            for x in part['item_results']:
+                new = x.copy()
+                new[u'participant'] = part['id']
+                resultsList.append(new)
+        print resultsList[0].keys()
+    #make response header so that file will be downloaded.
+    bottle.response.headers["Content-Disposition"] = "attachment; filename=items.csv"
+    bottle.response.headers["Content-type"] = "text/csv"
+    
+    csvfile = BytesIO()
+    dict_writer = csv.DictWriter(csvfile,resultsList[0].keys())
+    dict_writer.writeheader()
+    dict_writer.writerows(resultsList)
+    
+    csvfile.seek(0)
+    return csvfile.read()
 
 @bottle.post('/handleitems')
 def handle_items():

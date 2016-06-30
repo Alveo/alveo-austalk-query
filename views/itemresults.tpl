@@ -21,6 +21,10 @@
 	
 <h4>Number of Items found: {{resultsCount}}</h4>
 <p>You can now browse all the items found by your search. Click on the participants to expand a list of all their recordings.</p>
+
+<a type="button" class="btn btn-default" href="/download/items.csv">Download item metadata as CSV</a>
+<a type="button" class="btn btn-default" href="/download/itemswithpartdata.csv">Download item metadata as CSV with participant data</a>
+<br><br>
 <form action="/handleitems" method="POST">
 
 	<div class="form-group" style="float:left;">
