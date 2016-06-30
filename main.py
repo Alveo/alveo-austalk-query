@@ -10,8 +10,8 @@ from beaker.middleware import SessionMiddleware
 import alquery
 import qbuilder
 import pyalveo
-import re,time,csv
-from io import StringIO,BytesIO
+import csv
+from io import BytesIO
 
 BASE_URL = 'https://app.alveo.edu.au/' #Normal Server
 #BASE_URL = 'https://alveo-staging1.intersect.org.au/' #Staging Server
@@ -52,11 +52,32 @@ def send_static(filename):
     '''Loads static files from views/js. Store all .js files there.'''
     return bottle.static_file(filename, root='./js/')
 
-def redirect_home():
-    '''Redirects requests back to the homepage.'''
-    bottle.redirect('/')
-    
 @bottle.route('/')
+def home():
+    '''An introductory home page to welcome the user and brief them on the process'''
+    global USER_MESSAGE
+    session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
+    
+    try:
+        apiKey = session['apikey']
+    except KeyError:
+        apiKey = 'Not logged in'
+    
+    if apiKey=='Not logged in':
+        message = USER_MESSAGE
+        USER_MESSAGE = ""
+    else:
+        try:
+            message = session['message']
+            session['message'] = ""
+            session.save()
+        except KeyError:
+            session['message'] = ""
+            message = session['message']
+    
+    return bottle.template('home', results=results, message=message, apiKey=apiKey)
+
+@bottle.route('/psearch')
 def search():
     '''The home page and participant search page. Drop-down lists are populated from the SPARQL database and the template returned.
     Displays the contents of session['message'] if one is set.'''
@@ -70,7 +91,7 @@ def search():
     except KeyError:
         global USER_MESSAGE
         USER_MESSAGE = "You must log in to view this page!"
-        bottle.redirect('/login')
+        bottle.redirect('/')
         
     try:
         message = session['message']
@@ -171,8 +192,7 @@ def search():
         #cache the results
         session['psearch_cache'] = results
         
-    return bottle.template('psearch', results=results, message=message,
-                               apiKey=apiKey)
+    return bottle.template('psearch', results=results, message=message, apiKey=apiKey)
     
 @bottle.post('/presults')
 def results():
@@ -187,7 +207,7 @@ def results():
     except KeyError:
         global USER_MESSAGE
         USER_MESSAGE = "You must log in to view this page!"
-        bottle.redirect('/login')
+        bottle.redirect('/')
         
     try:
         message = session['message']
@@ -296,7 +316,7 @@ def part_list():
     except KeyError:
         global USER_MESSAGE
         USER_MESSAGE = "You must log in to view this page!"
-        bottle.redirect('/login')
+        bottle.redirect('/')
         
     try:
         resultsList = session['partlist']
@@ -306,7 +326,7 @@ def part_list():
     except KeyError:
         session['message'] = "Perform a participant search first."
         session.save()
-        redirect_home()
+        bottle.redirect('/psearch')
         
     try:
         message = session['message']
@@ -334,7 +354,7 @@ def download_participants_csv():
     except KeyError:
         global USER_MESSAGE
         USER_MESSAGE = "You must log in to view this page!"
-        bottle.redirect('/login')
+        bottle.redirect('/')
         
     try:
         resultsList = session['partlist']
@@ -344,7 +364,7 @@ def download_participants_csv():
     except KeyError:
         session['message'] = "Perform a participant search first."
         session.save()
-        redirect_home()
+        bottle.redirect('/psearch')
     
     #create the dict list with more metadata than we're already keeping
     metaList = ['pob_state','cultural_heritage','ses','professional_category',
@@ -401,7 +421,7 @@ def handle_parts():
     except KeyError:
         global USER_MESSAGE
         USER_MESSAGE = "You must log in to view this page!"
-        bottle.redirect('/login')
+        bottle.redirect('/')
     
     partList = session['partlist']
     selectedParts = bottle.request.forms.getall('selected')
@@ -470,7 +490,7 @@ def item_results():
     except KeyError:
         global USER_MESSAGE
         USER_MESSAGE = "You must log in to view this page!"
-        bottle.redirect('/login')
+        bottle.redirect('/')
     
     query = PREFIXES + """   
     SELECT distinct ?item ?prompt ?componentName
@@ -536,7 +556,7 @@ def item_list():
     except KeyError:
         global USER_MESSAGE
         USER_MESSAGE = "You must log in to view this page!"
-        bottle.redirect('/login')
+        bottle.redirect('/')
         
     try:
         partList = session['partlist']
@@ -572,7 +592,7 @@ def download_items_csv():
     except KeyError:
         global USER_MESSAGE
         USER_MESSAGE = "You must log in to view this page!"
-        bottle.redirect('/login')
+        bottle.redirect('/')
         
     try:
         test = session['partlist'][0]['item_results']
@@ -582,7 +602,7 @@ def download_items_csv():
     except KeyError:
         session['message'] = "Perform an item search first."
         session.save()
-        redirect_home()
+        bottle.redirect('/itemsearch')
     
     resultsList = []
     if str(bottle.request.path).split('/')[-1]=='itemswithpartdata.csv':
@@ -630,7 +650,7 @@ def handle_items():
     except KeyError:
         global USER_MESSAGE
         USER_MESSAGE = "You must log in to view this page!"
-        bottle.redirect('/login')
+        bottle.redirect('/')
     
     partList = session['partlist']
     
@@ -703,14 +723,14 @@ def item_search():
     except KeyError:
         global USER_MESSAGE
         USER_MESSAGE = "You must log in to view this page!"
-        bottle.redirect('/login')
+        bottle.redirect('/')
         
     try:
         partList = session['partlist'] #@UnusedVariable
     except KeyError:
         session['message'] = "Select some participants first."
         session.save()
-        redirect_home()
+        bottle.redirect('/psearch')
     
     try:
         message = session['message']
@@ -768,7 +788,7 @@ def export():
     except KeyError:
         global USER_MESSAGE
         USER_MESSAGE = "You must log in to view this page!"
-        bottle.redirect('/login')
+        bottle.redirect('/')
     
     try:
         message = session['message']
@@ -811,7 +831,7 @@ def login():
     try:
         apiKey = session['apikey']
     except KeyError:
-        apiKey = 'Not logged in.'
+        apiKey = 'Not logged in'
     
     msg = USER_MESSAGE
     USER_MESSAGE = ""
@@ -825,7 +845,7 @@ def logout():
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
     session.delete()
     USER_MESSAGE = "You have successfully logged out!"
-    bottle.redirect('/login')
+    bottle.redirect('/')
 
 @bottle.get('/about')
 def about():
@@ -834,7 +854,7 @@ def about():
     try:
         apiKey = session['apikey']
     except KeyError:
-        apiKey = 'Not logged in.'
+        apiKey = 'Not logged in'
     
     return bottle.template('about', apiKey=apiKey)
 
@@ -845,7 +865,7 @@ def help():
     try:
         apiKey = session['apikey']
     except KeyError:
-        apiKey = 'Not logged in.'
+        apiKey = 'Not logged in'
         
     return bottle.template('help', apiKey=apiKey)
 

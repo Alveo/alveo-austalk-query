@@ -14,7 +14,7 @@
 
 %if len(message)>0:
 	<div class="alert alert-warning" role="alert">
-		<p><b>{{message}}</b></p>
+		<p align="center"><b>{{message}}</b></p>
 	</div>
 %end
 
