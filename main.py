@@ -544,7 +544,7 @@ def item_list():
     except KeyError:
         session['message'] = "Perform an item search first."
         session.save()
-        redirect_home()
+        bottle.redirect('/itemsearch')
     
     try:
         message = session['message']
@@ -569,8 +569,6 @@ def download_items_csv():
 
     try:
         apiKey = session['apikey']
-        client = pyalveo.Client(apiKey, BASE_URL)
-        quer = alquery.AlQuery(client)
     except KeyError:
         global USER_MESSAGE
         USER_MESSAGE = "You must log in to view this page!"
@@ -702,8 +700,6 @@ def item_search():
     
     try:
         apiKey = session['apikey']
-        client = pyalveo.Client(apiKey, BASE_URL)
-        quer = alquery.AlQuery(client)
     except KeyError:
         global USER_MESSAGE
         USER_MESSAGE = "You must log in to view this page!"
@@ -716,12 +712,15 @@ def item_search():
         session.save()
         redirect_home()
     
-    
-    #simple_relations = ['componentName'] #have hardcoded it's output for now
-    
-    #results = qbuilder.simple_values_search(quer,'austalk',simple_relations,isItem=True,sortAlphabetically=True)
+    try:
+        message = session['message']
+        session['message'] = ""
+        session.save()
+    except KeyError:
+        session['message'] = ""
+        message = session['message']
         
-    return bottle.template('itemsearch',results=results, apiKey=apiKey)
+    return bottle.template('itemsearch',results=results, message=message, apiKey=apiKey)
 
 
 @bottle.get('/itemsearch/sentences')
@@ -790,7 +789,7 @@ def export():
     except KeyError:
         session['message'] = "Select some items first."
         session.save()
-        bottle.redirect('/')
+        bottle.redirect('/itemresults')
     
     if bottle.request.forms.get('listname') != None:
         #This is when the user sends a post

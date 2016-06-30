@@ -24,6 +24,11 @@
 </div>
 
 <div class="content">
+	%if len(message)>0:
+		<div class="alert alert-warning" role="alert">
+			<p><b>{{message}}</b></p>
+		</div>
+	%end
 
 <form action="/itemresults" method="POST" style="width:98%;margin:auto;">
 	<br><p style="font: 15px arial, sans-serif;">Here you can search for your desired participants. Click on each of the headings to expand all the available criteria.<br>When you are done click submit and you'll be provided with a list of participants fulfilling your criteria.</p>
