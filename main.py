@@ -771,6 +771,13 @@ def export():
         USER_MESSAGE = "You must log in to view this page!"
         bottle.redirect('/login')
     
+    try:
+        message = session['message']
+        session['message'] = ""
+        session.save()
+    except KeyError:
+        session['message'] = ""
+        message = session['message']
     
     #create a single item list so it can be passed to pyalveo
     iList = [] #iList, the expensive and non-functional but good looking version of list
@@ -786,14 +793,15 @@ def export():
         bottle.redirect('/')
     
     if bottle.request.forms.get('listname') != None:
+        #This is when the user sends a post
         listName = bottle.request.forms.get('listname')
-        itemList.add_to_item_list_by_name(listName)
-        session['message'] = "List exported to Alveo."
+        res = itemList.add_to_item_list_by_name(listName)
+        print res
+        message = "List exported to Alveo. Next step is to click the link to the alveo website to see your items."
         session.save()
-        bottle.redirect('/')
-    else:
-        itemLists = client.get_item_lists()     
-        return bottle.template('export', apiKey=apiKey, itemLists=itemLists)
+        
+    itemLists = client.get_item_lists()     
+    return bottle.template('export', apiKey=apiKey, itemLists=itemLists,message=message,itemCount=session['itemcount'])
     
 @bottle.get('/login')
 def login():
