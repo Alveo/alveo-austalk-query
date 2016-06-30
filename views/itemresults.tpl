@@ -42,9 +42,10 @@
 <div class="rTableBody">
 
 <div class="rTableRow">
-  <div class="rTableHead">Participant</div>
-  <div class="rTableHead">Gender</div>
-  <div class="rTableHead">Age</div>
+  <div class="rTableHead" style="width:12%;">Participant</div>
+  <div class="rTableHead" style="width:12%;">Gender</div>
+  <div class="rTableHead" style="width:12%;">Age</div>
+  <div class="rTableHead">First Language</div>
   <div class="rTableHead">Recorded In</div>
   <div class="rTableHead">Birth City</div>
   <div class="rTableHead">Birth Country</div>
@@ -59,9 +60,10 @@
 <div class="rTable">
 <div class="rTableBody">
             <div name="participant" class="rTableRow" data-toggle="collapse" data-parent="#accordion" href="#{{row['id'].split('/')[-1]}}">
-              <div class="rTableCellLeft"><b>{{row['id'].split('/')[-1]}}</b></div>
-			  <div class="rTableCell">{{row['gender']}}</div>
-			  <div class="rTableCell">{{row['age']}}</div>
+              <div class="rTableCellLeft" style="width:12%;"><b>{{row['id'].split('/')[-1]}}</b></div>
+			  <div class="rTableCell" style="width:12%;">{{row['gender']}}</div>
+			  <div class="rTableCell" style="width:12%;">{{row['age']}}</div>
+			  <div class="rTableCell">{{row['first_language']}}</div>
 			  <div class="rTableCell">{{row['city']}}</div>
 			  <div class="rTableCell">{{row['pob_town']}}</div>
 			  <div class="rTableCell">{{row['pob_country']}}</div>

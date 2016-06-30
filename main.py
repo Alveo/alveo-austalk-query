@@ -199,7 +199,7 @@ def results():
         
     query = PREFIXES+ """
     
-    SELECT ?id ?gender ?age ?city ?pob_country ?pob_town"""
+    SELECT ?id ?gender ?age ?city ?first_language ?pob_country ?pob_town"""
           
     query = query + """
     WHERE {
@@ -208,9 +208,10 @@ def results():
         ?recording_site austalk:city ?city .
         ?id foaf:age ?age .
         ?id foaf:gender ?gender .
-        ?id austalk:first_language ?first_language .
-        ?id austalk:pob_country ?pob_country .   
-        ?id austalk:pob_town ?pob_town .
+        OPTIONAL { ?id austalk:first_language ?fl . }
+        OPTIONAL { ?fl iso639schema:name ?first_language . }
+        OPTIONAL { ?id austalk:pob_country ?pob_country . }
+        OPTIONAL { ?id austalk:pob_town ?pob_town . }
     """
     #special args is anything all the form arguments that need something more than a simple filter.
     filterTable = {

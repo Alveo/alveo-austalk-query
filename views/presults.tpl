@@ -43,6 +43,7 @@ all participants). Please be patient.</b></p>
 				<div class="rTableHead">Participant</div>
 				<div class="rTableHead">Gender</div>
 				<div class="rTableHead">Age</div>
+				<div class="rTableHead">First Language</div>
 				<div class="rTableHead">Recorded In</div>
 				<div class="rTableHead">Birth City</div>
 				<div class="rTableHead">Birth Country</div>
@@ -54,6 +55,7 @@ all participants). Please be patient.</b></p>
 					<div class="rTableCellLeft"><b>{{row['id'].split('/')[-1]}}</b></div>
 					<div class="rTableCell">{{row['gender']}}</div>
 					<div class="rTableCell">{{row['age']}}</div>
+					<div class="rTableCell">{{row['first_language']}}</div>
 					<div class="rTableCell">{{row['city']}}</div>
 					<div class="rTableCell">{{row['pob_town']}}</div>
 					<div class="rTableCellRight">{{row['pob_country']}}</div>
