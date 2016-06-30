@@ -61,7 +61,7 @@
 </tr>
 </table>
 <br>
-<a type="button" class="btn btn-default" href="https://app.alveo.edu.au/item_lists">Click here to go to the Alveo Website</a>
+<a type="button" class="btn btn-default" href="https://app.alveo.edu.au/item_lists" target="_blank">Click here to go to the Alveo Website</a>
 <h2>Notes:</h2>
 
 <p>"Export to New List" Will add to an existing item list if one with the same name already exists.</p>
