@@ -27,7 +27,6 @@ def simple_filter(fName,endWith=True,beginWith=True,custom=None):
     else:
         val = request.forms.get(fName)
     if val:
-        val = request.forms.get(fName)
         return """FILTER regex(?%s, "%s%s%s", "i")\n""" % (fName,'^' if beginWith else '',val,'$' if endWith else '')
     else:
         return ''     
@@ -48,7 +47,6 @@ def boolean_filter(fName,custom=None):
     else:
         val = request.forms.get(fName)
     if val:
-        val = request.forms.get(fName)
         return """FILTER(?%s="%s"^^xsd:boolean)\n""" % (fName, val)
     else:
         return ''     
@@ -73,7 +71,6 @@ def to_str_filter(fName,prepend="",custom=None):
     else:
         val = request.forms.get(fName)
     if val:
-        val = request.forms.get(fName)
         return """FILTER regex(str(?%s), "^%s%s$", "i")\n""" % (fName, prepend,val)
     else:
         return ''
@@ -84,7 +81,7 @@ def simple_filter_list(fList,custom=None):
     
     @param fList: A list of fields to be filtered. Make sure that they match the names of the inputs in the HTML form.
     @type fList: List
-    @param custom: If the input needs to be manually formatted rather than being pulled directly from the form
+    @param custom: If the input needs to be manually formatted rather than being pulled directly from the form, must be the same length as given list
     @type String
     @return: Some FILTER lines to be added to a SPARQL query.
     @rtype: String
@@ -92,8 +89,8 @@ def simple_filter_list(fList,custom=None):
     
     filters = ''
     
-    for field in fList:
-        filters = filters + simple_filter(field,custom=custom)
+    for i in range(len(fList)):
+        filters = filters + simple_filter(fList[i],custom=custom[i])
     
     return filters
 
@@ -113,8 +110,7 @@ def num_range_filter(fName,custom=None):
     else:
         val = request.forms.get(fName)
     if val:    
-        try:
-            val = request.forms.get(fName)    
+        try:  
             val = val.rstrip("-")
             if re.match("-", val):
                 val = val.strip("-")
@@ -187,19 +183,21 @@ def regex_filter(fName,toString=False,prepend="",custom=None):
     else:
         return ''
     
-def select_list(sList):
+def select_list(sList,custom=False):
     '''
     @summary: Used to add a list of items to a SPARQL query SELECT line when we only want to select these items if they have form data.
     
     @param: sList: A list of fields to select. Make sure they match the names of the input fields in the HTML form.
     @type: sList: List
+    @param ignoreRequest: If the input needs not be pulled directly from the form
+    @type Boolean
     @return: A string to be added to SELECT clause.
     @rtype: String
     '''
     
     selects = ''   
     for item in sList:
-        if request.forms.get(item):
+        if custom or request.forms.get(item):
             selects = selects + """ ?%s """ % (item)
     return selects   
     
