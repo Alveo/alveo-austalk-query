@@ -112,7 +112,7 @@ def search():
                          'mother_education_level','mother_cultural_heritage','father_pob_country',
                          'father_professional_category','father_education_level','father_cultural_heritage']
     
-        results = qbuilder.simple_values_search(quer,'austalk',simple_relations,sortAlphabetically=True)
+        results = quer.simple_values_search('austalk',simple_relations,sortAlphabetically=True)
     
         results['city'] = quer.results_list("austalk", PREFIXES+
         """    

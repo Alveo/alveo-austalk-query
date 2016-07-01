@@ -5,39 +5,9 @@
 '''
 
 from bottle import request
-import re,time
-from main import PREFIXES
+import re
 
-def simple_values_search(quer,collection,relations,sortAlphabetically=False,isItem=False):
-    '''
-    @summery: Used to provide a list of all the available distinct values for each relation in the list.
-    
-    @param quer: An instance of the AlQuery class
-    @type quer: AlQuery
-    @param collection: The collection to be searched.              
-    @type query: String
-    @param relations: A list of all relations to be searched
-    @type relations: List
-    @param sortAlphabetically: Will return the values in alphabetical order for all relations
-    @type sortAlphabetically: Boolean
-    @return: A dict with a key for each item in relations and the value being a list of all distinct values for that relation.
-    @rtype: Dict
-    '''
-    results = {}
-    for item in relations:
-        q = PREFIXES+"""    
-                            SELECT distinct ?val 
-                            where {
-                              ?part a %s .
-                              ?part austalk:%s ?val .}""" % ("foaf:Person" if not isItem else "ausnc:AusNCObject",item)
-        if sortAlphabetically:
-            q += '''order by asc(ucase(str(?val)))'''
-        results[item] = quer.results_list(collection,q)
-    
-    return results
-    
-
-def simple_filter(fName,endWith=True,beginWith=True):
+def simple_filter(fName,endWith=True,beginWith=True,custom=None):
     '''
     @summary: Used to add a simple filter to a SPARQL query.
     
@@ -47,33 +17,43 @@ def simple_filter(fName,endWith=True,beginWith=True):
     @type endWith: Boolean
     @param beginWith: True to ensure the value begins with the given input
     @type beginWith: Boolean
+    @param custom: If the input needs to be manually formatted rather than being pulled directly from the form
+    @type String
     @return: A FILTER line to be added to a SPARQL query.
     @rtype: String
     '''
-
-    if request.forms.get(fName):
+    if custom:
+        val = custom
+    else:
+        val = request.forms.get(fName)
+    if val:
         val = request.forms.get(fName)
         return """FILTER regex(?%s, "%s%s%s", "i")\n""" % (fName,'^' if beginWith else '',val,'$' if endWith else '')
     else:
         return ''     
     
-def boolean_filter(fName):  
+def boolean_filter(fName,custom=None):  
     '''
     @summary: Used to add a simple boolean filter to a SPARQL query.
     
     @param fName: The name of the field being filtered. Make sure that this matches the name of the input in the HTML form.
     @type fName: String
+    @param custom: If the input needs to be manually formatted rather than being pulled directly from the form
+    @type String
     @return: A FILTER line to be added to a SPARQL query.
     @rtype: String
     '''
-
-    if request.forms.get(fName):
+    if custom:
+        val = custom
+    else:
+        val = request.forms.get(fName)
+    if val:
         val = request.forms.get(fName)
         return """FILTER(?%s="%s"^^xsd:boolean)\n""" % (fName, val)
     else:
         return ''     
     
-def to_str_filter(fName,prepend=""):
+def to_str_filter(fName,prepend="",custom=None):
     '''
     @summary: Used to add a simple filter to a SPARQL query where the field needs to be converted to a string from another data type (such as a URI)
     
@@ -83,22 +63,29 @@ def to_str_filter(fName,prepend=""):
                     Eg: User selects ?participant with a [0-9]_[0-9]^3 string rather than the entire url. 
                     Necessary if the searched element can be a subset of another element. Ie: when you search for "1_114" yet "1_1441" also exists.
     @type String
+    @param custom: If the input needs to be manually formatted rather than being pulled directly from the form
+    @type String
     @return: A FILTER line to be added to a SPARQL query.
     @rtype: String
     '''
-    
-    if request.forms.get(fName):
+    if custom:
+        val = custom
+    else:
+        val = request.forms.get(fName)
+    if val:
         val = request.forms.get(fName)
         return """FILTER regex(str(?%s), "^%s%s$", "i")\n""" % (fName, prepend,val)
     else:
         return ''
     
-def simple_filter_list(fList):
+def simple_filter_list(fList,custom=None):
     '''
     @summary: Used to add many simple filters to a SPARQL query.
     
     @param fList: A list of fields to be filtered. Make sure that they match the names of the inputs in the HTML form.
     @type fList: List
+    @param custom: If the input needs to be manually formatted rather than being pulled directly from the form
+    @type String
     @return: Some FILTER lines to be added to a SPARQL query.
     @rtype: String
     '''
@@ -106,21 +93,26 @@ def simple_filter_list(fList):
     filters = ''
     
     for field in fList:
-        filters = filters + simple_filter(field)
+        filters = filters + simple_filter(field,custom=custom)
     
     return filters
 
-def num_range_filter(fName):
+def num_range_filter(fName,custom=None):
     '''
     @summary: Used to add a filter that can search a range of numbers to a SPARQL query.
     
     @param fName: The name of the field being filtered. Make sure that this matches the name of the input in the HTML form.
     @type fName: String
+    @param custom: If the input needs to be manually formatted rather than being pulled directly from the form
+    @type String
     @return: A FILTER line to be added to a SPARQL query.
     @rtype: String
     '''
-    
-    if request.forms.get(fName):    
+    if custom:
+        val = custom
+    else:
+        val = request.forms.get(fName)
+    if val:    
         try:
             val = request.forms.get(fName)    
             val = val.rstrip("-")
@@ -158,13 +150,14 @@ def regex_filter(fName,toString=False,prepend="",custom=None):
     @type String
     @return: A FILTER line to be added to a SPARQL query.
     @rtype: String
-    '''     
-    if request.forms.get(fName):
-        if custom:
-            val = custom
-        else:
-            val = request.forms.get(fName)
+    '''    
+     
+    if custom:
+        val = custom
+    else:
+        val = request.forms.get(fName)
             
+    if val:
         #check first to see if it's a list of some sort
         if re.match(".*,.*", val):
             vals = ""
