@@ -2,6 +2,7 @@
 <html>
 <head>
 	% include('bshead.tpl')	
+	
 </head>
 
 <body>
@@ -18,6 +19,8 @@
 			<p align="center"><b>{{message}}</b></p>
 		</div>
 	%end
+	
+	<div name="OAF"></div>
 	
 <h4>Number of Items found: {{resultsCount}}</h4>
 <p>You can now browse all the items found by your search. Click on the participants to expand a list of all their recordings.</p>
@@ -87,9 +90,10 @@
        <div class="rTableBody">
 				   <input name="selected" class="hideme" type="checkbox" id="{{item['item']}}" value="{{item['item']}}" />
                    <label class="rTableRow" for="{{item['item']}}">
-                     <div class="rTableCellLeft" style="width:15%;"><b>{{item['item'].split('/')[-1]}}</b></div>
-                     <div class="rTableCell" style="width:15%;">{{item['componentName']}}</div>
-                     <div class="rTableCellRight" style="width:70%;">{{item['prompt']}}</div>
+                     <div class="rTableCellLeft" style="width:10%;"><b>{{item['item'].split('/')[-1]}}</b></div>
+                     <div class="rTableCell" style="width:10%;">{{item['componentName']}}</div>
+                     <div class="rTableCell" style="width:70%;">{{item['prompt']}}</div>
+                     <div class="rTableCellRight" style="width:10%;"><audio controls src="{{item['media']}}" type="audio/wav" onerror="handleAudioError(event)"><audio></div>
                    </label>
          </div>
        </div>

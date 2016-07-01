@@ -493,13 +493,16 @@ def item_results():
         bottle.redirect('/')
     
     query = PREFIXES + """   
-    SELECT distinct ?item ?prompt ?componentName
+    SELECT distinct ?item ?prompt ?componentName ?media
     WHERE {
       ?item a ausnc:AusNCObject .
       ?item olac:speaker <%s> .
       ?item austalk:prompt ?prompt .
       ?item austalk:prototype ?prototype .
       ?item austalk:componentName ?componentName .
+      ?item ausnc:document ?media .
+      ?media austalk:version 1 .
+      ?media austalk:channel "ch6-speaker16"
      """
      
     if bottle.request.forms.get('anno') == "required":
