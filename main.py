@@ -30,18 +30,18 @@ PREFIXES = """
         PREFIX geo:<http://www.w3.org/2003/01/geo/wgs84_pos#>
         PREFIX iso639schema:<http://downlode.org/rdf/iso-639/schema#>
         PREFIX austalkid:<http://id.austalk.edu.au/>
-        PREFIX iso639:<http://downlode.org/rdf/iso-639/languages#> 
+        PREFIX iso639:<http://downlode.org/rdf/iso-639/languages#>
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
         PREFIX is: <http://purl.org/ontology/is/core#>
         PREFIX iso: <http://purl.org/iso25964/skos-thes#>
         PREFIX dada: <http://purl.org/dada/schema/0.2#>"""
-        
+
 session_opts = {
     'session.cookie_expires': False
 }
 
 app = SessionMiddleware(bottle.app(), session_opts)
-        
+
 @bottle.route('/styles/<filename>')
 def serve_style(filename):
     '''Loads static files from views/styles. Store all .css files there.'''
@@ -57,12 +57,12 @@ def home():
     '''An introductory home page to welcome the user and brief them on the process'''
     global USER_MESSAGE
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
-    
+
     try:
         apiKey = session['apikey']
     except KeyError:
         apiKey = 'Not logged in'
-    
+
     if apiKey=='Not logged in':
         message = USER_MESSAGE
         USER_MESSAGE = ""
@@ -74,16 +74,16 @@ def home():
         except KeyError:
             session['message'] = ""
             message = session['message']
-    
+
     return bottle.template('home', results=results, message=message, apiKey=apiKey)
 
 @bottle.route('/psearch')
 def search():
     '''The home page and participant search page. Drop-down lists are populated from the SPARQL database and the template returned.
     Displays the contents of session['message'] if one is set.'''
-    
+
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
-        
+
     try:
         apiKey = session['apikey']
         client = pyalveo.Client(apiKey, BASE_URL)
@@ -92,7 +92,7 @@ def search():
         global USER_MESSAGE
         USER_MESSAGE = "You must log in to view this page!"
         bottle.redirect('/')
-        
+
     try:
         message = session['message']
         session['message'] = ""
@@ -100,8 +100,8 @@ def search():
     except KeyError:
         session['message'] = ""
         message = session['message']
-    
-    
+
+
     #try getting cached results
     try:
         results = session['psearch_cache']
@@ -111,95 +111,95 @@ def search():
                          'pob_country','mother_pob_country','mother_professional_category',
                          'mother_education_level','mother_cultural_heritage','father_pob_country',
                          'father_professional_category','father_education_level','father_cultural_heritage']
-    
+
         results = quer.simple_values_search('austalk',simple_relations,sortAlphabetically=True)
-    
+
         results['city'] = quer.results_list("austalk", PREFIXES+
-        """    
-            SELECT distinct ?val 
+        """
+            SELECT distinct ?val
             where {
               ?part a foaf:Person .
               ?part austalk:recording_site ?site .
               ?site austalk:city ?val .}
               order by asc(ucase(str(?val)))""")
-    
+
         results['first_language'] = quer.results_list("austalk", PREFIXES+
-        """                            
+        """
             SELECT distinct ?flang
             WHERE {{
                 ?part a foaf:Person .
                 ?part austalk:first_language ?x .
                 ?x iso639schema:name ?flang .
-            } 
+            }
             UNION {
                 ?part austalk:first_language ?flang .
                 MINUS{
                     ?flang iso639schema:name ?y}}}
             ORDER BY ?part""")
-    
+
         results['first_language_int'] = quer.results_list("austalk", PREFIXES+
-        """                            
+        """
             SELECT distinct ?val
             WHERE {
                 ?part a foaf:Person .
                 ?part austalk:first_language ?val .}
             ORDER BY ?part""")
-    
+
         results['mother_first_language'] = quer.results_list("austalk", PREFIXES+
-        """                            
+        """
             SELECT distinct ?flang
             WHERE {{
                 ?part a foaf:Person .
                 ?part austalk:mother_first_language ?x .
                 ?x iso639schema:name ?flang .
-            } 
+            }
             UNION {
                 ?part austalk:mother_first_language ?flang .
                 MINUS{
                     ?flang iso639schema:name ?y}}}
             ORDER BY ?part""")
-    
+
         results['mother_first_language_int'] = quer.results_list("austalk", PREFIXES+
-        """                            
+        """
             SELECT distinct ?val
             WHERE {
                 ?part a foaf:Person .
                 ?part austalk:mother_first_language ?val .}
             ORDER BY ?part""")
-    
+
         results['father_first_language'] = quer.results_list("austalk", PREFIXES+
-        """                            
+        """
             SELECT distinct ?flang
             WHERE {{
                 ?part a foaf:Person .
                 ?part austalk:father_first_language ?x .
                 ?x iso639schema:name ?flang .
-            } 
+            }
             UNION {
                 ?part austalk:father_first_language ?flang .
                 MINUS{
                     ?flang iso639schema:name ?y}}}
             ORDER BY ?part""")
-    
+
         results['father_first_language_int'] = quer.results_list("austalk", PREFIXES+
-        """                            
+        """
             SELECT distinct ?val
             WHERE {
                 ?part a foaf:Person .
                 ?part austalk:father_first_language ?val .}
             ORDER BY ?part""")
-        
+
         #cache the results
         session['psearch_cache'] = results
-        
+
     return bottle.template('psearch', results=results, message=message, apiKey=apiKey)
-    
+
 @bottle.post('/presults')
 def results():
     '''Perfoms a search of participants and display the results as a table. Saves the results in the session so they can be retrieved later'''
-    
+
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
-    
+
     try:
         apiKey = session['apikey']
         client = pyalveo.Client(apiKey, BASE_URL)
@@ -208,7 +208,7 @@ def results():
         global USER_MESSAGE
         USER_MESSAGE = "You must log in to view this page!"
         bottle.redirect('/')
-        
+
     try:
         message = session['message']
         session['message'] = ""
@@ -216,11 +216,11 @@ def results():
     except KeyError:
         session['message'] = ""
         message = session['message']
-        
+
     query = PREFIXES+ """
-    
+
     SELECT ?id ?gender ?age ?city ?first_language ?pob_country ?pob_town"""
-          
+
     query = query + """
     WHERE {
         ?id a foaf:Person .
@@ -248,7 +248,7 @@ def results():
                    'num_range':['age'],
                    'original_where':['id','city','age','gender','first_language','pob_country','pob_town']
                 }
-    
+
     searchArgs = [arg for arg in bottle.request.forms.allitems() if len(arg[1])>0]
     qfilter=""
     #build up the where clause
@@ -259,7 +259,7 @@ def results():
                 qfilter = qfilter + """?id austalk:%s ?%s .\n""" % (item[0],item[0])
         else:
             qfilter = qfilter + """?id austalk:%s ?%s .\n""" % (item[0],item[0])
-    
+
     #now build the filters
     regexList = [arg for arg in searchArgs if arg[0] in filterTable['regex']]
     for item in regexList:
@@ -267,48 +267,48 @@ def results():
             qfilter = qfilter + qbuilder.regex_filter('id',toString=True,prepend="http://id.austalk.edu.au/participant/")
         else:
             qfilter = qfilter + qbuilder.regex_filter(item[0])
-    
-    
+
+
     multiselectList = [arg for arg in searchArgs if arg[0] in filterTable['multiselect']]
     for item in multiselectList:
         #since birth country is a multipple select, it can be gotten as a list. We can now put it together so it's as
         #if it's a normal user entered list of items.
         customStr = "".join('''"%s",''' % s for s in bottle.request.forms.getall(item[0]))[0:-1]
-        
+
         qfilter = qfilter + qbuilder.regex_filter(item[0],custom=customStr)
-        
+
     numRangeList = [arg for arg in searchArgs if arg[0] in filterTable['num_range']]
     for item in numRangeList:
         qfilter = qfilter + qbuilder.num_range_filter(item[0])
-    
+
     toStrList = [arg for arg in searchArgs if arg[0] in filterTable['to_str']]
     for item in toStrList:
         qfilter = qfilter + qbuilder.to_str_filter(item[0])
-    
+
     booleanList = [arg for arg in searchArgs if arg[0] in filterTable['boolean']]
     for item in booleanList:
         qfilter = qfilter + qbuilder.boolean_filter(item[0])
-    
+
     simpleList = [arg for arg in searchArgs if arg[0] in filterTable['simple']]
     for item in simpleList:
         qfilter = qfilter + qbuilder.simple_filter(item[0])
-                    
+
     query = query + qfilter + "} \nORDER BY ?id"
-    
+
     resultsList = quer.results_dict_list("austalk", query)
     session['partfilters'] = qfilter #so we can use the filters later again
     session['partlist'] = resultsList
     session['partcount'] = session['resultscount']
     session.save()
-    
+
     undoExists = 'backupPartList' in session.itervalues()
-    
+
     return bottle.template('presults', resultsList=resultsList, resultCount=session['partcount'],message=message,undo=undoExists, apiKey=apiKey)
 
 @bottle.get('/presults')
 def part_list():
     '''Displays the results of the last participant search, or redirects home if no such search has been performed yet.'''
-    
+
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
 
     try:
@@ -317,7 +317,7 @@ def part_list():
         global USER_MESSAGE
         USER_MESSAGE = "You must log in to view this page!"
         bottle.redirect('/')
-        
+
     try:
         resultsList = session['partlist']
         #incase the list was created but for some reason the user removes all elements or searches nothing.
@@ -327,7 +327,7 @@ def part_list():
         session['message'] = "Perform a participant search first."
         session.save()
         bottle.redirect('/psearch')
-        
+
     try:
         message = session['message']
         session['message'] = ""
@@ -335,16 +335,16 @@ def part_list():
     except KeyError:
         session['message'] = ""
         message = session['message']
-    
+
     undoExists = 'backupPartList' in session
     if undoExists:
-        undoExists = len(session['backupPartList'])>0   
+        undoExists = len(session['backupPartList'])>0
     return bottle.template('presults', resultsList=resultsList, resultCount=session['partcount'],message=message,undo=undoExists, apiKey=apiKey)
 
 @bottle.get('/download/participants.csv')
 def download_participants_csv():
     '''Returns a csv file download of the participants and all their meta data.'''
-    
+
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
 
     try:
@@ -355,7 +355,7 @@ def download_participants_csv():
         global USER_MESSAGE
         USER_MESSAGE = "You must log in to view this page!"
         bottle.redirect('/')
-        
+
     try:
         resultsList = session['partlist']
         #incase the list was created but for some reason the user removes all elements or searches nothing.
@@ -365,7 +365,7 @@ def download_participants_csv():
         session['message'] = "Perform a participant search first."
         session.save()
         bottle.redirect('/psearch')
-    
+
     #create the dict list with more metadata than we're already keeping
     metaList = ['pob_state','cultural_heritage','ses','professional_category',
                         'education_level','mother_cultural_heritage','father_cultural_heritage','pob_town',
@@ -393,41 +393,41 @@ def download_participants_csv():
         select = select + '?'+x+' '
         where = where + 'OPTIONAL { ?id austalk:'+x+' ?'+x+' . }\n'
     select = select + '\n'
-    
+
     query = PREFIXES+ '\n' + select + where + session['partfilters'] + '\n} order by ?id'
-    
+
     resultsList = quer.results_dict_list("austalk", query)
-    
+
     #make response header so that file will be downloaded.
     bottle.response.headers["Content-Disposition"] = "attachment; filename=participants.csv"
     bottle.response.headers["Content-type"] = "text/csv"
-    
+
     csvfile = BytesIO()
     dict_writer = csv.DictWriter(csvfile,['id','age','city','gender','first_language','mother_first_language','father_first_language']+metaList)
     dict_writer.writeheader()
     dict_writer.writerows(resultsList)
-    
+
     csvfile.seek(0)
     return csvfile.read()
 
 @bottle.post('/handleparts')
 def handle_parts():
     '''Removes selected participants or remove all non-selected and continue to search items or get all items.'''
-    
+
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
-    
+
     try:
         apiKey = session['apikey']
     except KeyError:
         global USER_MESSAGE
         USER_MESSAGE = "You must log in to view this page!"
         bottle.redirect('/')
-    
+
     partList = session['partlist']
     selectedParts = bottle.request.forms.getall('selected')
-    
+
     function = bottle.request.forms.get('submit')
-    
+
     if function=='remove':
         newPartList = [p for p in partList if p['id'] not in selectedParts]
         session['backupPartList'] = [p for p in partList if p['id'] in selectedParts]
@@ -436,19 +436,19 @@ def handle_parts():
         if len(selectedParts)>1:
             session['message'] = 'Removed %d items.' % len(selectedParts)
         elif len(selectedParts)==1:
-            session['message'] = 'Removed one item.' 
+            session['message'] = 'Removed one item.'
         session.save()
     elif function=='getall':
         #goto /itemresults with selected items
         #removed this option as it crashes to go directly to item results without a search
         newPartList = [p for p in partList if p['id'] in selectedParts]
-    
+
         session['partcount'] = len(selectedParts)
         session['partlist'] = newPartList
         session.save()
-    
+
         bottle.redirect('/itemresults')
-        
+
     elif function=='search':
         #if nothing selected, tell them to select something first
         if len(selectedParts)==0:
@@ -456,11 +456,11 @@ def handle_parts():
             bottle.redirect('/presults')
         #goto /itemsearch with selected items
         newPartList = [p for p in partList if p['id'] in selectedParts]
-    
+
         session['partcount'] = len(selectedParts)
         session['partlist'] = newPartList
         session.save()
-    
+
         bottle.redirect('/itemsearch')
     elif function=='undo':
         #undo most recent remove if there was one.
@@ -480,9 +480,9 @@ def handle_parts():
 @bottle.post('/itemresults')
 def item_results():
     '''Like results(), but for items not participants. Functionally similar.'''
-    
+
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
-    
+
     try:
         apiKey = session['apikey']
         client = pyalveo.Client(apiKey, BASE_URL)
@@ -491,8 +491,8 @@ def item_results():
         global USER_MESSAGE
         USER_MESSAGE = "You must log in to view this page!"
         bottle.redirect('/')
-    
-    query = PREFIXES + """   
+
+    query = PREFIXES + """
     SELECT distinct ?item ?prompt ?componentName ?media
     WHERE {
       ?item a ausnc:AusNCObject .
@@ -543,15 +543,15 @@ def item_results():
     except KeyError:
         session['message'] = ""
         message = session['message']
-    
+
     undoExists = 'backupItemList' in session and len(session['backupPartList'])>0
-    
+
     return bottle.template('itemresults', partList=partList, resultsCount=resultsCount, message=message,undo=undoExists, apiKey=apiKey)
 
 @bottle.get('/itemresults')
 def item_list():
     '''Like part_list but for items. Note that it is functionally different, so these two functions can't currently be rolled together.'''
-    
+
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
 
     try:
@@ -560,7 +560,7 @@ def item_list():
         global USER_MESSAGE
         USER_MESSAGE = "You must log in to view this page!"
         bottle.redirect('/')
-        
+
     try:
         partList = session['partlist']
         test = session['partlist'][0]['item_results']#should have something here
@@ -568,7 +568,7 @@ def item_list():
         session['message'] = "Perform an item search first."
         session.save()
         bottle.redirect('/itemsearch')
-    
+
     try:
         message = session['message']
         session['message'] = ""
@@ -576,7 +576,7 @@ def item_list():
     except KeyError:
         session['message'] = ""
         message = session['message']
-    
+
     undoExists = 'backupItemList' in session
     if undoExists:
         undoExists = len(session['backupItemList'])>0
@@ -587,7 +587,7 @@ def item_list():
 @bottle.get('/download/itemswithpartdata.csv')
 def download_items_csv():
     '''Returns a csv file download of the participants and all their meta data.'''
-    
+
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
 
     try:
@@ -596,7 +596,7 @@ def download_items_csv():
         global USER_MESSAGE
         USER_MESSAGE = "You must log in to view this page!"
         bottle.redirect('/')
-        
+
     try:
         #incase the list was created but for some reason the user removes all elements or searches nothing.
         if session['itemcount']==0:
@@ -605,7 +605,7 @@ def download_items_csv():
         session['message'] = "Perform an item search first."
         session.save()
         bottle.redirect('/itemsearch')
-    
+
     resultsList = []
     if str(bottle.request.path).split('/')[-1]=='itemswithpartdata.csv':
         #add more participant meta data
@@ -632,34 +632,34 @@ def download_items_csv():
     #make response header so that file will be downloaded.
     bottle.response.headers["Content-Disposition"] = "attachment; filename=items.csv"
     bottle.response.headers["Content-type"] = "text/csv"
-    
+
     csvfile = BytesIO()
     dict_writer = csv.DictWriter(csvfile,resultsList[0].keys())
     dict_writer.writeheader()
     dict_writer.writerows(resultsList)
-    
+
     csvfile.seek(0)
     return csvfile.read()
 
 @bottle.post('/handleitems')
 def handle_items():
     '''Like handle_parts but for items. Not functionally identical.'''
-    
+
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
-    
+
     try:
         apiKey = session['apikey']
     except KeyError:
         global USER_MESSAGE
         USER_MESSAGE = "You must log in to view this page!"
         bottle.redirect('/')
-    
+
     partList = session['partlist']
-    
+
     selectedItems = bottle.request.forms.getall('selected')
-    
+
     function = bottle.request.forms.get('submit')
-    
+
     if function=='remove':
         if len(selectedItems)==0:
             session['message'] = 'Select something to remove'
@@ -678,14 +678,14 @@ def handle_items():
                     removeItemList.append(item)
             session['backupItemList'][p['id']] = removeItemList
             p['item_results'] = newItemList
-        
+
         session['backupItemList']['count'] = len(selectedItems)
         session['itemcount'] = session['itemcount'] - len(selectedItems)
         session['partlist'] = partList
         if len(selectedItems)>1:
             session['message'] = 'Removed %d items.' % len(selectedItems)
         elif len(selectedItems)==1:
-            session['message'] = 'Removed one item.' 
+            session['message'] = 'Removed one item.'
         session.save()
     elif function=='undo':
         #undo most recent remove if there was one.
@@ -695,7 +695,7 @@ def handle_items():
                 raise KeyError
             for p in partList:
                 p['item_results'].extend(session['backupItemList'][p['id']])
-            
+
             session['itemcount'] += session['backupItemList']['count']
             session['backupItemList']={}
             session.save()
@@ -708,7 +708,7 @@ def handle_items():
         for p in partList:
             newItemList = [item for item in p['item_results'] if item['item'] in selectedItems]
             p['item_results'] = newItemList
-        
+
         bottle.redirect('/export')
     bottle.redirect('/itemresults')
 
@@ -717,23 +717,23 @@ def handle_items():
 @bottle.post('/itemsearch')
 def item_search():
     '''Displays the page for searching items, unless there's not yet a group of participants selected to search for.'''
-    
+
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
-    
+
     try:
         apiKey = session['apikey']
     except KeyError:
         global USER_MESSAGE
         USER_MESSAGE = "You must log in to view this page!"
         bottle.redirect('/')
-        
+
     try:
         partList = session['partlist'] #@UnusedVariable
     except KeyError:
         session['message'] = "Select some participants first."
         session.save()
         bottle.redirect('/psearch')
-    
+
     try:
         message = session['message']
         session['message'] = ""
@@ -741,30 +741,30 @@ def item_search():
     except KeyError:
         session['message'] = ""
         message = session['message']
-        
+
     return bottle.template('itemsearch',results=results, message=message, apiKey=apiKey)
 
 
 @bottle.get('/itemsearch/sentences')
 def getSentences():
-    
+
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
-    
+
     try:
         apiKey = session['apikey']
         client = pyalveo.Client(apiKey, BASE_URL)
         quer = alquery.AlQuery(client)
     except KeyError:
         return "<option value="">You must login to view results!</option>"
-    
+
     try:
         selectedComp = bottle.request.query['sentence']
     except KeyError:
         return ""
-    
+
     if len(selectedComp)==0:
         return ""
-    
+
     query = PREFIXES+'''
     SELECT ?prompt WHERE {
         ?component a austalk:Component .
@@ -781,9 +781,9 @@ def getSentences():
 def export():
     '''Exports a selected set of items to Alveo if method is POST. If method is GET, displays a simple form to allow said exporting
     unless no items have yet been selected to export. Redirects home after the export is completed'''
-    
+
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
-    
+
     try:
         apiKey = session['apikey']
         client = pyalveo.Client(apiKey, BASE_URL)
@@ -791,7 +791,7 @@ def export():
         global USER_MESSAGE
         USER_MESSAGE = "You must log in to view this page!"
         bottle.redirect('/')
-    
+
     try:
         message = session['message']
         session['message'] = ""
@@ -799,20 +799,20 @@ def export():
     except KeyError:
         session['message'] = ""
         message = session['message']
-    
+
     #create a single item list so it can be passed to pyalveo
     iList = [] #iList, the expensive and non-functional but good looking version of list
-    
+
     try:
         for part in session['partlist']:
             [iList.append(item['item']) for item in part['item_results']]
-        
+
         itemList = pyalveo.ItemGroup(iList, client)
     except KeyError:
         session['message'] = "Select some items first."
         session.save()
         bottle.redirect('/itemresults')
-    
+
     if bottle.request.forms.get('listname') != None:
         #This is when the user sends a post
         listName = bottle.request.forms.get('listname')
@@ -820,24 +820,24 @@ def export():
         print res
         message = "List exported to Alveo. Next step is to click the link to the alveo website to see your items."
         session.save()
-        
-    itemLists = client.get_item_lists()     
+
+    itemLists = client.get_item_lists()
     return bottle.template('export', apiKey=apiKey, itemLists=itemLists,message=message,itemCount=session['itemcount'])
-    
+
 @bottle.get('/login')
 def login():
     '''Login page.'''
     global USER_MESSAGE
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
-    
+
     try:
         apiKey = session['apikey']
     except KeyError:
         apiKey = 'Not logged in'
-    
+
     msg = USER_MESSAGE
     USER_MESSAGE = ""
-        
+
     return bottle.template('login', message=msg, apiKey=apiKey)
 
 @bottle.get('/logout')
@@ -852,30 +852,30 @@ def logout():
 @bottle.get('/about')
 def about():
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
-    
+
     try:
         apiKey = session['apikey']
     except KeyError:
         apiKey = 'Not logged in'
-    
+
     return bottle.template('about', apiKey=apiKey)
 
 @bottle.get('/help')
 def help():
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
-    
+
     try:
         apiKey = session['apikey']
     except KeyError:
         apiKey = 'Not logged in'
-        
+
     return bottle.template('help', apiKey=apiKey)
 
 @bottle.post('/login')
-def logged_in():  
+def logged_in():
     '''Logs the user in with their API key.'''
-    
-    session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable   
+
+    session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
     session['apikey'] = bottle.request.forms.get('apikey')
     session['message'] = "Login successful."
     session.save()
@@ -884,7 +884,4 @@ def logged_in():
 if __name__ == '__main__':
     '''Runs the app. Listens on localhost:8080.'''
     #bottle.run(app=app, host='localhost', port=8080, debug=True)
-    bottle.run(app=app, host= '10.126.98.239', port=8080, debug=True)
-    
-
-
+    bottle.run(app=app, host='0.0.0.0', port=8080, debug=True)
