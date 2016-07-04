@@ -13,7 +13,7 @@
 <div class="content">
 	%if len(message)>0:
 		<div class="alert alert-warning" role="alert">
-			<p><b>{{message}}</b></p>
+			<p align="center"><b>{{message}}</b></p>
 		</div>
 	%end
 <h4>Number of Participants Found: {{resultCount}}</h4>
@@ -21,8 +21,8 @@
 participants.</p>
 <p><b>Selecting items for large numbers of participants can take a long time (up to 15 minutes if selecting for
 all participants). Please be patient.</b></p>
-
-<form action="/handleparts" method="POST" class="form-inline" role="form">
+<a type="button" class="btn btn-default" href="/download/participants.csv">Download all metadata as CSV</a>
+<form action="/handleparts" method="POST" class="form-inline" role="form"><br>
 	<div class="form-group" style="float:left;">
 		<button type="button" class="btn btn-default" onClick="selectAll()"  >Select All</button>
 		<button type="button" class="btn btn-default" onClick="selectNone()" >Select None</button>
@@ -43,6 +43,7 @@ all participants). Please be patient.</b></p>
 				<div class="rTableHead">Participant</div>
 				<div class="rTableHead">Gender</div>
 				<div class="rTableHead">Age</div>
+				<div class="rTableHead">First Language</div>
 				<div class="rTableHead">Recorded In</div>
 				<div class="rTableHead">Birth City</div>
 				<div class="rTableHead">Birth Country</div>
@@ -54,6 +55,7 @@ all participants). Please be patient.</b></p>
 					<div class="rTableCellLeft"><b>{{row['id'].split('/')[-1]}}</b></div>
 					<div class="rTableCell">{{row['gender']}}</div>
 					<div class="rTableCell">{{row['age']}}</div>
+					<div class="rTableCell">{{row['first_language']}}</div>
 					<div class="rTableCell">{{row['city']}}</div>
 					<div class="rTableCell">{{row['pob_town']}}</div>
 					<div class="rTableCellRight">{{row['pob_country']}}</div>
@@ -61,6 +63,7 @@ all participants). Please be patient.</b></p>
 			% end
 		</div>
 	</div>
+	
 </form>
 
 </div>

@@ -11,6 +11,18 @@
 </div>
 
 <div class="content">
+
+%if len(message)>0:
+	<div class="alert alert-warning" role="alert">
+		<p align="center"><b>{{message}}</b></p>
+	</div>
+%end
+
+<h4>Number of Selected Items: {{itemCount}}</h4>
+<p>Select an item list to add your selected items too or export to a new list </p>
+<table>
+<tr>
+<td>
 <div class="search_form">
 <form method="POST" action="/export">
 <table>
@@ -24,8 +36,11 @@
  </tr>
 </table>
 </form>
+</div>
+</td>
+<td>
+<div class="search_form">
 <form method="POST" action="/export">
-<br>
 <table>
  <tr>
   <td>
@@ -42,7 +57,11 @@
 </table>
 </form>
 </div>
-
+</td>
+</tr>
+</table>
+<br>
+<a type="button" class="btn btn-default" href="https://app.alveo.edu.au/item_lists" target="_blank">Click here to go to the Alveo Website</a>
 <h2>Notes:</h2>
 
 <p>"Export to New List" Will add to an existing item list if one with the same name already exists.</p>
