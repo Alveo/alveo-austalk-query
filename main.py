@@ -504,38 +504,38 @@ def item_results():
       ?media austalk:version 1 .
       ?media austalk:channel "ch6-speaker16"
      """
-     
+
     if bottle.request.forms.get('anno') == "required":
         query = query + """?ann dada:annotates ?item ."""
-     
+
     partList = session['partlist']
     resultsCount = 0
-    
+
     query = query + qbuilder.regex_filter('prompt')
     query = query + qbuilder.simple_filter('componentName')
     query = query + qbuilder.to_str_filter('prototype',prepend="http://id.austalk.edu.au/protocol/item/")
-    
+
     if bottle.request.forms.get('comptype') != "":
         query=query+"""FILTER regex(?componentName, "%s", "i")""" % (bottle.request.forms.get('comptype'))
-    
+
     if bottle.request.forms.get('wlist')=='hvdwords':
-        query=query+"""FILTER regex(?prompt, "^head$|^had$|^hud$|^hard$|^heared$|^heed$|^hid$|^herd$|^howd$|^hoyd$|^haired$|^hood$|^hod$", "i")"""
-    
+        query=query+"""FILTER regex(?prompt, "^head$|^had$|^hud$|^hard$|^heared$|^heed$|^hid$|^herd$|^howd$|^hoyd$|^haired$|^hood$|^hod|^whod$", "i")"""
+
     if bottle.request.forms.get('wlist')=='hvdmono':
-        query=query+"""FILTER regex(?prompt, "^head$|^had$|^hud$|^heed$|^hid$|^herd$|^hood$|^hod$", "i")"""
-    
+        query=query+"""FILTER regex(?prompt, "^head$|^had$|^hud$|^heed$|^hid$|^herd$|^hood$|^hod|^whod$", "i")"""
+
     if bottle.request.forms.get('wlist')=='hvddip':
         query=query+"""FILTER regex(?prompt, "^hard$|^heared$|^herd$|^howd$|^hoyd$|^haired$", "i")"""
-    
+
     query = query + "}"
-    
+
     for row in partList:
         row['item_results'] = quer.results_dict_list("austalk", query % (row['id']))
         resultsCount = resultsCount + session['resultscount']
-    
+
     session['itemcount'] = resultsCount
     session.save()
-    
+
     try:
         message = session['message']
         session['message'] = ""
