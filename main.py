@@ -511,7 +511,11 @@ def item_results():
     partList = session['partlist']
     resultsCount = 0
 
-    query = query + qbuilder.regex_filter('prompt')
+    #if there is a complete sentance (prompt) selected from the dropdown, use that and not the 'prompt' regex.
+    if bottle.request.forms.get('fullprompt'):
+        query = query + qbuilder.regex_filter('prompt',custom='^'+bottle.request.forms.get('fullprompt')+'$')
+    else:
+        query = query + qbuilder.regex_filter('prompt')
     query = query + qbuilder.simple_filter('componentName')
     query = query + qbuilder.to_str_filter('prototype',prepend="http://id.austalk.edu.au/protocol/item/")
 
