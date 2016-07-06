@@ -19,7 +19,7 @@
 <div class="content">
 	%if len(message)>0:
 	<div class="alert alert-warning" role="alert">
-		<p><b>{{message}}</b></p>
+		<p align="center"><b>{{message}}</b></p>
 	</div>
 	%end
 
@@ -90,9 +90,9 @@
 							</td>
 							<td class="mid">
 								<div class="form-group">
-									<select class="form-control" name="recording_site" id="recording_site">
+									<select class="form-control" name="city" id="city">
 									    <option value = "">Any</option>
-										% for city in results['recording_site']:
+										% for city in results['city']:
 											<option value="{{city}}">{{city}}</option>
 										% end
 									</select>

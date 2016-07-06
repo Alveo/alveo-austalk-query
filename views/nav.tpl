@@ -7,17 +7,16 @@
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">Alveo Query Engine</a>
+            <a class="navbar-brand" href="/">Alveo Query Engine</a>
           </div>
           <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-              {{!'<li class="active"><a href="/">Search Participants</a></li>' if title=='PSearch' else '<li><a href="/">Search Participants</a></li>'}}
+              {{!'<li class="active"><a href="/psearch">Search Participants</a></li>' if title=='PSearch' else '<li><a href="/psearch">Search Participants</a></li>'}}
               {{!'<li class="active"><a href="/presults">Participant List</a></li>' if title=='PResults' else '<li><a href="/presults">Participant List</a></li>'}}
+			  {{!'<li class="active"><a href="/itemsearch">Search Items</a></li>' if title=='ISearch' else '<li><a href="/itemsearch">Search Items</a></li>'}}
               {{!'<li class="active"><a href="/itemresults">Item List</a></li>' if title=='IResults' else '<li><a href="/itemresults">Item List</a></li>' }}
               {{!'<li class="active"><a href="/export">Export</a></li>' if title=='Export' else '<li><a href="/export">Export</a></li>'}}
-              {{!'<li class="active"><a href="/help">Help</a></li>' if title=='Help' else '<li><a href="/help">Help</a></li>'}}
-              {{!'<li class="active"><a href="/about">About</a></li>' if title=='About' else '<li><a href="/about">About</a></li>'}}
-              {{!'<li><a href="/logout">Log out</a></li>' if apiKey!='Not logged in.' else '<li><a href="/login">Log in</a></li>'}}
+              {{!'<li><a href="/logout">Log out</a></li>' if apiKey!='Not logged in' else '<li><a href="/">Log in</a></li>'}}
               <li><a>User: {{apiKey}}</a></li>
             </ul>
           </div>

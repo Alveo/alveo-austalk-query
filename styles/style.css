@@ -147,9 +147,7 @@ label{
 }
 
 input[type=checkbox].hideme {
-  position: absolute;
-  top: -9999px;
-  left: -9999px;
+  display: none;
 }
 
 input[type=checkbox]:checked + label .rTableCell, input[type=checkbox]:checked + label .rTableCellLeft, input[type=checkbox]:checked + label .rTableCellRight {
