@@ -188,6 +188,33 @@ def search():
                 ?part a foaf:Person .
                 ?part austalk:father_first_language ?val .}
             ORDER BY ?part""")
+        
+        results['country_hist'] = quer.results_list("austalk", PREFIXES+
+        """
+            SELECT distinct ?country
+            WHERE {
+                ?part rdf:type foaf:Person .
+                ?part austalk:residential_history ?rh .
+                ?rh austalk:country ?country . 
+            } ORDER BY ?country""")
+        
+        results['town_hist'] = quer.results_list("austalk", PREFIXES+
+        """
+            SELECT distinct ?town
+            WHERE {
+                ?part rdf:type foaf:Person .
+                ?part austalk:residential_history ?rh .
+                ?rh austalk:town ?town . 
+            } ORDER BY ?town""")
+        
+        results['state_hist'] = quer.results_list("austalk", PREFIXES+
+        """
+            SELECT distinct ?state
+            WHERE {
+                ?part rdf:type foaf:Person .
+                ?part austalk:residential_history ?rh .
+                ?rh austalk:state ?state . 
+            } ORDER BY ?state""")
 
         #cache the results
         session['psearch_cache'] = results
@@ -219,7 +246,7 @@ def results():
 
     query = PREFIXES+ """
 
-    SELECT ?id ?gender ?age ?city ?first_language ?pob_country ?pob_town"""
+    SELECT distinct ?id ?gender ?age ?city ?first_language ?pob_country ?pob_town"""
 
     query = query + """
     WHERE {
@@ -228,6 +255,12 @@ def results():
         ?recording_site austalk:city ?city .
         ?id foaf:age ?age .
         ?id foaf:gender ?gender .
+        OPTIONAL { ?id austalk:residential_history ?rh . 
+        OPTIONAL { ?rh austalk:country ?hist_country . }
+        OPTIONAL { ?rh austalk:state ?hist_state . }
+        OPTIONAL { ?rh austalk:town ?hist_town . }
+        OPTIONAL { ?rh austalk:age_from ?age_from . }
+        OPTIONAL { ?rh austalk:age_to ?age_to . } }
         OPTIONAL { ?id austalk:first_language ?fl . }
         OPTIONAL { ?fl iso639schema:name ?first_language . }
         OPTIONAL { ?id austalk:pob_country ?pob_country . }
@@ -243,10 +276,11 @@ def results():
                    'regex':['id','other_languages','hobbies_details'],
                    'boolean':['has_vocal_training','is_smoker','has_speech_problems','has_piercings','has_health_problems',
                              'has_hearing_problems','has_dentures','is_student','is_left_handed','has_reading_problems',],
-                   'multiselect':['pob_country','father_pob_country','mother_pob_country'],
+                   'multiselect':['pob_country','father_pob_country','mother_pob_country','hist_town','hist_state','hist_country'],
                    'to_str':['first_language','mother_first_language','father_first_language'],
-                   'num_range':['age'],
-                   'original_where':['id','city','age','gender','first_language','pob_country','pob_town']
+                   'num_range':['age','age_from','age_to'],
+                   'original_where':['id','city','age','gender','first_language','pob_country','pob_town','age_from','age_to',
+                                     'hist_town','hist_state','hist_country']
                 }
 
     searchArgs = [arg for arg in bottle.request.forms.allitems() if len(arg[1])>0]
@@ -268,14 +302,17 @@ def results():
         else:
             qfilter = qfilter + qbuilder.regex_filter(item[0])
 
-
+    #we want only unique listings in the multiselect list
+    unique = []
     multiselectList = [arg for arg in searchArgs if arg[0] in filterTable['multiselect']]
     for item in multiselectList:
-        #since birth country is a multipple select, it can be gotten as a list. We can now put it together so it's as
-        #if it's a normal user entered list of items.
-        customStr = "".join('''"%s",''' % s for s in bottle.request.forms.getall(item[0]))[0:-1]
-
-        qfilter = qfilter + qbuilder.regex_filter(item[0],custom=customStr)
+        if item[0] not in unique:
+            unique.append(item[0])
+            #since birth country is a multipple select, it can be gotten as a list. We can now put it together so it's as
+            #if it's a normal user entered list of items.
+            customStr = "".join('''"%s",''' % s for s in bottle.request.forms.getall(item[0]))[0:-1]
+    
+            qfilter = qfilter + qbuilder.regex_filter(item[0],custom=customStr)
 
     numRangeList = [arg for arg in searchArgs if arg[0] in filterTable['num_range']]
     for item in numRangeList:
@@ -294,7 +331,7 @@ def results():
         qfilter = qfilter + qbuilder.simple_filter(item[0])
 
     query = query + qfilter + "} \nORDER BY ?id"
-
+    
     resultsList = quer.results_dict_list("austalk", query)
     session['partfilters'] = qfilter #so we can use the filters later again
     session['partlist'] = resultsList
@@ -888,4 +925,4 @@ def logged_in():
 if __name__ == '__main__':
     '''Runs the app. Listens on localhost:8080.'''
     #bottle.run(app=app, host='localhost', port=8080, debug=True)
-    bottle.run(app=app, host='0.0.0.0', port=8080, debug=True)
+    bottle.run(app=app, host='10.126.97.46', port=8080, debug=True)

@@ -2,6 +2,7 @@
 <html>
 <head>
 	% include('bshead.tpl')
+	
 </head>
 
 
@@ -108,7 +109,7 @@
 		</div>
 		<div class="panel panel-default">
 			<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#glocation">
-				<h4 class="panel-title">Birth and Residential Details</h4>
+				<h4 class="panel-title">Birth Location and Details</h4>
 			</div>
 			<div id="glocation" class="panel-collapse collapse">
 				<div class="panel-body">
@@ -132,7 +133,7 @@
 							</td>
 							<td class="mid">
 								<div class="form-group">
-									<input type="text" class="form-control" name="pob_state" id="pob_state" placeholder="NSW">
+									<input type="text" class="form-control" name="pob_town" id="pob_town" placeholder="NSW">
 								</div>
 							</td>
 							<td class="right">
@@ -155,6 +156,97 @@
 							</td>
 							<td class="right">
 								<p>You're able to select the country the participants was born in. You are able to select multiple countries by holding down the Ctrl button (Command button on Mac) and selecting the countries you wish. You can also Select a range of countries by holding down SHIFT. Please note that if you wish for everyone born in Australia, you'll need to select both "AU" and "Australia" due to inconsistencies in the data.</p>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div class="panel panel-default">
+			<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#ghistory">
+				<h4 class="panel-title">Residential History</h4>
+			</div>
+			<div id="ghistory" class="panel-collapse collapse">
+				<div class="panel-body">
+					<table border="0" cellspacing="0" cellpadding="0">
+						<tr>
+							<td class="left">
+								<label for="town"><b>Town:</b></label>
+							</td>
+							<td class="mid">
+								<div class="form-group">
+									<select multiple size=4 class="form-control" name="hist_town" id="hist_town">
+										<option value = "">Any</option>
+										%for country in results['town_hist']:
+											<option value="{{country}}">{{country}}</option>
+										%end
+									</select>
+								</div>
+							</td>
+							<td class="right">
+								<p>You can search by the town of which the participant have lived in.</p>
+							</td>
+						</tr>
+						<tr>
+							<td class="left">
+								<label for="state"><b>State:</b></label>
+							</td>
+							<td class="mid">
+								<div class="form-group">
+									<select multiple size=4 class="form-control" name="hist_state" id="hist_state">
+										<option value = "">Any</option>
+										%for country in results['state_hist']:
+											<option value="{{country}}">{{country}}</option>
+										%end
+									</select>
+								</div>
+							</td>
+							<td class="right">
+								<p>Here you can select the State or Territory the participants have lived in. You must enter the abbreviated names of the states such as "VIC" or "WA". This works for international states however very few are given and may not represent an accurate abbreviation for that state.</p>
+							</td>
+						</tr>
+						<tr>
+							<td class="left">
+								<label for="country"><b>Country:</b></label>
+							</td>
+							<td class="mid">
+								<div class="form-group">
+									<select multiple size=4 class="form-control" name="hist_country" id="hist_country">
+										<option value = "">Any</option>
+										%for country in results['country_hist']:
+											<option value="{{country}}">{{country}}</option>
+										%end
+									</select>
+								</div>
+							</td>
+							<td class="right">
+								<p>You're able to select the country the participants have lived in. You are able to select multiple countries by holding down the Ctrl button (Command button on Mac) and selecting the countries you wish. You can also Select a range of countries by holding down SHIFT. Please note that if you wish for everyone born in Australia, you'll need to select both "AU" and "Australia" due to inconsistencies in the data.</p>
+							</td>
+						</tr>
+						<tr>
+							<td class="left">
+								<label for="hist_age"><b>Age From:</b></label>
+							</td>
+							<td class="mid">
+								<div class="form-group">
+									<input type="text" class="form-control" name="age_from" id="age_from" placeholder="5+">
+								</div>
+							</td>
+							<td class="right">
+								<p>Here you can specify what age the participants were when they moved to the provided historical address. Enter a single number to search for a specific age. Enter two numbers separated by a hyphen (e.g, "18-50") to search for a range of ages.<br>Enter a negative number (e.g, "-50") to search for people at or under a specific age.<br>Enter a number followed by a + (e.g, "50+") to search for people at or over a specific age.</p>
+							</td>
+						</tr>
+						<tr>
+							<td class="left">
+								<label for="hist_length"><b>Age To:</b></label>
+							</td>
+							<td class="mid">
+								<div class="form-group">
+									<input type="text" class="form-control" name="age_to" id="age_to" placeholder="-25">
+								</div>
+							</td>
+							<td class="right">
+								<p>Here you can specify what age the participants were when they moved out of the provided historical address. The same format can be used as the 'Age From' Field.<br>If you set this field to be the same value as the age field when using a specific age and leaving Age From empty, you can find their latest address.</p>
 							</td>
 						</tr>
 					</table>
