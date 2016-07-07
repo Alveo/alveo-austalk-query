@@ -403,44 +403,20 @@ def download_participants_csv():
         session.save()
         bottle.redirect('/psearch')
 
-    #create the dict list with more metadata than we're already keeping
-    metaList = ['pob_state','cultural_heritage','ses','professional_category',
-                        'education_level','mother_cultural_heritage','father_cultural_heritage','pob_town',
-                        'mother_professional_category','father_professional_category','mother_education_level',
-                        'father_education_level','mother_pob_state','mother_pob_town','father_pob_state',
-                        'father_pob_town','other_languages','hobbies_details','has_vocal_training','is_smoker',
-                        'has_speech_problems','has_piercings','has_health_problems','has_hearing_problems',
-                        'has_dentures','is_student','is_left_handed','has_reading_problems','pob_country',
-                        'father_pob_country','mother_pob_country']
-    select = 'SELECT ?id ?age ?city ?gender ?first_language ?mother_first_language ?father_first_language'
-    where = '''WHERE {
-        ?id a foaf:Person .
-        ?id austalk:recording_site ?recording_site .
-        ?recording_site austalk:city ?city .
-        ?id foaf:age ?age .
-        ?id foaf:gender ?gender .
-        OPTIONAL { ?id austalk:first_language ?fl . }
-        OPTIONAL { ?fl iso639schema:name ?first_language . }
-        OPTIONAL { ?id austalk:father_first_language ?ffl . }
-        OPTIONAL { ?ffl iso639schema:name ?father_first_language . }
-        OPTIONAL { ?id austalk:mother_first_language ?mfl . }
-        OPTIONAL { ?mfl iso639schema:name ?mother_first_language . }
-        '''
-    for x in metaList:
-        select = select + '?'+x+' '
-        where = where + 'OPTIONAL { ?id austalk:'+x+' ?'+x+' . }\n'
-    select = select + '\n'
-
-    query = PREFIXES+ '\n' + select + where + session['partfilters'] + '\n} order by ?id'
+    query = qbuilder.get_everything_from_participants(filters=session['partfilters'])
 
     resultsList = quer.results_dict_list("austalk", query)
+    
+    #modify the output so it is more human readable
+    for row in resultsList:
+        row['id'] = row['id'].split('/')[-1]
 
     #make response header so that file will be downloaded.
     bottle.response.headers["Content-Disposition"] = "attachment; filename=participants.csv"
     bottle.response.headers["Content-type"] = "text/csv"
 
     csvfile = BytesIO()
-    dict_writer = csv.DictWriter(csvfile,['id','age','city','gender','first_language','mother_first_language','father_first_language']+metaList)
+    dict_writer = csv.DictWriter(csvfile,resultsList[0].keys())
     dict_writer.writeheader()
     dict_writer.writerows(resultsList)
 
@@ -633,6 +609,8 @@ def download_items_csv():
 
     try:
         apiKey = session['apikey']
+        client = pyalveo.Client(apiKey, BASE_URL)
+        quer = alquery.AlQuery(client)
     except KeyError:
         global USER_MESSAGE
         USER_MESSAGE = "You must log in to view this page!"
@@ -652,24 +630,27 @@ def download_items_csv():
         #add more participant meta data
         for part in session['partlist']:
             for x in part['item_results']:
+                #now get all participant info
+                query = qbuilder.get_everything_from_participants(id=part['id'])
                 new = x.copy()
-                new[u'participant'] = part['id']
-                new[u'gender'] = part['gender']
-                new[u'age'] = part['age']
-                new[u'first_language'] = part['first_language']
-                new[u'city'] = part['city']
-                new[u'pob_city'] = part['pob_town']
-                new[u'pob_country'] = part['pob_country']
+                results = quer.results_dict_list("austalk", query)
+                new.update(results[0])
                 resultsList.append(new)
-        print resultsList[0].keys()
     else:
         #add only participant id
         for part in session['partlist']:
             for x in part['item_results']:
                 new = x.copy()
-                new[u'participant'] = part['id']
+                new['participant'] = part['id']
                 resultsList.append(new)
-        print resultsList[0].keys()
+    
+    #modify the output so it is more human readable
+    for row in resultsList:
+        row['participant'] = row['id'].split('/')[-1]
+        row.pop('id',None)
+        row['media'] = row['media'].split('/')[-1]
+        row['item'] = row['item'].split('/')[-1]
+    
     #make response header so that file will be downloaded.
     bottle.response.headers["Content-Disposition"] = "attachment; filename=items.csv"
     bottle.response.headers["Content-type"] = "text/csv"

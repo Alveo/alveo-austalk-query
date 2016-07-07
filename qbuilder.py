@@ -7,6 +7,24 @@
 from bottle import request
 import re
 
+PREFIXES = """
+        PREFIX dc:<http://purl.org/dc/terms/>
+        PREFIX austalk:<http://ns.austalk.edu.au/>
+        PREFIX olac:<http://www.language-archives.org/OLAC/1.1/>
+        PREFIX ausnc:<http://ns.ausnc.org.au/schemas/ausnc_md_model/>
+        PREFIX foaf:<http://xmlns.com/foaf/0.1/>
+        PREFIX dbpedia:<http://dbpedia.org/ontology/>
+        PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX geo:<http://www.w3.org/2003/01/geo/wgs84_pos#>
+        PREFIX iso639schema:<http://downlode.org/rdf/iso-639/schema#>
+        PREFIX austalkid:<http://id.austalk.edu.au/>
+        PREFIX iso639:<http://downlode.org/rdf/iso-639/languages#> 
+        PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+        PREFIX is: <http://purl.org/ontology/is/core#>
+        PREFIX iso: <http://purl.org/iso25964/skos-thes#>
+        PREFIX dada: <http://purl.org/dada/schema/0.2#>"""
+
 def simple_filter(fName,endWith=True,beginWith=True,custom=None):
     '''
     @summary: Used to add a simple filter to a SPARQL query.
@@ -182,6 +200,53 @@ def regex_filter(fName,toString=False,prepend="",custom=None):
             return """FILTER regex(?%s, "%s", "i")\n""" % (fName, prepend+val)
     else:
         return ''
+
+def get_everything_from_participants(filters=None,id=None):
+    '''
+    @summary: Used to get a SPARQL query that gets all metadata from either one participant or many according to a given filter.
+    Inputting nothing will return all participants
+    
+    @param filters: The raw SPARQL filters to be used in the search.
+    @type filters: String
+    @param id: The id of the participant to retrieve the metadata from. If this is given then the filter is ignored and only this one participant will be returned.
+    @type id: String
+    @rtype: String
+    '''
+    #create the dict list with more metadata than we're already keeping
+    metaList = ['pob_state','cultural_heritage','ses','professional_category',
+                        'education_level','mother_cultural_heritage','father_cultural_heritage','pob_town',
+                        'mother_professional_category','father_professional_category','mother_education_level',
+                        'father_education_level','mother_pob_state','mother_pob_town','father_pob_state',
+                        'father_pob_town','other_languages','hobbies_details','has_vocal_training','is_smoker',
+                        'has_speech_problems','has_piercings','has_health_problems','has_hearing_problems',
+                        'has_dentures','is_student','is_left_handed','has_reading_problems','pob_country',
+                        'father_pob_country','mother_pob_country']
+    select = 'SELECT ?id ?age ?city ?gender ?first_language ?mother_first_language ?father_first_language'
+    where = '''WHERE {
+        ?id a foaf:Person .
+        ?id austalk:recording_site ?recording_site .
+        ?recording_site austalk:city ?city .
+        ?id foaf:age ?age .
+        ?id foaf:gender ?gender .
+        OPTIONAL { ?id austalk:first_language ?fl . }
+        OPTIONAL { ?fl iso639schema:name ?first_language . }
+        OPTIONAL { ?id austalk:father_first_language ?ffl . }
+        OPTIONAL { ?ffl iso639schema:name ?father_first_language . }
+        OPTIONAL { ?id austalk:mother_first_language ?mfl . }
+        OPTIONAL { ?mfl iso639schema:name ?mother_first_language . }
+        '''
+    for x in metaList:
+        select = select + '?'+x+' '
+        where = where + 'OPTIONAL { ?id austalk:'+x+' ?'+x+' . }\n'
+    select = select + '\n'
+    
+    if id:
+        filters = "FILTER (?id = <%s>)\n" % id
+    
+    if not filter:
+        filters = ''
+        
+    return PREFIXES+ '\n' + select + where + filters + '\n} order by ?id'
     
 def select_list(sList,custom=False):
     '''
