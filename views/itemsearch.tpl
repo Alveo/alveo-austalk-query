@@ -8,9 +8,9 @@
 			$('[name="componentName"]').click(function(){
 				if($('[name=componentName]').val()!=""){
 					$.ajax({url: "/itemsearch/sentences?sentence="+$('[name=componentName]').val(), async: true, success: function(result){
-						$('[name="prompt"]').html(result);
+						$('[name="fullprompt"]').html(result);
 					}});
-					$('[name="prompt"]').html('<option value="">Loading Results...</option>\n');
+					$('[name="fullprompt"]').html('<option value="">Loading Results...</option>\n');
 				}
 			});
 		});
@@ -172,11 +172,11 @@
 						</tr>
 						<tr>
 							<td class="left">
-								<label for="prompt"><b>Sentences:</b></label>
+								<label for="fullprompt"><b>Sentences:</b></label>
 							</td>
 							<td class="mid">
 								<div class="form-group">
-									<select class="form-control" name="prompt">
+									<select class="form-control" name="fullprompt">
 										<option value="">Any</option>
 									</select>
 								</div>

@@ -1,5 +1,5 @@
 '''
-@author: Dylan Wheeler
+@author: Dylan Wheeler, Michael Bauer
 
 @summary: The Alveo query engine is designed to provide a more useful way of searching the Alveo database. Currently only supports the Austalk collection.
 This file contains all the routing and much of the logic for the application. Run this to start the application. Listens on localhost:8080.
@@ -188,6 +188,33 @@ def search():
                 ?part a foaf:Person .
                 ?part austalk:father_first_language ?val .}
             ORDER BY ?part""")
+        
+        results['country_hist'] = quer.results_list("austalk", PREFIXES+
+        """
+            SELECT distinct ?country
+            WHERE {
+                ?part rdf:type foaf:Person .
+                ?part austalk:residential_history ?rh .
+                ?rh austalk:country ?country . 
+            } ORDER BY ?country""")
+        
+        results['town_hist'] = quer.results_list("austalk", PREFIXES+
+        """
+            SELECT distinct ?town
+            WHERE {
+                ?part rdf:type foaf:Person .
+                ?part austalk:residential_history ?rh .
+                ?rh austalk:town ?town . 
+            } ORDER BY ?town""")
+        
+        results['state_hist'] = quer.results_list("austalk", PREFIXES+
+        """
+            SELECT distinct ?state
+            WHERE {
+                ?part rdf:type foaf:Person .
+                ?part austalk:residential_history ?rh .
+                ?rh austalk:state ?state . 
+            } ORDER BY ?state""")
 
         #cache the results
         session['psearch_cache'] = results
@@ -219,7 +246,7 @@ def results():
 
     query = PREFIXES+ """
 
-    SELECT ?id ?gender ?age ?city ?first_language ?pob_country ?pob_town"""
+    SELECT distinct ?id ?gender ?age ?city ?first_language ?pob_country ?pob_town"""
 
     query = query + """
     WHERE {
@@ -228,6 +255,12 @@ def results():
         ?recording_site austalk:city ?city .
         ?id foaf:age ?age .
         ?id foaf:gender ?gender .
+        OPTIONAL { ?id austalk:residential_history ?rh . 
+        OPTIONAL { ?rh austalk:country ?hist_country . }
+        OPTIONAL { ?rh austalk:state ?hist_state . }
+        OPTIONAL { ?rh austalk:town ?hist_town . }
+        OPTIONAL { ?rh austalk:age_from ?age_from . }
+        OPTIONAL { ?rh austalk:age_to ?age_to . } }
         OPTIONAL { ?id austalk:first_language ?fl . }
         OPTIONAL { ?fl iso639schema:name ?first_language . }
         OPTIONAL { ?id austalk:pob_country ?pob_country . }
@@ -243,10 +276,11 @@ def results():
                    'regex':['id','other_languages','hobbies_details'],
                    'boolean':['has_vocal_training','is_smoker','has_speech_problems','has_piercings','has_health_problems',
                              'has_hearing_problems','has_dentures','is_student','is_left_handed','has_reading_problems',],
-                   'multiselect':['pob_country','father_pob_country','mother_pob_country'],
+                   'multiselect':['pob_country','father_pob_country','mother_pob_country','hist_town','hist_state','hist_country'],
                    'to_str':['first_language','mother_first_language','father_first_language'],
-                   'num_range':['age'],
-                   'original_where':['id','city','age','gender','first_language','pob_country','pob_town']
+                   'num_range':['age','age_from','age_to'],
+                   'original_where':['id','city','age','gender','first_language','pob_country','pob_town','age_from','age_to',
+                                     'hist_town','hist_state','hist_country']
                 }
 
     searchArgs = [arg for arg in bottle.request.forms.allitems() if len(arg[1])>0]
@@ -268,14 +302,17 @@ def results():
         else:
             qfilter = qfilter + qbuilder.regex_filter(item[0])
 
-
+    #we want only unique listings in the multiselect list
+    unique = []
     multiselectList = [arg for arg in searchArgs if arg[0] in filterTable['multiselect']]
     for item in multiselectList:
-        #since birth country is a multipple select, it can be gotten as a list. We can now put it together so it's as
-        #if it's a normal user entered list of items.
-        customStr = "".join('''"%s",''' % s for s in bottle.request.forms.getall(item[0]))[0:-1]
-
-        qfilter = qfilter + qbuilder.regex_filter(item[0],custom=customStr)
+        if item[0] not in unique:
+            unique.append(item[0])
+            #since birth country is a multipple select, it can be gotten as a list. We can now put it together so it's as
+            #if it's a normal user entered list of items.
+            customStr = "".join('''"%s",''' % s for s in bottle.request.forms.getall(item[0]))[0:-1]
+    
+            qfilter = qfilter + qbuilder.regex_filter(item[0],custom=customStr)
 
     numRangeList = [arg for arg in searchArgs if arg[0] in filterTable['num_range']]
     for item in numRangeList:
@@ -294,7 +331,7 @@ def results():
         qfilter = qfilter + qbuilder.simple_filter(item[0])
 
     query = query + qfilter + "} \nORDER BY ?id"
-
+    
     resultsList = quer.results_dict_list("austalk", query)
     session['partfilters'] = qfilter #so we can use the filters later again
     session['partlist'] = resultsList
@@ -366,44 +403,20 @@ def download_participants_csv():
         session.save()
         bottle.redirect('/psearch')
 
-    #create the dict list with more metadata than we're already keeping
-    metaList = ['pob_state','cultural_heritage','ses','professional_category',
-                        'education_level','mother_cultural_heritage','father_cultural_heritage','pob_town',
-                        'mother_professional_category','father_professional_category','mother_education_level',
-                        'father_education_level','mother_pob_state','mother_pob_town','father_pob_state',
-                        'father_pob_town','other_languages','hobbies_details','has_vocal_training','is_smoker',
-                        'has_speech_problems','has_piercings','has_health_problems','has_hearing_problems',
-                        'has_dentures','is_student','is_left_handed','has_reading_problems','pob_country',
-                        'father_pob_country','mother_pob_country']
-    select = 'SELECT ?id ?age ?city ?gender ?first_language ?mother_first_language ?father_first_language'
-    where = '''WHERE {
-        ?id a foaf:Person .
-        ?id austalk:recording_site ?recording_site .
-        ?recording_site austalk:city ?city .
-        ?id foaf:age ?age .
-        ?id foaf:gender ?gender .
-        OPTIONAL { ?id austalk:first_language ?fl . }
-        OPTIONAL { ?fl iso639schema:name ?first_language . }
-        OPTIONAL { ?id austalk:father_first_language ?ffl . }
-        OPTIONAL { ?ffl iso639schema:name ?father_first_language . }
-        OPTIONAL { ?id austalk:mother_first_language ?mfl . }
-        OPTIONAL { ?mfl iso639schema:name ?mother_first_language . }
-        '''
-    for x in metaList:
-        select = select + '?'+x+' '
-        where = where + 'OPTIONAL { ?id austalk:'+x+' ?'+x+' . }\n'
-    select = select + '\n'
-
-    query = PREFIXES+ '\n' + select + where + session['partfilters'] + '\n} order by ?id'
+    query = qbuilder.get_everything_from_participants(filters=session['partfilters'])
 
     resultsList = quer.results_dict_list("austalk", query)
+    
+    #modify the output so it is more human readable
+    for row in resultsList:
+        row['id'] = row['id'].split('/')[-1]
 
     #make response header so that file will be downloaded.
     bottle.response.headers["Content-Disposition"] = "attachment; filename=participants.csv"
     bottle.response.headers["Content-type"] = "text/csv"
 
     csvfile = BytesIO()
-    dict_writer = csv.DictWriter(csvfile,['id','age','city','gender','first_language','mother_first_language','father_first_language']+metaList)
+    dict_writer = csv.DictWriter(csvfile,resultsList[0].keys())
     dict_writer.writeheader()
     dict_writer.writerows(resultsList)
 
@@ -511,7 +524,11 @@ def item_results():
     partList = session['partlist']
     resultsCount = 0
 
-    query = query + qbuilder.regex_filter('prompt')
+    #if there is a complete sentance (prompt) selected from the dropdown, use that and not the 'prompt' regex.
+    if bottle.request.forms.get('fullprompt'):
+        query = query + qbuilder.regex_filter('prompt',custom='^'+bottle.request.forms.get('fullprompt')+'$')
+    else:
+        query = query + qbuilder.regex_filter('prompt')
     query = query + qbuilder.simple_filter('componentName')
     query = query + qbuilder.to_str_filter('prototype',prepend="http://id.austalk.edu.au/protocol/item/")
 
@@ -592,6 +609,8 @@ def download_items_csv():
 
     try:
         apiKey = session['apikey']
+        client = pyalveo.Client(apiKey, BASE_URL)
+        quer = alquery.AlQuery(client)
     except KeyError:
         global USER_MESSAGE
         USER_MESSAGE = "You must log in to view this page!"
@@ -611,24 +630,27 @@ def download_items_csv():
         #add more participant meta data
         for part in session['partlist']:
             for x in part['item_results']:
+                #now get all participant info
+                query = qbuilder.get_everything_from_participants(id=part['id'])
                 new = x.copy()
-                new[u'participant'] = part['id']
-                new[u'gender'] = part['gender']
-                new[u'age'] = part['age']
-                new[u'first_language'] = part['first_language']
-                new[u'city'] = part['city']
-                new[u'pob_city'] = part['pob_town']
-                new[u'pob_country'] = part['pob_country']
+                results = quer.results_dict_list("austalk", query)
+                new.update(results[0])
                 resultsList.append(new)
-        print resultsList[0].keys()
     else:
         #add only participant id
         for part in session['partlist']:
             for x in part['item_results']:
                 new = x.copy()
-                new[u'participant'] = part['id']
+                new['participant'] = part['id']
                 resultsList.append(new)
-        print resultsList[0].keys()
+    
+    #modify the output so it is more human readable
+    for row in resultsList:
+        row['participant'] = row['id'].split('/')[-1]
+        row.pop('id',None)
+        row['media'] = row['media'].split('/')[-1]
+        row['item'] = row['item'].split('/')[-1]
+    
     #make response header so that file will be downloaded.
     bottle.response.headers["Content-Disposition"] = "attachment; filename=items.csv"
     bottle.response.headers["Content-type"] = "text/csv"
@@ -802,12 +824,13 @@ def export():
 
     #create a single item list so it can be passed to pyalveo
     iList = [] #iList, the expensive and non-functional but good looking version of list
-
+    listUrl=''
     try:
         for part in session['partlist']:
             [iList.append(item['item']) for item in part['item_results']]
 
         itemList = pyalveo.ItemGroup(iList, client)
+        
     except KeyError:
         session['message'] = "Select some items first."
         session.save()
@@ -817,12 +840,13 @@ def export():
         #This is when the user sends a post
         listName = bottle.request.forms.get('listname')
         res = itemList.add_to_item_list_by_name(listName)
-        print res
-        message = "List exported to Alveo. Next step is to click the link to the alveo website to see your items."
+        
+        listUrl = pyalveo.Client.get_item_list_by_name(client,listName).list_url
+        message = "List exported to Alveo. Next step is to <a href="+listUrl+">click here</a> to go directly to your list."
         session.save()
 
     itemLists = client.get_item_lists()
-    return bottle.template('export', apiKey=apiKey, itemLists=itemLists,message=message,itemCount=session['itemcount'])
+    return bottle.template('export', apiKey=apiKey, itemLists=itemLists,listUrl=listUrl,message=message,itemCount=session['itemcount'])
 
 @bottle.get('/login')
 def login():
@@ -884,4 +908,8 @@ def logged_in():
 if __name__ == '__main__':
     '''Runs the app. Listens on localhost:8080.'''
     #bottle.run(app=app, host='localhost', port=8080, debug=True)
-    bottle.run(app=app, host='0.0.0.0', port=8080, debug=True)
+    import sys
+    if len(sys.argv)>1:
+        bottle.run(app=app, host=sys.argv[1], port=8000, debug=True)
+    else:
+        bottle.run(app=app, host='localhost', port=8080, debug=True)
