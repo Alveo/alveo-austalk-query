@@ -1,5 +1,5 @@
 '''
-@author: Dylan Wheeler
+@author: Dylan Wheeler, Michael Bauer
 
 @summary: The Alveo query engine is designed to provide a more useful way of searching the Alveo database. Currently only supports the Austalk collection.
 This file contains all the routing and much of the logic for the application. Run this to start the application. Listens on localhost:8080.
@@ -824,12 +824,13 @@ def export():
 
     #create a single item list so it can be passed to pyalveo
     iList = [] #iList, the expensive and non-functional but good looking version of list
-
+    listUrl=''
     try:
         for part in session['partlist']:
             [iList.append(item['item']) for item in part['item_results']]
 
         itemList = pyalveo.ItemGroup(iList, client)
+        
     except KeyError:
         session['message'] = "Select some items first."
         session.save()
@@ -839,12 +840,13 @@ def export():
         #This is when the user sends a post
         listName = bottle.request.forms.get('listname')
         res = itemList.add_to_item_list_by_name(listName)
-        print res
-        message = "List exported to Alveo. Next step is to click the link to the alveo website to see your items."
+        
+        listUrl = pyalveo.Client.get_item_list_by_name(client,listName).list_url
+        message = "List exported to Alveo. Next step is to <a href="+listUrl+">click here</a> to go directly to your list."
         session.save()
 
     itemLists = client.get_item_lists()
-    return bottle.template('export', apiKey=apiKey, itemLists=itemLists,message=message,itemCount=session['itemcount'])
+    return bottle.template('export', apiKey=apiKey, itemLists=itemLists,listUrl=listUrl,message=message,itemCount=session['itemcount'])
 
 @bottle.get('/login')
 def login():
@@ -906,4 +908,8 @@ def logged_in():
 if __name__ == '__main__':
     '''Runs the app. Listens on localhost:8080.'''
     #bottle.run(app=app, host='localhost', port=8080, debug=True)
-    bottle.run(app=app, host='10.126.97.46', port=8080, debug=True)
+    import sys
+    if len(sys.argv)>1:
+        bottle.run(app=app, host=sys.argv[1], port=8000, debug=True)
+    else:
+        bottle.run(app=app, host='localhost', port=8080, debug=True)
