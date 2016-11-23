@@ -7,7 +7,7 @@
 <body>
 
 <div class="navi">
-	% include('nav.tpl', apiKey=apiKey, title="Log In",loggedin=False)
+	% include('nav.tpl', logged_in=logged_in, title="Log In",)
 </div>
 
 <div class="content">
@@ -17,16 +17,14 @@
 	</div>
 	%end
 	
-<p>Please enter your Alveo API key. This can be found on the <a href="https://app.alveo.edu.au/" target="_blank">Alveo website</a>
-in the top right corner menu. Copy and paste the key here: </p>
+<p>Please Log in with Alveo by clicking the button below. Read about or sign up at the <a href="https://app.alveo.edu.au/" target="_blank">Alveo website</a>.</p>
 
 <div align="center">
 <form action="/login" method="POST">
-<input class="form-control" align="center" style="width:20%;" type="text" name="apikey"><input value="Log in" type="submit">
+<input value="Log in with Alveo" type="submit">
 </form>
 </div>
 
-<p>Your API key will be saved for this session only.</p>
 </div>
 
 

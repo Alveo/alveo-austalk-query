@@ -13,6 +13,12 @@ import pyalveo
 import csv
 from io import BytesIO
 
+client_id = "608e3be7af68740374960833c4c905e6e6271b9378116bcb47b4f8d6aaf16c07"
+client_secret = "b316c0d1cdb01ec710964bc944c84747e6986e02bcb70540eb23138f8d14c339"
+redirect_url = "http://10.126.98.255:8000/oauth_callback"
+
+client = None
+
 BASE_URL = 'https://app.alveo.edu.au/' #Normal Server
 #BASE_URL = 'https://alveo-staging1.intersect.org.au/' #Staging Server
 
@@ -58,40 +64,9 @@ def home():
     global USER_MESSAGE
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
 
-    try:
-        apiKey = session['apikey']
-    except KeyError:
-        apiKey = 'Not logged in'
-
-    if apiKey=='Not logged in':
-        message = USER_MESSAGE
-        USER_MESSAGE = ""
-    else:
-        try:
-            message = session['message']
-            session['message'] = ""
-            session.save()
-        except KeyError:
-            session['message'] = ""
-            message = session['message']
-
-    return bottle.template('home', results=results, message=message, apiKey=apiKey)
-
-@bottle.route('/psearch')
-def search():
-    '''The home page and participant search page. Drop-down lists are populated from the SPARQL database and the template returned.
-    Displays the contents of session['message'] if one is set.'''
-
-    session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
-
-    try:
-        apiKey = session['apikey']
-        client = pyalveo.Client(apiKey, BASE_URL)
-        quer = alquery.AlQuery(client)
-    except KeyError:
-        global USER_MESSAGE
-        USER_MESSAGE = "You must log in to view this page!"
-        bottle.redirect('/')
+    if not 'logged_in' in session:
+        session['logged_in'] = False
+        session.save()
 
     try:
         message = session['message']
@@ -100,7 +75,33 @@ def search():
     except KeyError:
         session['message'] = ""
         message = session['message']
+        session.save()
 
+    return bottle.template('home', results=results, message=message, logged_in=session['logged_in'])
+
+@bottle.route('/psearch')
+def search():
+    '''The home page and participant search page. Drop-down lists are populated from the SPARQL database and the template returned.
+    Displays the contents of session['message'] if one is set.'''
+
+    session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
+
+    if not 'logged_in' in session:
+        session['logged_in'] = False
+        session['message'] = "You must log in to view this page!"
+        session.save()
+        bottle.redirect('/')
+        
+    quer = alquery.AlQuery(client)
+
+    try:
+        message = session['message']
+        session['message'] = ""
+        session.save()
+    except KeyError:
+        session['message'] = ""
+        message = session['message']
+        session.save()
 
     #try getting cached results
     try:
@@ -219,7 +220,7 @@ def search():
         #cache the results
         session['psearch_cache'] = results
 
-    return bottle.template('psearch', results=results, message=message, apiKey=apiKey)
+    return bottle.template('psearch', results=results, message=message, logged_in=session['logged_in'])
 
 @bottle.post('/presults')
 def results():
@@ -227,14 +228,13 @@ def results():
 
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
 
-    try:
-        apiKey = session['apikey']
-        client = pyalveo.Client(apiKey, BASE_URL)
-        quer = alquery.AlQuery(client)
-    except KeyError:
-        global USER_MESSAGE
-        USER_MESSAGE = "You must log in to view this page!"
+    if not 'logged_in' in session:
+        session['logged_in'] = False
+        session['message'] = "You must log in to view this page!"
+        session.save()
         bottle.redirect('/')
+
+    quer = alquery.AlQuery(client)
 
     try:
         message = session['message']
@@ -243,6 +243,7 @@ def results():
     except KeyError:
         session['message'] = ""
         message = session['message']
+        session.save()
 
     query = PREFIXES+ """
 
@@ -340,7 +341,8 @@ def results():
 
     undoExists = 'backupPartList' in session.itervalues()
 
-    return bottle.template('presults', resultsList=resultsList, resultCount=session['partcount'],message=message,undo=undoExists, apiKey=apiKey)
+    return bottle.template('presults', resultsList=resultsList, resultCount=session['partcount'],
+                           message=message,undo=undoExists, logged_in=session['logged_in'])
 
 @bottle.get('/presults')
 def part_list():
@@ -348,11 +350,10 @@ def part_list():
 
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
 
-    try:
-        apiKey = session['apikey']
-    except KeyError:
-        global USER_MESSAGE
-        USER_MESSAGE = "You must log in to view this page!"
+    if not 'logged_in' in session:
+        session['logged_in'] = False
+        session['message'] = "You must log in to view this page!"
+        session.save()
         bottle.redirect('/')
 
     try:
@@ -372,26 +373,27 @@ def part_list():
     except KeyError:
         session['message'] = ""
         message = session['message']
+        session.save()
 
     undoExists = 'backupPartList' in session
     if undoExists:
         undoExists = len(session['backupPartList'])>0
-    return bottle.template('presults', resultsList=resultsList, resultCount=session['partcount'],message=message,undo=undoExists, apiKey=apiKey)
+    return bottle.template('presults', resultsList=resultsList, resultCount=session['partcount'],
+                           message=message,undo=undoExists, logged_in=session['logged_in'])
 
 @bottle.get('/download/participants.csv')
 def download_participants_csv():
     '''Returns a csv file download of the participants and all their meta data.'''
 
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
-
-    try:
-        apiKey = session['apikey']
-        client = pyalveo.Client(apiKey, BASE_URL)
-        quer = alquery.AlQuery(client)
-    except KeyError:
-        global USER_MESSAGE
-        USER_MESSAGE = "You must log in to view this page!"
+    
+    if not 'logged_in' in session:
+        session['logged_in'] = False
+        session['message'] = "You must log in to view this page!"
+        session.save()
         bottle.redirect('/')
+
+    quer = alquery.AlQuery(client)
 
     try:
         resultsList = session['partlist']
@@ -429,11 +431,10 @@ def handle_parts():
 
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
 
-    try:
-        apiKey = session['apikey']
-    except KeyError:
-        global USER_MESSAGE
-        USER_MESSAGE = "You must log in to view this page!"
+    if not 'logged_in' in session:
+        session['logged_in'] = False
+        session['message'] = "You must log in to view this page!"
+        session.save()
         bottle.redirect('/')
 
     partList = session['partlist']
@@ -496,14 +497,13 @@ def item_results():
 
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
 
-    try:
-        apiKey = session['apikey']
-        client = pyalveo.Client(apiKey, BASE_URL)
-        quer = alquery.AlQuery(client)
-    except KeyError:
-        global USER_MESSAGE
-        USER_MESSAGE = "You must log in to view this page!"
+    if not 'logged_in' in session:
+        session['logged_in'] = False
+        session['message'] = "You must log in to view this page!"
+        session.save()
         bottle.redirect('/')
+        
+    quer = alquery.AlQuery(client)
 
     query = PREFIXES + """
     SELECT distinct ?item ?prompt ?componentName ?media
@@ -560,10 +560,12 @@ def item_results():
     except KeyError:
         session['message'] = ""
         message = session['message']
+        session.save()
 
     undoExists = 'backupItemList' in session and len(session['backupPartList'])>0
 
-    return bottle.template('itemresults', partList=partList, resultsCount=resultsCount, message=message,undo=undoExists, apiKey=apiKey)
+    return bottle.template('itemresults', partList=partList, resultsCount=resultsCount, 
+                           message=message,undo=undoExists, logged_in=session['logged_in'])
 
 @bottle.get('/itemresults')
 def item_list():
@@ -571,11 +573,10 @@ def item_list():
 
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
 
-    try:
-        apiKey = session['apikey']
-    except KeyError:
-        global USER_MESSAGE
-        USER_MESSAGE = "You must log in to view this page!"
+    if not 'logged_in' in session:
+        session['logged_in'] = False
+        session['message'] = "You must log in to view this page!"
+        session.save()
         bottle.redirect('/')
 
     try:
@@ -593,11 +594,13 @@ def item_list():
     except KeyError:
         session['message'] = ""
         message = session['message']
+        session.save()
 
     undoExists = 'backupItemList' in session
     if undoExists:
         undoExists = len(session['backupItemList'])>0
-    return bottle.template('itemresults', partList=partList, resultsCount=session['itemcount'],message=message,undo=undoExists, apiKey=apiKey)
+    return bottle.template('itemresults', partList=partList, resultsCount=session['itemcount'],
+                           message=message,undo=undoExists, logged_in=session['logged_in'])
 
 
 @bottle.get('/download/items.csv')
@@ -607,14 +610,13 @@ def download_items_csv():
 
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
 
-    try:
-        apiKey = session['apikey']
-        client = pyalveo.Client(apiKey, BASE_URL)
-        quer = alquery.AlQuery(client)
-    except KeyError:
-        global USER_MESSAGE
-        USER_MESSAGE = "You must log in to view this page!"
+    if not 'logged_in' in session:
+        session['logged_in'] = False
+        session['message'] = "You must log in to view this page!"
+        session.save()
         bottle.redirect('/')
+    
+    quer = alquery.AlQuery(client)
 
     try:
         #incase the list was created but for some reason the user removes all elements or searches nothing.
@@ -669,11 +671,10 @@ def handle_items():
 
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
 
-    try:
-        apiKey = session['apikey']
-    except KeyError:
-        global USER_MESSAGE
-        USER_MESSAGE = "You must log in to view this page!"
+    if not 'logged_in' in session:
+        session['logged_in'] = False
+        session['message'] = "You must log in to view this page!"
+        session.save()
         bottle.redirect('/')
 
     partList = session['partlist']
@@ -741,13 +742,13 @@ def item_search():
     '''Displays the page for searching items, unless there's not yet a group of participants selected to search for.'''
 
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
-
-    try:
-        apiKey = session['apikey']
-    except KeyError:
-        global USER_MESSAGE
-        USER_MESSAGE = "You must log in to view this page!"
+    
+    if not 'logged_in' in session:
+        session['logged_in'] = False
+        session['message'] = "You must log in to view this page!"
+        session.save()
         bottle.redirect('/')
+        
 
     try:
         partList = session['partlist'] #@UnusedVariable
@@ -763,8 +764,9 @@ def item_search():
     except KeyError:
         session['message'] = ""
         message = session['message']
+        session.save()
 
-    return bottle.template('itemsearch',results=results, message=message, apiKey=apiKey)
+    return bottle.template('itemsearch',results=results, message=message, logged_in=session['logged_in'])
 
 
 @bottle.get('/itemsearch/sentences')
@@ -772,12 +774,12 @@ def getSentences():
 
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
 
-    try:
-        apiKey = session['apikey']
-        client = pyalveo.Client(apiKey, BASE_URL)
-        quer = alquery.AlQuery(client)
-    except KeyError:
+    if not 'logged_in' in session:
+        session['logged_in'] = False
         return "<option value="">You must login to view results!</option>"
+        session.save()
+    
+    quer = alquery.AlQuery(client)
 
     try:
         selectedComp = bottle.request.query['sentence']
@@ -806,12 +808,10 @@ def export():
 
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
 
-    try:
-        apiKey = session['apikey']
-        client = pyalveo.Client(apiKey, BASE_URL)
-    except KeyError:
-        global USER_MESSAGE
-        USER_MESSAGE = "You must log in to view this page!"
+    if not 'logged_in' in session:
+        session['logged_in'] = False
+        session['message'] = "You must log in to view this page!"
+        session.save()
         bottle.redirect('/')
 
     try:
@@ -821,6 +821,7 @@ def export():
     except KeyError:
         session['message'] = ""
         message = session['message']
+        session.save()
 
     #create a single item list so it can be passed to pyalveo
     iList = [] #iList, the expensive and non-functional but good looking version of list
@@ -846,7 +847,20 @@ def export():
         session.save()
 
     itemLists = client.get_item_lists()
-    return bottle.template('export', apiKey=apiKey, itemLists=itemLists,listUrl=listUrl,message=message,itemCount=session['itemcount'])
+    return bottle.template('export', logged_in=session['logged_in'], itemLists=itemLists,
+                           listUrl=listUrl,message=message,itemCount=session['itemcount'])
+
+
+@bottle.get('/oauth_callback')
+def oauth_callback():
+    global client
+    if client.oauth.on_callback(bottle.request.url):
+        session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
+        session['logged_in'] = True
+        session['message'] = "Successfully Logged In!"
+        session.save()
+        
+    bottle.redirect('/')
 
 @bottle.get('/login')
 def login():
@@ -854,15 +868,20 @@ def login():
     global USER_MESSAGE
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
 
+    if not 'logged_in' in session:
+        session['logged_in'] = False
+        session.save()
+    
     try:
-        apiKey = session['apikey']
+        message = session['message']
+        session['message'] = ""
+        session.save()
     except KeyError:
-        apiKey = 'Not logged in'
+        session['message'] = ""
+        message = session['message']
+        session.save()
 
-    msg = USER_MESSAGE
-    USER_MESSAGE = ""
-
-    return bottle.template('login', message=msg, apiKey=apiKey)
+    return bottle.template('login', message=message, logged_in=session['logged_in'])
 
 @bottle.get('/logout')
 def logout():
@@ -870,40 +889,40 @@ def logout():
     '''
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
     session.delete()
-    USER_MESSAGE = "You have successfully logged out!"
+    client.oauth.revoke_access()
+    session['message'] = "You have successfully logged out!"
+    session.save()
     bottle.redirect('/')
 
 @bottle.get('/about')
 def about():
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
+    
+    if not 'logged_in' in session:
+        session['logged_in'] = False
+        session.save()
 
-    try:
-        apiKey = session['apikey']
-    except KeyError:
-        apiKey = 'Not logged in'
-
-    return bottle.template('about', apiKey=apiKey)
+    return bottle.template('about', logged_in=session['logged_in'])
 
 @bottle.get('/help')
 def help():
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
 
-    try:
-        apiKey = session['apikey']
-    except KeyError:
-        apiKey = 'Not logged in'
+    if not 'logged_in' in session:
+        session['logged_in'] = False
+        session.save()
 
-    return bottle.template('help', apiKey=apiKey)
+    return bottle.template('help', logged_in=session['logged_in'])
 
 @bottle.post('/login')
 def logged_in():
     '''Logs the user in with their API key.'''
+    global client
 
-    session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
-    session['apikey'] = bottle.request.forms.get('apikey')
-    session['message'] = "Login successful."
-    session.save()
-    bottle.redirect('/')
+    client = pyalveo.Client(api_url=BASE_URL,client_id=client_id,client_secret=client_secret,
+                            redirect_url=redirect_url,verifySSL=False)
+    url = client.oauth.get_authorisation_url()
+    bottle.redirect(url)
 
 if __name__ == '__main__':
     '''Runs the app. Listens on localhost:8080.'''
