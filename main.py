@@ -918,9 +918,13 @@ def logout():
     '''Logout and redirect to login page
     '''
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
+    try:
+        session['client'].oauth.revoke_access()
+    except KeyError:
+        pass
     session.delete()
-    client.oauth.revoke_access()
     session['message'] = "You have successfully logged out!"
+    session['logged_in'] = False
     session.save()
     bottle.redirect('/')
 
