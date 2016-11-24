@@ -10,12 +10,12 @@ from beaker.middleware import SessionMiddleware
 import alquery
 import qbuilder
 import pyalveo
-import csv
+import csv,json
 from io import BytesIO
 
 client_id = "608e3be7af68740374960833c4c905e6e6271b9378116bcb47b4f8d6aaf16c07"
 client_secret = "b316c0d1cdb01ec710964bc944c84747e6986e02bcb70540eb23138f8d14c339"
-redirect_url = "http://10.126.98.255:8000/oauth_callback"
+redirect_url = "http://10.126.98.255:8000/oauth/callback"
 
 client = None
 
@@ -851,7 +851,7 @@ def export():
                            listUrl=listUrl,message=message,itemCount=session['itemcount'])
 
 
-@bottle.get('/oauth_callback')
+@bottle.get('/oauth/callback')
 def oauth_callback():
     global client
     if client.oauth.on_callback(bottle.request.url):
@@ -861,6 +861,25 @@ def oauth_callback():
         session.save()
         
     bottle.redirect('/')
+    
+@bottle.get('/oauth/validate')
+def oauth_validate():
+    ''' Validates access token and returns a json response '''
+    global client
+    res = {'valid':'false'}
+    if client.validate():
+        res = {'valid':'true'}
+    return json.dump(res)
+
+@bottle.get('/oauth/refresh')
+def oauth_refresh():
+    global client
+    
+    try:
+        client.refresh_token()
+    except:
+        return json.dumps({'success':'false','error_info':sys.exc_info()[0]})
+    return json.dumps({'success':'true'})
 
 @bottle.get('/login')
 def login():
