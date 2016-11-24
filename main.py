@@ -873,7 +873,7 @@ def oauth_validate():
     res = {'valid':'false'}
     if 'client' in session:
         if session['client'].oauth!=None:
-            if client.oauth.validate():
+            if session['client'].oauth.validate():
                 res = {'valid':'true'}
     return json.dumps(res)
 
@@ -945,7 +945,7 @@ def help():
     return bottle.template('help', logged_in=session['logged_in'])
 
 @bottle.post('/login')
-def logged_in():
+def logging_in():
     '''Logs the user in with their API key.'''
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
 
