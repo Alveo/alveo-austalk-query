@@ -867,7 +867,7 @@ def oauth_validate():
     ''' Validates access token and returns a json response '''
     global client
     res = {'valid':'false'}
-    if client.validate():
+    if client.oauth.validate():
         res = {'valid':'true'}
     return json.dump(res)
 
@@ -876,7 +876,7 @@ def oauth_refresh():
     global client
     
     try:
-        client.refresh_token()
+        client.oauth.refresh_token()
     except:
         return json.dumps({'success':'false','error_info':sys.exc_info()[0]})
     return json.dumps({'success':'true'})
