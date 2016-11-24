@@ -875,7 +875,7 @@ def oauth_validate():
         if session['client'].oauth!=None:
             if client.oauth.validate():
                 res = {'valid':'true'}
-    return json.dump(res)
+    return json.dumps(res)
 
 @bottle.get('/oauth/refresh')
 def oauth_refresh():
