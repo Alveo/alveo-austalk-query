@@ -61,7 +61,6 @@ def send_static(filename):
 @bottle.route('/')
 def home():
     '''An introductory home page to welcome the user and brief them on the process'''
-    global USER_MESSAGE
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
 
     if not 'logged_in' in session:
@@ -853,9 +852,14 @@ def export():
 
 @bottle.get('/oauth/callback')
 def oauth_callback():
-    global client
-    if client.oauth.on_callback(bottle.request.url):
-        session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
+    session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
+    if not 'client' in session:
+        bottle.redirect('/')
+        session['logged_in'] = False
+        session['message'] = "You must log in properly!"
+        session.save()
+        
+    if session['client'].oauth.on_callback(bottle.request.url):
         session['logged_in'] = True
         session['message'] = "Successfully Logged In!"
         session.save()
@@ -865,26 +869,33 @@ def oauth_callback():
 @bottle.get('/oauth/validate')
 def oauth_validate():
     ''' Validates access token and returns a json response '''
-    global client
+    session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
     res = {'valid':'false'}
-    if client.oauth.validate():
-        res = {'valid':'true'}
+    if 'client' in session:
+        if session['client'].oauth!=None:
+            if client.oauth.validate():
+                res = {'valid':'true'}
     return json.dump(res)
 
 @bottle.get('/oauth/refresh')
 def oauth_refresh():
-    global client
+    session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
     
     try:
-        client.oauth.refresh_token()
+        session['client'].oauth.refresh_token()
+    except KeyError:
+        return json.dumps({'success':'false',
+                           'error':'You must first log in before refreshing the token',
+                           'error_info':sys.exc_info()[0]})
     except:
-        return json.dumps({'success':'false','error_info':sys.exc_info()[0]})
+        return json.dumps({'success':'false',
+                           'error':'Unknown Error',
+                           'error_info':sys.exc_info()[0]})
     return json.dumps({'success':'true'})
 
 @bottle.get('/login')
 def login():
     '''Login page.'''
-    global USER_MESSAGE
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
 
     if not 'logged_in' in session:
@@ -936,11 +947,13 @@ def help():
 @bottle.post('/login')
 def logged_in():
     '''Logs the user in with their API key.'''
-    global client
+    session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
 
     client = pyalveo.Client(api_url=BASE_URL,client_id=client_id,client_secret=client_secret,
                             redirect_url=redirect_url,verifySSL=False)
     url = client.oauth.get_authorisation_url()
+    session['client'] = client
+    session.save()
     bottle.redirect(url)
 
 if __name__ == '__main__':
