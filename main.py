@@ -10,7 +10,7 @@ from beaker.middleware import SessionMiddleware
 import alquery
 import qbuilder
 import pyalveo
-import settings
+from settings import *
 import csv,json
 from io import BytesIO
 
