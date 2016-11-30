@@ -890,6 +890,25 @@ def oauth_refresh():
                            'error_info':sys.exc_info()[0]})
     return json.dumps({'success':'true'})
 
+@bottle.error(404)
+def error404(error):
+    session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
+    session['message'] = "Sorry, the page you're looking for doesn't exist."
+    session.save()
+    bottle.response.status = 303
+    bottle.response.set_header('location','/')
+    return 'this is meant to redirect'
+
+    
+@bottle.error(500)
+def error500(error):
+    session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
+    session['message'] = "Sorry, something went wrong! Error: 500 Internal Server Error"
+    session.save()
+    bottle.response.status = 303
+    bottle.response.set_header('location','/')
+    return 'this is meant to redirect'
+
 @bottle.get('/login')
 def login():
     '''Login page.'''
