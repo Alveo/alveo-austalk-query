@@ -9,15 +9,16 @@ import bottle
 from beaker.middleware import SessionMiddleware
 import alquery
 import qbuilder
+import sys,os
+import traceback
+from bottle import redirect
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'pyalveo'))
 import pyalveo
 from settings import *
 import csv,json
 from io import BytesIO
 
 client = None
-
-BASE_URL = 'https://app.alveo.edu.au/' #Normal Server
-#BASE_URL = 'https://alveo-staging1.intersect.org.au/' #Staging Server
 
 #used to inform the user when they're not logged in.
 USER_MESSAGE = ""
@@ -79,6 +80,7 @@ def home():
 def search():
     '''The home page and participant search page. Drop-down lists are populated from the SPARQL database and the template returned.
     Displays the contents of session['message'] if one is set.'''
+    
 
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
 
@@ -88,7 +90,7 @@ def search():
         session.save()
         bottle.redirect('/')
         
-    quer = alquery.AlQuery(client)
+    quer = alquery.AlQuery(session['client'])
 
     try:
         message = session['message']
@@ -230,7 +232,7 @@ def results():
         session.save()
         bottle.redirect('/')
 
-    quer = alquery.AlQuery(client)
+    quer = alquery.AlQuery(session['client'])
 
     try:
         message = session['message']
@@ -389,7 +391,7 @@ def download_participants_csv():
         session.save()
         bottle.redirect('/')
 
-    quer = alquery.AlQuery(client)
+    quer = alquery.AlQuery(session['client'])
 
     try:
         resultsList = session['partlist']
@@ -499,7 +501,7 @@ def item_results():
         session.save()
         bottle.redirect('/')
         
-    quer = alquery.AlQuery(client)
+    quer = alquery.AlQuery(session['client'])
 
     query = PREFIXES + """
     SELECT distinct ?item ?prompt ?componentName ?media
@@ -612,7 +614,7 @@ def download_items_csv():
         session.save()
         bottle.redirect('/')
     
-    quer = alquery.AlQuery(client)
+    quer = alquery.AlQuery(session['client'])
 
     try:
         #incase the list was created but for some reason the user removes all elements or searches nothing.
@@ -775,7 +777,7 @@ def getSentences():
         return "<option value="">You must login to view results!</option>"
         session.save()
     
-    quer = alquery.AlQuery(client)
+    quer = alquery.AlQuery(session['client'])
 
     try:
         selectedComp = bottle.request.query['sentence']
@@ -878,16 +880,18 @@ def oauth_validate():
 def oauth_refresh():
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
     
+    return json.dumps({'success':'false','error':'not implemented'})
+    #Maybe implement later or else delete. Not so important anymore
     try:
         session['client'].oauth.refresh_token()
     except KeyError:
         return json.dumps({'success':'false',
                            'error':'You must first log in before refreshing the token',
-                           'error_info':sys.exc_info()[0]})
+                           'error_info':traceback.format_exc()})
     except:
         return json.dumps({'success':'false',
                            'error':'Unknown Error',
-                           'error_info':sys.exc_info()[0]})
+                           'error_info':traceback.format_exc()})
     return json.dumps({'success':'true'})
 
 @bottle.error(404)
