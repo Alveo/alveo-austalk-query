@@ -805,7 +805,10 @@ def export():
 
     try:
         for part in session['partlist']:
-            [iList.append(item['item']) for item in part['item_results']]
+            for item in part['item_results']:
+                # TODO: fix item url since it is wrong in the triple store right now
+                itemurl = item['item'].replace('http://id.austalk.edu.au/item/', 'https://app.alveo.edu.au/catalog/austalk/')
+                iList.append(itemurl)
 
         itemList = pyalveo.ItemGroup(iList, client)
     except KeyError:
@@ -817,7 +820,6 @@ def export():
         #This is when the user sends a post
         listName = bottle.request.forms.get('listname')
         res = itemList.add_to_item_list_by_name(listName)
-        print res
         message = "List exported to Alveo. Next step is to click the link to the alveo website to see your items."
         session.save()
 
