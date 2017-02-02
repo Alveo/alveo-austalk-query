@@ -518,14 +518,19 @@ def item_results():
     if bottle.request.forms.get('comptype') != "":
         query=query+"""FILTER regex(?componentName, "%s", "i")""" % (bottle.request.forms.get('comptype'))
 
+    hVdWords = {
+        'monopthongs': ['head', 'had', 'hud', 'heed', 'hid', 'hood', 'hod', 'whod', 'herd', 'haired', 'hard', 'horde'],
+        'dipthongs': ['howd', 'hoyd', 'hide', 'hode', 'hade', 'heared']
+        }
+
     if bottle.request.forms.get('wlist')=='hvdwords':
-        query=query+"""FILTER regex(?prompt, "^head$|^had$|^hud$|^hard$|^heared$|^heed$|^hid$|^herd$|^howd$|^hoyd$|^haired$|^hood$|^hod|^whod$", "i")"""
+        query=query+'FILTER regex(?prompt, "^%s$", "i")' % "$|^".join(hVdWords['monopthongs'] + hVdWords['dipthongs'])
 
     if bottle.request.forms.get('wlist')=='hvdmono':
-        query=query+"""FILTER regex(?prompt, "^head$|^had$|^hud$|^heed$|^hid$|^herd$|^hood$|^hod|^whod$", "i")"""
+        query=query+'FILTER regex(?prompt, "^%s$", "i")' % "$|^".join(hVdWords['monopthongs'])
 
     if bottle.request.forms.get('wlist')=='hvddip':
-        query=query+"""FILTER regex(?prompt, "^hard$|^heared$|^herd$|^howd$|^hoyd$|^haired$", "i")"""
+        query=query+'FILTER regex(?prompt, "^%s$", "i")' % "$|^".join(hVdWords['dipthongs'])
 
     query = query + "}"
 
