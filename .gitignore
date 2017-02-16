@@ -8,3 +8,6 @@ __pycache__/
 #Eclipse PyDev plugin
 .project
 .pydevproject
+
+#SSL Keys and Certs
+keys/*

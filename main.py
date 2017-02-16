@@ -7,12 +7,14 @@ This file contains all the routing and much of the logic for the application. Ru
 
 import bottle
 from beaker.middleware import SessionMiddleware
+from cherrypy import wsgiserver
+from cherrypy.wsgiserver.ssl_pyopenssl import pyOpenSSLAdapter
+from OpenSSL import SSL
 import alquery
 import qbuilder
 import sys,os
 import traceback
 from bottle import redirect
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'pyalveo'))
 import pyalveo
 from settings import *
 import csv,json
@@ -980,11 +982,34 @@ def logging_in():
     session.save()
     bottle.redirect(url)
 
+# By default, the server will allow negotiations with extremely old protocols
+# that are susceptible to attacks, so we only allow TLSv1.2
+class SecuredSSLServer(pyOpenSSLAdapter):
+    def get_context(self):
+        c = super(SecuredSSLServer, self).get_context()
+        c.set_options(SSL.OP_NO_SSLv2)
+        c.set_options(SSL.OP_NO_SSLv3)
+        c.set_options(SSL.OP_NO_TLSv1)
+        c.set_options(SSL.OP_NO_TLSv1_1)
+        return c
+
+# Create our own sub-class of Bottle's ServerAdapter
+# so that we can specify SSL. Using just server='cherrypy'
+# uses the default cherrypy server, which doesn't use SSL
+class SSLCherryPyServer(bottle.ServerAdapter):
+    def run(self, handler):
+        server = wsgiserver.CherryPyWSGIServer((self.host, self.port), handler)
+        server.ssl_adapter = SecuredSSLServer('keys/cacert.pem', 'keys/privkey.pem')
+        try:
+            server.start()
+        finally:
+            server.stop()
+
 if __name__ == '__main__':
     '''Runs the app. Listens on localhost:8080.'''
     #bottle.run(app=app, host='localhost', port=8080, debug=True)
     import sys
     if len(sys.argv)>1:
-        bottle.run(app=app, host=sys.argv[1], port=8000, debug=True)
+        bottle.run(app=app, host=sys.argv[1], port=8000, debug=True,server=SSLCherryPyServer)
     else:
-        bottle.run(app=app, host='localhost', port=8080, debug=True)
+        bottle.run(app=app, host='localhost', port=8080, debug=True,server=SSLCherryPyServer)

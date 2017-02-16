@@ -1,7 +1,9 @@
-Beaker==1.6.5.post1
-bottle==0.12.8
-pyalveo==0.4
+Beaker==1.8.0
+bottle==0.12.9
+git+https://github.com/mixtah/pyalveo.git@OAuth2
 python-dateutil==2.4.0
-six==1.9.0
+six==1.10.0
 wsgiref==0.1.2
 gunicorn==19.2.1
+CherryPy==8.1.0
+pyOpenSSL==16.1.0
