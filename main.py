@@ -851,6 +851,15 @@ def export():
                            listUrl=listUrl,message=message,itemCount=session['itemcount'])
 
 
+@bottle.get('/oauth/user_data')
+def oauth_user_data():
+    session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
+    
+    if 'client' in session:
+        if session['client'].oauth!=None:
+            return session['client'].oauth.get_user_data()
+    return {}
+
 @bottle.get('/oauth/callback')
 def oauth_callback():
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
@@ -861,7 +870,8 @@ def oauth_callback():
         session.save()
         
     if session['client'].oauth.on_callback(bottle.request.url):
-        session['logged_in'] = True
+        res = session['client'].oauth.get_user_data()
+        session['logged_in'] = "%s %s" % (res['first_name'],res['last_name'])
         session['message'] = "Successfully Logged In!"
         session.save()
         
