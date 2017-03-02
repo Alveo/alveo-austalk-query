@@ -535,14 +535,19 @@ def item_results():
     if bottle.request.forms.get('comptype') != "":
         query=query+"""FILTER regex(?componentName, "%s", "i")""" % (bottle.request.forms.get('comptype'))
 
+    hVdWords = {
+        'monopthongs': ['head', 'had', 'hud', 'heed', 'hid', 'hood', 'hod', 'whod', 'herd', 'haired', 'hard', 'horde'],
+        'dipthongs': ['howd', 'hoyd', 'hide', 'hode', 'hade', 'heared']
+        }
+
     if bottle.request.forms.get('wlist')=='hvdwords':
-        query=query+"""FILTER regex(?prompt, "^head$|^had$|^hud$|^hard$|^heared$|^heed$|^hid$|^herd$|^howd$|^hoyd$|^haired$|^hood$|^hod|^whod$", "i")"""
+        query=query+'FILTER regex(?prompt, "^%s$", "i")' % "$|^".join(hVdWords['monopthongs'] + hVdWords['dipthongs'])
 
     if bottle.request.forms.get('wlist')=='hvdmono':
-        query=query+"""FILTER regex(?prompt, "^head$|^had$|^hud$|^heed$|^hid$|^herd$|^hood$|^hod|^whod$", "i")"""
+        query=query+'FILTER regex(?prompt, "^%s$", "i")' % "$|^".join(hVdWords['monopthongs'])
 
     if bottle.request.forms.get('wlist')=='hvddip':
-        query=query+"""FILTER regex(?prompt, "^hard$|^heared$|^herd$|^howd$|^hoyd$|^haired$", "i")"""
+        query=query+'FILTER regex(?prompt, "^%s$", "i")' % "$|^".join(hVdWords['dipthongs'])
 
     query = query + "}"
 
@@ -828,7 +833,10 @@ def export():
     listUrl=''
     try:
         for part in session['partlist']:
-            [iList.append(item['item']) for item in part['item_results']]
+            for item in part['item_results']:
+                # TODO: fix item url since it is wrong in the triple store right now
+                itemurl = item['item'].replace('http://id.austalk.edu.au/item/', 'https://app.alveo.edu.au/catalog/austalk/')
+                iList.append(itemurl)
 
         itemList = pyalveo.ItemGroup(iList, client)
         
@@ -841,9 +849,13 @@ def export():
         #This is when the user sends a post
         listName = bottle.request.forms.get('listname')
         res = itemList.add_to_item_list_by_name(listName)
-        
-        listUrl = pyalveo.Client.get_item_list_by_name(client,listName).list_url
-        message = "List exported to Alveo. Next step is to <a href="+listUrl+">click here</a> to go directly to your list."
+
+        try:
+            listUrl = pyalveo.Client.get_item_list_by_name(client,listName).list_url
+            message = "List exported to Alveo. Next step is to <a href="+listUrl+">click here</a> to go directly to your list."
+        except:
+            message = "List exported to Alveo. Next step is to click the link to the alveo website to see your items."
+
         session.save()
 
     itemLists = client.get_item_lists()
