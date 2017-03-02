@@ -9,7 +9,7 @@
 
 
 <div class="navi">
-	% include('nav.tpl', apiKey=apiKey, title="IResults",loggedin=True)
+	% include('nav.tpl', logged_in=logged_in, title="IResults")
 </div>
 
 

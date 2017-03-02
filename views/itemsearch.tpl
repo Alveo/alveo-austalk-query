@@ -20,7 +20,7 @@
 <body>
 
 <div class="navi">
-	% include('nav.tpl', apiKey=apiKey, title="ISearch",loggedin=True)
+	% include('nav.tpl', logged_in=logged_in, title="ISearch")
 </div>
 
 <div class="content">
