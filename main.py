@@ -1029,14 +1029,11 @@ class SSLCherryPyServer(bottle.ServerAdapter):
 
 if __name__ == '__main__':
     '''Runs the app. Listens on localhost:8080.'''
-    #bottle.run(app=app, host='localhost', port=8080, debug=True)
     import sys
     if len(sys.argv)>1:
         if len(sys.argv)>2 and sys.argv[2]=='--no-ssl':
-            redirect_url = "http://"+sys.argv[1]+":8000/oauth/callback"
-            bottle.run(app=app, host=sys.argv[1], port=8000, debug=True)
+            bottle.run(app=app, host=sys.argv[1], port=port, debug=True)
         else:
-            redirect_url = "https://"+sys.argv[1]+":8000/oauth/callback"
-            bottle.run(app=app, host=sys.argv[1], port=8000, debug=True,server=SSLCherryPyServer)
+            bottle.run(app=app, host=sys.argv[1], port=port, debug=True,server=SSLCherryPyServer)
     else:
-        bottle.run(app=app, host='localhost', port=8080, debug=True,server=SSLCherryPyServer)
+        bottle.run(app=app, host=url, port=port, debug=True,server=SSLCherryPyServer)
