@@ -228,8 +228,8 @@ def results():
         ?recording_site austalk:city ?city .
         ?id foaf:age ?age .
         ?id foaf:gender ?gender .
-        OPTIONAL { ?id austalk:first_language ?fl . }
-        OPTIONAL { ?fl iso639schema:name ?first_language . }
+        OPTIONAL { ?id austalk:first_language ?fl .
+                   ?fl iso639schema:name ?first_language . }
         OPTIONAL { ?id austalk:pob_country ?pob_country . }
         OPTIONAL { ?id austalk:pob_town ?pob_town . }
     """
