@@ -808,12 +808,16 @@ def getSentences():
 @bottle.get('/export')
 @bottle.post('/export')
 def export():
-    '''Exports a selected set of items to Alveo if method is POST. If method is GET, displays a simple form to allow said exporting
-    unless no items have yet been selected to export. Redirects home after the export is completed'''
+    '''
+    If POST: Exports a selected set of items to Alveo. Redirects home after the export is completed.
+    If GET : Displays a simple form to allow said exporting unless no items have yet been selected to export.
+    '''
 
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
 
-    if not 'logged_in' in session:
+    client = session.get(client,None)
+
+    if not 'logged_in' in session or client is None:
         session['logged_in'] = False
         session['message'] = "You must log in to view this page!"
         session.save()
@@ -1030,10 +1034,15 @@ class SSLCherryPyServer(bottle.ServerAdapter):
 if __name__ == '__main__':
     '''Runs the app. Listens on localhost:8080.'''
     import sys
+    import socket
+    ip = socket.gethostbyname(socket.gethostname())
     if len(sys.argv)>1:
         if len(sys.argv)>2 and sys.argv[2]=='--no-ssl':
             bottle.run(app=app, host=sys.argv[1], port=port, debug=True)
         else:
-            bottle.run(app=app, host=sys.argv[1], port=port, debug=True,server=SSLCherryPyServer)
+            if sys.argv[1]=='--no-ssl':
+                bottle.run(app=app, host=ip, port=port, debug=True)
+            else:
+                bottle.run(app=app, host=sys.argv[1], port=port, debug=True,server=SSLCherryPyServer)
     else:
-        bottle.run(app=app, host=url, port=port, debug=True,server=SSLCherryPyServer)
+        bottle.run(app=app, host=ip, port=port, debug=True,server=SSLCherryPyServer)
