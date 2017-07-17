@@ -1,6 +1,6 @@
 Beaker==1.8.0
 bottle==0.12.9
-git+https://github.com/mixtah/pyalveo.git@OAuth2
+git+https://github.com/Alveo/pyalveo.git
 python-dateutil==2.4.0
 six==1.10.0
 wsgiref==0.1.2
