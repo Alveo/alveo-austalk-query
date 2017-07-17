@@ -37,19 +37,19 @@ function handleAudioError(e) {
 	end = '</b></p></div>'
 	switch (e.target.error.code) {
 		case e.target.error.MEDIA_ERR_ABORTED:
-			OAF.html(start+'You aborted the video playback.'+end);
+			OAF.html(start+'One or more Audio files failed to load. The audio playback was aborted.'+end);
 			break;
 		case e.target.error.MEDIA_ERR_NETWORK:
-			OAF.html(start+'A network error caused the audio download to fail.'+end);
+			OAF.html(start+'One or more Audio files failed to load. A network error caused the audio download to fail.'+end);
 			break;
 		case e.target.error.MEDIA_ERR_DECODE:
-			OAF.html(start+'The audio playback was aborted due to corruption in the file'+end);
+			OAF.html(start+'One or more Audio files failed to load. The audio playback was aborted due to corruption in the file'+end);
 			break;
 		case e.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED:
-			OAF.html(start+'Please <a href="https://app.alveo.edu.au/" target="_blank">login to Alveo</a> then refreash this page to play the audio file.'+end);
+			OAF.html(start+'One or more Audio files failed to load. Please <a href="https://app.alveo.edu.au/" target="_blank">login to Alveo</a> then refreash this page to play the audio file.'+end);
 			break;
 		default:
-			OAF.html(start+'An Error has occured, cannot play audio files.'+end);
+			OAF.html(start+'One or more Audio files failed to load.'+end);
 		break;
 	}
 }
