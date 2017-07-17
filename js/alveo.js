@@ -46,7 +46,7 @@ function handleAudioError(e) {
 			OAF.html(start+'One or more Audio files failed to load. The audio playback was aborted due to corruption in the file'+end);
 			break;
 		case e.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED:
-			OAF.html(start+'One or more Audio files failed to load. Please <a href="https://app.alveo.edu.au/" target="_blank">login to Alveo</a> then refreash this page to play the audio file.'+end);
+			OAF.html('<form action="/login" method="POST">'+start+'One or more Audio files failed to load. Please <a href="#" onclick="this.parentNode.parentNode.parentNode.parentNode.submit()">Log in to Alveo</a> again in order to access the audio files.'+end+'</form>');
 			break;
 		default:
 			OAF.html(start+'One or more Audio files failed to load.'+end);

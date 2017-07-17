@@ -893,6 +893,15 @@ def oauth_callback():
         session['message'] = "Successfully Logged In!"
         session.save()
         
+    #Lets check to see if item results already exist in the session
+    #If so then redirect to item results page
+    try:
+        partList = session['partlist']
+        test = session['partlist'][0]['item_results']
+        bottle.redirect('/itemresults')
+    except KeyError:
+        pass
+    
     bottle.redirect('/')
     
 @bottle.get('/oauth/validate')
