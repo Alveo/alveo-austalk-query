@@ -11,3 +11,6 @@ __pycache__/
 
 #SSL Keys and Certs
 keys/*
+
+#Settings file
+settings.py
