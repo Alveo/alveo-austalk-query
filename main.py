@@ -12,9 +12,9 @@ from cherrypy.wsgiserver.ssl_pyopenssl import pyOpenSSLAdapter
 from OpenSSL import SSL
 import alquery
 import qbuilder
-import sys,os
+import socket
+import sys
 import traceback
-from bottle import redirect
 import pyalveo
 from settings import *
 import csv,json
@@ -1035,9 +1035,10 @@ class SSLCherryPyServer(bottle.ServerAdapter):
 
 if __name__ == '__main__':
     '''Runs the app. Listens on localhost:8080.'''
-    import sys
-    import socket
-    ip = socket.gethostbyname(socket.gethostname())
+    try:
+        ip = socket.gethostbyname(socket.gethostname())
+    except:
+        ip = ''
     if len(sys.argv)>1:
         if len(sys.argv)>2 and sys.argv[2]=='--no-ssl':
             bottle.run(app=app, host=sys.argv[1], port=port, debug=True)
