@@ -26,7 +26,7 @@
 <div class="content">
 	%if len(message)>0:
 		<div class="alert alert-warning" role="alert">
-			<p align="center"><b>{{message}}</b></p>
+			<p align="center"><b>{{!message}}</b></p>
 		</div>
 	%end
 

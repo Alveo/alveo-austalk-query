@@ -860,7 +860,9 @@ def export():
         except:
             message = "List exported to Alveo. Next step is to click the link to the alveo website to see your items."
 
+        session['message'] = message
         session.save()
+        bottle.redirect('/')
 
     itemLists = client.get_item_lists()
     return bottle.template('export', logged_in=session['logged_in'], itemLists=itemLists,

@@ -13,15 +13,9 @@
 <div class="content">
 
 %if len(message)>0:
-	%if len(listUrl)>0:
 	<div class="alert alert-warning" role="alert">
-		<p align="center"><b>List exported to Alveo. Next step is to <a href="{{listUrl}}" target="_blank">click here</a> to go directly to your list.</b></p>
+		<p align="center"><b>{{!message}}</b></p>
 	</div>
-	%else:
-	<div class="alert alert-warning" role="alert">
-		<p align="center"><b>{{message}}</b></p>
-	</div>
-	%end
 %end
 
 <h4>Number of Selected Items: {{itemCount}}</h4>
