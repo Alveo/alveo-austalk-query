@@ -815,7 +815,7 @@ def export():
 
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
 
-    client = session.get(client,None)
+    client = session.get('client',None)
 
     if not 'logged_in' in session or client is None:
         session['logged_in'] = False
