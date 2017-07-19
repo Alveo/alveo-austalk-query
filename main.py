@@ -1012,8 +1012,12 @@ def logging_in():
     '''Logs the user in with their API key.'''
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
 
-    client = pyalveo.Client(api_url=BASE_URL,client_id=client_id,client_secret=client_secret,
-                            redirect_url=redirect_url,verifySSL=False)
+    oauth_dict = {
+                  'client_id':client_id,
+                  'client_secret':client_secret,
+                  'redirect_url':redirect_url
+                  }
+    client = pyalveo.Client(api_url=BASE_URL,oauth=oauth_dict,verifySSL=False)
     url = client.oauth.get_authorisation_url()
     session['client'] = client
     session.save()
