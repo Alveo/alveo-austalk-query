@@ -7,13 +7,13 @@
 <body>
 
 <div class="navi">
-	% include('nav.tpl', apiKey=apiKey, title="PResults",loggedin=True)
+	% include('nav.tpl', logged_in=logged_in, title="PResults")
 </div>
 
 <div class="content">
 	%if len(message)>0:
 		<div class="alert alert-warning" role="alert">
-			<p align="center"><b>{{message}}</b></p>
+			<p align="center"><b>{{!message}}</b></p>
 		</div>
 	%end
 <h4>Number of Participants Found: {{resultCount}}</h4>

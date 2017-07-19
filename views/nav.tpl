@@ -16,8 +16,8 @@
 			  {{!'<li class="active"><a href="/itemsearch">Search Items</a></li>' if title=='ISearch' else '<li><a href="/itemsearch">Search Items</a></li>'}}
               {{!'<li class="active"><a href="/itemresults">Item List</a></li>' if title=='IResults' else '<li><a href="/itemresults">Item List</a></li>' }}
               {{!'<li class="active"><a href="/export">Export</a></li>' if title=='Export' else '<li><a href="/export">Export</a></li>'}}
-              {{!'<li><a href="/logout">Log out</a></li>' if apiKey!='Not logged in' else '<li><a href="/">Log in</a></li>'}}
-              <li><a>User: {{apiKey}}</a></li>
+              {{!'<li><a href="/logout">Log out</a></li>' if logged_in else '<li><a href="/">Log in</a></li>'}}
+              <li><a>{{logged_in if logged_in else 'Not Logged In'}}</a></li>
             </ul>
           </div>
         </div>

@@ -9,14 +9,14 @@
 
 
 <div class="navi">
-	% include('nav.tpl', apiKey=apiKey, title="IResults",loggedin=True)
+	% include('nav.tpl', logged_in=logged_in, title="IResults")
 </div>
 
 
 <div class="content">
 	%if len(message)>0:
 		<div class="alert alert-warning" role="alert">
-			<p align="center"><b>{{message}}</b></p>
+			<p align="center"><b>{{!message}}</b></p>
 		</div>
 	%end
 	
