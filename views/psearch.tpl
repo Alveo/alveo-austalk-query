@@ -133,7 +133,7 @@
 							</td>
 							<td class="mid">
 								<div class="form-group">
-									<input type="text" class="form-control" name="pob_town" id="pob_town" placeholder="NSW">
+									<input type="text" class="form-control" name="pob_state" id="pob_state" placeholder="NSW">
 								</div>
 							</td>
 							<td class="right">
