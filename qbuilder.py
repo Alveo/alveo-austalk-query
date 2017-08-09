@@ -228,12 +228,12 @@ def get_everything_from_participants(filters=None,id=None):
         ?recording_site austalk:city ?city .
         ?id foaf:age ?age .
         ?id foaf:gender ?gender .
-        OPTIONAL { ?id austalk:first_language ?fl . }
-        OPTIONAL { ?fl iso639schema:name ?first_language . }
-        OPTIONAL { ?id austalk:father_first_language ?ffl . }
-        OPTIONAL { ?ffl iso639schema:name ?father_first_language . }
-        OPTIONAL { ?id austalk:mother_first_language ?mfl . }
-        OPTIONAL { ?mfl iso639schema:name ?mother_first_language . }
+        OPTIONAL { ?id austalk:first_language ?fl .
+                    ?fl iso639schema:name ?first_language . }
+        OPTIONAL { ?id austalk:father_first_language ?ffl .
+                    ?ffl iso639schema:name ?father_first_language . }
+        OPTIONAL { ?id austalk:mother_first_language ?mfl .
+                    ?mfl iso639schema:name ?mother_first_language . }
         '''
     for x in metaList:
         select = select + '?'+x+' '
