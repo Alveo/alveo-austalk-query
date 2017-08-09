@@ -412,6 +412,9 @@ def download_participants_csv():
     #modify the output so it is more human readable
     for row in resultsList:
         row['id'] = row['id'].split('/')[-1]
+        #We need to encode to ascii otherwise dictwriter will cry
+        for item in row:
+            item = item.encode('ascii','backslashreplace')
 
     #make response header so that file will be downloaded.
     bottle.response.headers["Content-Disposition"] = "attachment; filename=participants.csv"
