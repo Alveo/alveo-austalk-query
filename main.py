@@ -1028,6 +1028,23 @@ def help():
 
     return bottle.template('help', logged_in=session['logged_in'])
 
+@bottle.get('/apikeylogin')
+@bottle.post('/apikeylogin')
+def apikey_login():
+    '''Logs the user in with their API key.'''
+    session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
+    
+    
+    apiKey = bottle.request.query.get('apikey', None)
+    if apiKey:
+        client = pyalveo.Client(api_url=BASE_URL,api_key=apiKey,verifySSL=False)
+        res = client.oauth.get_user_data()
+        session['client'] = client
+        session['logged_in'] = "%s %s" % (res['first_name'],res['last_name'])
+        session['message'] = "Successfully Logged In!"
+        session.save()
+    bottle.redirect('/')
+
 @bottle.post('/login')
 def logging_in():
     '''Logs the user in with their API key.'''
