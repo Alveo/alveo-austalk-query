@@ -510,16 +510,21 @@ def item_results():
     quer = alquery.AlQuery(session['client'])
 
     query = PREFIXES + """
-    SELECT distinct ?item ?prompt ?componentName ?media
+    SELECT distinct ?id ?item ?prompt ?componentName ?media
     WHERE {
       ?item a ausnc:AusNCObject .
-      ?item olac:speaker <%s> .
+      ?item olac:speaker ?id .
       ?item austalk:prompt ?prompt .
       ?item austalk:prototype ?prototype .
       ?item austalk:componentName ?componentName .
       ?item ausnc:document ?media .
       ?media austalk:version 1 .
       ?media austalk:channel "ch6-speaker16"
+      ?id a foaf:Person .
+      ?id austalk:recording_site ?recording_site .
+      ?recording_site austalk:city ?city .
+      ?id foaf:age ?age .
+      ?id foaf:gender ?gender .
      """
 
     if bottle.request.forms.get('anno') == "required":
@@ -552,13 +557,25 @@ def item_results():
 
     if bottle.request.forms.get('wlist')=='hvddip':
         query=query+'FILTER regex(?prompt, "^%s$", "i")' % "$|^".join(hVdWords['dipthongs'])
-
-    query = query + "}"
-
-    for row in partList:
-        row['item_results'] = quer.results_dict_list("austalk", query % (row['id']))
-        resultsCount = resultsCount + session['resultscount']
-
+    
+    query = query + "\n"+session.get('partfilters','')+"\n}"
+    
+    results = quer.results_dict_list("austalk", query)
+    
+    resultsCount = len(results)
+    
+    #Converting participant list into a dict so it's O(1) to add an item to this participant
+    #Without this, worst case complexity will be O(num_parts*num_items)
+    partDict = {}
+    for part in partList:
+        partDict[part['id']] = part
+        partDict[part['id']]['item_results'] = []
+    
+    for row in results:
+        partDict[part['id']]['item_results'].append(row)
+        
+    partList = partDict.values()
+    
     session['itemcount'] = resultsCount
     session.save()
 
