@@ -519,7 +519,7 @@ def item_results():
       ?item austalk:componentName ?componentName .
       ?item ausnc:document ?media .
       ?media austalk:version 1 .
-      ?media austalk:channel "ch6-speaker16"
+      ?media austalk:channel "ch6-speaker16" .
       ?id a foaf:Person .
       ?id austalk:recording_site ?recording_site .
       ?recording_site austalk:city ?city .
