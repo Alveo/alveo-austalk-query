@@ -25,22 +25,22 @@ client = None
 #used to inform the user when they're not logged in.
 USER_MESSAGE = ""
 PREFIXES = """
-        PREFIX dc:<http://purl.org/dc/terms/>
-        PREFIX austalk:<http://ns.austalk.edu.au/>
-        PREFIX olac:<http://www.language-archives.org/OLAC/1.1/>
-        PREFIX ausnc:<http://ns.ausnc.org.au/schemas/ausnc_md_model/>
-        PREFIX foaf:<http://xmlns.com/foaf/0.1/>
-        PREFIX dbpedia:<http://dbpedia.org/ontology/>
-        PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-        PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
-        PREFIX geo:<http://www.w3.org/2003/01/geo/wgs84_pos#>
-        PREFIX iso639schema:<http://downlode.org/rdf/iso-639/schema#>
-        PREFIX austalkid:<http://id.austalk.edu.au/>
-        PREFIX iso639:<http://downlode.org/rdf/iso-639/languages#>
-        PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-        PREFIX is: <http://purl.org/ontology/is/core#>
-        PREFIX iso: <http://purl.org/iso25964/skos-thes#>
-        PREFIX dada: <http://purl.org/dada/schema/0.2#>"""
+PREFIX dc:<http://purl.org/dc/terms/>
+PREFIX austalk:<http://ns.austalk.edu.au/>
+PREFIX olac:<http://www.language-archives.org/OLAC/1.1/>
+PREFIX ausnc:<http://ns.ausnc.org.au/schemas/ausnc_md_model/>
+PREFIX foaf:<http://xmlns.com/foaf/0.1/>
+PREFIX dbpedia:<http://dbpedia.org/ontology/>
+PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+PREFIX geo:<http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX iso639schema:<http://downlode.org/rdf/iso-639/schema#>
+PREFIX austalkid:<http://id.austalk.edu.au/>
+PREFIX iso639:<http://downlode.org/rdf/iso-639/languages#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX is: <http://purl.org/ontology/is/core#>
+PREFIX iso: <http://purl.org/iso25964/skos-thes#>
+PREFIX dada: <http://purl.org/dada/schema/0.2#>"""
 
 session_opts = {
     'session.cookie_expires': False
@@ -347,6 +347,7 @@ def results():
     session['partfilters'] = qfilter #so we can use the filters later again
     session['partlist'] = resultsList
     session['partcount'] = session['resultscount']
+    session['searchedcount'] = session['resultscount']
     session.save()
 
     undoExists = 'backupPartList' in session.itervalues()
@@ -568,11 +569,31 @@ def item_results():
     if bottle.request.forms.get('wlist')=='hvddip':
         query=query+'FILTER regex(?prompt, "^%s$", "i")' % "$|^".join(hVdWords['dipthongs'])
     
-    query = query + "\n"+session.get('partfilters','')+"\n}"
+    #This partcount greater than 65 isn't arbitrary,
+    #The amount of or's in the filter to select 70 or more 
+    #speakers results in a HTTP 414
+    #Basically the url is too long for the server to handle
+    #ie: the query is too long.
+    #This 65 should be a decent compromise between keeping
+    #a short and potentially more efficient search query
+    #and over querying for what the user wants.
+    #When querying for more than 65 participant we will
+    #search using the search filters, any further modifications
+    #to the participant list after are ignored and items from
+    #those who are unselected will also be returned.
+    #later on those extra results will be dumped.
+    if session['partcount']>65 or session['partcount']==session['searchedcount']:
+        query = query + "\n"+session.get('partfilters','')+"\n}"
+    else:
+        query = query + "\nFILTER ("
+        for p in partList:
+            query = query + 'str(?id) = "%s" || ' % p['id']
+        
+        query = query[:-3] + ')\n}'
     
     results = quer.results_dict_list(session['corpus'], query)
     
-    resultsCount = len(results)
+    resultsCount = 0
     
     #Converting participant list into a dict so it's O(1) to add an item to this participant
     #Without this, worst case complexity will be O(num_parts*num_items)
@@ -582,7 +603,14 @@ def item_results():
         partDict[part['id']]['item_results'] = []
     
     for row in results:
-        partDict[row['id']]['item_results'].append(row)
+        try:
+            partDict[row['id']]['item_results'].append(row)
+            resultsCount = resultsCount + 1
+        except KeyError:
+            #Incase we get a result from a participant we haven't selected
+            #This will only happen if the participant filters are applied 
+            #instead of selecting each of the participants.
+            pass
         
     partList = partDict.values()
     
