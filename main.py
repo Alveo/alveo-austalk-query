@@ -83,7 +83,7 @@ def start():
     '''Allows the user to select which '''
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
 
-    session['corpus'] = bottle.request.query('corpus','austalk')
+    session['corpus'] = bottle.request.query.get('corpus','austalk')
     session.save()
 
     return bottle.redirect('/psearch')
@@ -1068,7 +1068,7 @@ def logging_in():
     client = pyalveo.Client(api_url=BASE_URL,oauth=oauth_dict,verifySSL=False)
     url = client.oauth.get_authorisation_url()
     session['client'] = client
-    session['corpus'] = bottle.request.query('corpus','austalk')
+    session['corpus'] = bottle.request.query.get('corpus','austalk')
     session.save()
     bottle.redirect(url)
 
