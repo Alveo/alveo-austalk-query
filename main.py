@@ -43,7 +43,8 @@ PREFIX iso: <http://purl.org/iso25964/skos-thes#>
 PREFIX dada: <http://purl.org/dada/schema/0.2#>"""
 
 session_opts = {
-    'session.cookie_expires': False
+    'session.cookie_expires': False,
+    'session.auto': True,
 }
 
 app = SessionMiddleware(bottle.app(), session_opts)
@@ -65,18 +66,8 @@ def home():
 
     if not 'logged_in' in session:
         session['logged_in'] = False
-        session.save()
 
-    try:
-        message = session['message']
-        session['message'] = ""
-        session.save()
-    except KeyError:
-        session['message'] = ""
-        message = session['message']
-        session.save()
-
-    return bottle.template('home', results=results, message=message, logged_in=session['logged_in'])
+    return bottle.template('home', results=results, message=session.pop('message',''), logged_in=session['logged_in'])
 
 @bottle.get('/start')
 def start():
@@ -84,7 +75,7 @@ def start():
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
 
     session['corpus'] = bottle.request.query.get('corpus','austalk')
-    session.save()
+    
 
     return bottle.redirect('/psearch')
 
@@ -99,19 +90,10 @@ def search():
     if not 'logged_in' in session:
         session['logged_in'] = False
         session['message'] = "You must log in to view this page!"
-        session.save()
+        
         bottle.redirect('/')
         
     quer = alquery.AlQuery(session['client'])
-
-    try:
-        message = session['message']
-        session['message'] = ""
-        session.save()
-    except KeyError:
-        session['message'] = ""
-        message = session['message']
-        session.save()
 
     #try getting cached results
     try:
@@ -230,7 +212,7 @@ def search():
         #cache the results
         session['psearch_cache'] = results
 
-    return bottle.template('psearch', results=results, message=message, logged_in=session['logged_in'])
+    return bottle.template('psearch', results=results, message=session.pop('message',''), logged_in=session['logged_in'])
 
 @bottle.post('/presults')
 def results():
@@ -241,19 +223,10 @@ def results():
     if not 'logged_in' in session:
         session['logged_in'] = False
         session['message'] = "You must log in to view this page!"
-        session.save()
+        
         bottle.redirect('/')
 
     quer = alquery.AlQuery(session['client'])
-
-    try:
-        message = session['message']
-        session['message'] = ""
-        session.save()
-    except KeyError:
-        session['message'] = ""
-        message = session['message']
-        session.save()
 
     query = PREFIXES+ """
 
@@ -348,12 +321,12 @@ def results():
     session['partlist'] = resultsList
     session['partcount'] = session['resultscount']
     session['searchedcount'] = session['resultscount']
-    session.save()
+    
 
     undoExists = 'backupPartList' in session.itervalues()
 
     return bottle.template('presults', resultsList=resultsList, resultCount=session['partcount'],
-                           message=message,undo=undoExists, logged_in=session['logged_in'])
+                           message=session.pop('message',''),undo=undoExists, logged_in=session['logged_in'])
 
 @bottle.get('/presults')
 def part_list():
@@ -364,7 +337,7 @@ def part_list():
     if not 'logged_in' in session:
         session['logged_in'] = False
         session['message'] = "You must log in to view this page!"
-        session.save()
+        
         bottle.redirect('/')
 
     try:
@@ -374,23 +347,14 @@ def part_list():
             raise KeyError
     except KeyError:
         session['message'] = "Perform a participant search first."
-        session.save()
+        
         bottle.redirect('/psearch')
-
-    try:
-        message = session['message']
-        session['message'] = ""
-        session.save()
-    except KeyError:
-        session['message'] = ""
-        message = session['message']
-        session.save()
 
     undoExists = 'backupPartList' in session
     if undoExists:
         undoExists = len(session['backupPartList'])>0
     return bottle.template('presults', resultsList=resultsList, resultCount=session['partcount'],
-                           message=message,undo=undoExists, logged_in=session['logged_in'])
+                           message=session.pop('message',''),undo=undoExists, logged_in=session['logged_in'])
 
 @bottle.get('/download/participants.csv')
 def download_participants_csv():
@@ -401,7 +365,7 @@ def download_participants_csv():
     if not 'logged_in' in session:
         session['logged_in'] = False
         session['message'] = "You must log in to view this page!"
-        session.save()
+        
         bottle.redirect('/')
 
     quer = alquery.AlQuery(session['client'])
@@ -413,7 +377,7 @@ def download_participants_csv():
             raise KeyError
     except KeyError:
         session['message'] = "Perform a participant search first."
-        session.save()
+        
         bottle.redirect('/psearch')
 
     query = qbuilder.get_everything_from_participants(filters=session['partfilters'])
@@ -449,7 +413,7 @@ def handle_parts():
     if not 'logged_in' in session:
         session['logged_in'] = False
         session['message'] = "You must log in to view this page!"
-        session.save()
+        
         bottle.redirect('/')
 
     partList = session['partlist']
@@ -466,7 +430,7 @@ def handle_parts():
             session['message'] = 'Removed %d items.' % len(selectedParts)
         elif len(selectedParts)==1:
             session['message'] = 'Removed one item.'
-        session.save()
+        
     elif function=='getall':
         #goto /itemresults with selected items
         #removed this option as it crashes to go directly to item results without a search
@@ -474,7 +438,7 @@ def handle_parts():
 
         session['partcount'] = len(selectedParts)
         session['partlist'] = newPartList
-        session.save()
+        
 
         bottle.redirect('/itemresults')
 
@@ -488,7 +452,7 @@ def handle_parts():
 
         session['partcount'] = len(selectedParts)
         session['partlist'] = newPartList
-        session.save()
+        
 
         bottle.redirect('/itemsearch')
     elif function=='undo':
@@ -499,7 +463,7 @@ def handle_parts():
             partList.extend(session['backupPartList'])
             session['partcount'] += len(session['backupPartList'])
             session['backupPartList']=[]
-            session.save()
+            
             session['message'] = 'Reversed last remove.'
         except KeyError:
             #was nothing to undo
@@ -515,7 +479,7 @@ def item_results():
     if not 'logged_in' in session:
         session['logged_in'] = False
         session['message'] = "You must log in to view this page!"
-        session.save()
+        
         bottle.redirect('/')
         
     quer = alquery.AlQuery(session['client'])
@@ -615,21 +579,12 @@ def item_results():
     partList = partDict.values()
     
     session['itemcount'] = resultsCount
-    session.save()
-
-    try:
-        message = session['message']
-        session['message'] = ""
-        session.save()
-    except KeyError:
-        session['message'] = ""
-        message = session['message']
-        session.save()
+    
 
     undoExists = 'backupItemList' in session and len(session['backupPartList'])>0
 
     return bottle.template('itemresults', partList=partList, resultsCount=resultsCount, 
-                           message=message,undo=undoExists, logged_in=session['logged_in'])
+                           message=session.pop('message',''),undo=undoExists, logged_in=session['logged_in'])
 
 @bottle.get('/itemresults')
 def item_list():
@@ -640,7 +595,7 @@ def item_list():
     if not 'logged_in' in session:
         session['logged_in'] = False
         session['message'] = "You must log in to view this page!"
-        session.save()
+        
         bottle.redirect('/')
 
     try:
@@ -648,23 +603,14 @@ def item_list():
         test = session['partlist'][0]['item_results']#should have something here
     except KeyError:
         session['message'] = "Perform an item search first."
-        session.save()
+        
         bottle.redirect('/itemsearch')
-
-    try:
-        message = session['message']
-        session['message'] = ""
-        session.save()
-    except KeyError:
-        session['message'] = ""
-        message = session['message']
-        session.save()
 
     undoExists = 'backupItemList' in session
     if undoExists:
         undoExists = len(session['backupItemList'])>0
     return bottle.template('itemresults', partList=partList, resultsCount=session['itemcount'],
-                           message=message,undo=undoExists, logged_in=session['logged_in'])
+                           message=session.pop('message',''),undo=undoExists, logged_in=session['logged_in'])
 
 
 @bottle.get('/download/items.csv')
@@ -677,7 +623,7 @@ def download_items_csv():
     if not 'logged_in' in session:
         session['logged_in'] = False
         session['message'] = "You must log in to view this page!"
-        session.save()
+        
         bottle.redirect('/')
     
     quer = alquery.AlQuery(session['client'])
@@ -688,7 +634,7 @@ def download_items_csv():
             raise KeyError
     except KeyError:
         session['message'] = "Perform an item search first."
-        session.save()
+        
         bottle.redirect('/itemsearch')
 
     resultsList = []
@@ -738,7 +684,7 @@ def handle_items():
     if not 'logged_in' in session:
         session['logged_in'] = False
         session['message'] = "You must log in to view this page!"
-        session.save()
+        
         bottle.redirect('/')
 
     partList = session['partlist']
@@ -773,7 +719,7 @@ def handle_items():
             session['message'] = 'Removed %d items.' % len(selectedItems)
         elif len(selectedItems)==1:
             session['message'] = 'Removed one item.'
-        session.save()
+        
     elif function=='undo':
         #undo most recent remove if there was one.
         try:
@@ -785,7 +731,7 @@ def handle_items():
 
             session['itemcount'] += session['backupItemList']['count']
             session['backupItemList']={}
-            session.save()
+            
             session['message'] = 'Reversed last remove.'
         except KeyError:
             #was nothing to undo
@@ -810,7 +756,7 @@ def item_search():
     if not 'logged_in' in session:
         session['logged_in'] = False
         session['message'] = "You must log in to view this page!"
-        session.save()
+        
         bottle.redirect('/')
         
 
@@ -818,19 +764,10 @@ def item_search():
         partList = session['partlist'] #@UnusedVariable
     except KeyError:
         session['message'] = "Select some participants first."
-        session.save()
+        
         bottle.redirect('/psearch')
 
-    try:
-        message = session['message']
-        session['message'] = ""
-        session.save()
-    except KeyError:
-        session['message'] = ""
-        message = session['message']
-        session.save()
-
-    return bottle.template('itemsearch',results=results, message=message, logged_in=session['logged_in'])
+    return bottle.template('itemsearch',results=results, message=session.pop('message',''), logged_in=session['logged_in'])
 
 
 @bottle.get('/itemsearch/sentences')
@@ -841,7 +778,7 @@ def getSentences():
     if not 'logged_in' in session:
         session['logged_in'] = False
         return "<option value="">You must login to view results!</option>"
-        session.save()
+        
     
     quer = alquery.AlQuery(session['client'])
 
@@ -879,17 +816,8 @@ def export():
     if not 'logged_in' in session or client is None:
         session['logged_in'] = False
         session['message'] = "You must log in to view this page!"
-        session.save()
+        
         bottle.redirect('/')
-
-    try:
-        message = session['message']
-        session['message'] = ""
-        session.save()
-    except KeyError:
-        session['message'] = ""
-        message = session['message']
-        session.save()
 
     #create a single item list so it can be passed to pyalveo
     iList = [] #iList, the expensive and non-functional but good looking version of list
@@ -905,7 +833,7 @@ def export():
         
     except KeyError:
         session['message'] = "Select some items first."
-        session.save()
+        
         bottle.redirect('/itemresults')
 
     if bottle.request.forms.get('listname') != None:
@@ -920,12 +848,12 @@ def export():
             message = "List exported to Alveo. Next step is to click the link to the alveo website to see your items."
 
         session['message'] = message
-        session.save()
+        
         bottle.redirect('/')
 
     itemLists = client.get_item_lists()
     return bottle.template('export', logged_in=session['logged_in'], itemLists=itemLists,
-                           listUrl=listUrl,message=message,itemCount=session['itemcount'])
+                           listUrl=listUrl,message=session.pop('message',''),itemCount=session['itemcount'])
 
 
 @bottle.get('/oauth/user_data')
@@ -944,13 +872,13 @@ def oauth_callback():
         bottle.redirect('/')
         session['logged_in'] = False
         session['message'] = "You must log in properly!"
-        session.save()
+        
         
     if session['client'].oauth.on_callback(bottle.request.url):
         res = session['client'].oauth.get_user_data()
         session['logged_in'] = "%s %s" % (res['first_name'],res['last_name'])
         session['message'] = "Successfully Logged In!"
-        session.save()
+        
         
     #Lets check to see if item results already exist in the session
     #If so then redirect to item results page
@@ -996,7 +924,7 @@ def oauth_refresh():
 def error404(error):
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
     session['message'] = "Sorry, the page you're looking for doesn't exist."
-    session.save()
+    
     bottle.response.status = 303
     bottle.response.set_header('location','/')
     return 'this is meant to redirect'
@@ -1006,7 +934,7 @@ def error404(error):
 def error500(error):
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
     session['message'] = "Sorry, something went wrong! Error: 500 Internal Server Error"
-    session.save()
+    
     bottle.response.status = 303
     bottle.response.set_header('location','/')
     return 'this is meant to redirect'
@@ -1018,18 +946,9 @@ def login():
 
     if not 'logged_in' in session:
         session['logged_in'] = False
-        session.save()
-    
-    try:
-        message = session['message']
-        session['message'] = ""
-        session.save()
-    except KeyError:
-        session['message'] = ""
-        message = session['message']
-        session.save()
+        
 
-    return bottle.template('login', message=message, logged_in=session['logged_in'])
+    return bottle.template('login', message=session.pop('message',''), logged_in=session['logged_in'])
 
 @bottle.get('/logout')
 def logout():
@@ -1043,7 +962,7 @@ def logout():
     session.delete()
     session['message'] = "You have successfully logged out!"
     session['logged_in'] = False
-    session.save()
+    
     bottle.redirect('/')
 
 @bottle.get('/about')
@@ -1052,7 +971,7 @@ def about():
     
     if not 'logged_in' in session:
         session['logged_in'] = False
-        session.save()
+        
 
     return bottle.template('about', logged_in=session['logged_in'])
 
@@ -1062,7 +981,7 @@ def help():
 
     if not 'logged_in' in session:
         session['logged_in'] = False
-        session.save()
+        
 
     return bottle.template('help', logged_in=session['logged_in'])
 
@@ -1080,7 +999,7 @@ def apikey_login():
         session['client'] = client
         session['logged_in'] = "%s %s" % (res['first_name'],res['last_name'])
         session['message'] = "Successfully Logged In!"
-        session.save()
+        
     bottle.redirect('/')
 
 @bottle.post('/login')
@@ -1097,7 +1016,7 @@ def logging_in():
     url = client.oauth.get_authorisation_url()
     session['client'] = client
     session['corpus'] = bottle.request.query.get('corpus','austalk')
-    session.save()
+    
     bottle.redirect(url)
 
 # By default, the server will allow negotiations with extremely old protocols
