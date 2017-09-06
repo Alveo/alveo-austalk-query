@@ -75,6 +75,9 @@ def home():
         session['message'] = ""
         message = session['message']
         session.save()
+        
+    session['corpus'] = bottle.request.query.get('corpus','austalk')
+    session.save()
 
     return bottle.template('home', results=results, message=message, logged_in=session['logged_in'])
 
