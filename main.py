@@ -854,7 +854,7 @@ def export():
 
         try:
             listUrl = pyalveo.Client.get_item_list_by_name(client,listName).list_url
-            message = "List exported to Alveo. Next step is to <a href="+listUrl+">click here</a> to go directly to your list."
+            message = 'List exported to Alveo. Next step is to <a href='+listUrl+' target="_blank">click here</a> to go directly to your list.'
         except:
             message = "List exported to Alveo. Next step is to click the link to the alveo website to see your items."
 
@@ -999,6 +999,7 @@ def apikey_login():
         
     bottle.redirect('/')
 
+@bottle.get('/login')
 @bottle.post('/login')
 def logging_in():
     '''Logs the user in with their API key.'''

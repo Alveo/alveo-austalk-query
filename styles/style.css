@@ -9,6 +9,10 @@
 	background-color: whitesmoke
 }
 
+.content {
+	margin-top: 80px;
+}
+
 th {
 	text-align: left;
 }
@@ -26,11 +30,6 @@ body{
 }
 label{
 	font-weight: normal;
-}
-.content{
-	margin-left: 10%;
-	margin-right: 10%;
-	margin-top: 80px;
 }
 
 .message{
