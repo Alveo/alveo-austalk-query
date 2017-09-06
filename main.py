@@ -731,19 +731,17 @@ def handle_items():
         
     elif function=='undo':
         #undo most recent remove if there was one.
-        try:
-            #loop participants and extend each of their item lists
-            if len(session['backupItemList'])==0:
-                raise KeyError
+        #loop participants and extend each of their item lists
+        backupItemList = session.get('backupItemList',[])
+        if len(backupItemList)>0:
             for p in partList:
-                p['item_results'].extend(session['backupItemList'][p['id']])
+                p['item_results'].extend(backupItemList[p['id']])
 
-            session['itemcount'] += session['backupItemList']['count']
+            session['itemcount'] += backupItemList['count']
             session['backupItemList']={}
             
             session['message'] = 'Reversed last remove.'
-        except KeyError:
-            #was nothing to undo
+        else:
             session['message'] = 'Nothing to Undo.'
     elif function=='export':
         if selectedItems and len(selectedItems)>0:
@@ -752,6 +750,7 @@ def handle_items():
                 itemResults = p.get('item_results',[])
                 newItemList = [item for item in itemResults if item['item'] in selectedItems]
                 p['item_results'] = newItemList
+            session['itemcount'] = len(selectedItems)
             bottle.redirect('/export')
         session['message'] = 'Please Select some items first'
         bottle.redirect('/itemresults')
