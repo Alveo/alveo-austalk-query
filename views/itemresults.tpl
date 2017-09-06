@@ -92,8 +92,7 @@
                    <label class="rTableRow" for="{{item['item']}}">
                      <div class="rTableCellLeft" style="width:10%;"><b>{{item['item'].split('/')[-1]}}</b></div>
                      <div class="rTableCell" style="width:10%;">{{item['componentName']}}</div>
-                     <div class="rTableCell" style="width:70%;">{{item['prompt']}}</div>
-                     <div class="rTableCellRight" style="width:10%;"><audio controls src="{{item['media']}}" type="audio/wav" onerror="handleAudioError(event)"><audio></div>
+                     <div class="rTableCellRight" style="width:80%;">{{item['prompt']}}</div>
                    </label>
          </div>
        </div>
