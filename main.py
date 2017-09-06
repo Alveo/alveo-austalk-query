@@ -746,12 +746,15 @@ def handle_items():
             #was nothing to undo
             session['message'] = 'Nothing to Undo.'
     elif function=='export':
-        #remove all that isn't selected.
-        for p in partList:
-            newItemList = [item for item in p['item_results'] if item['item'] in selectedItems]
-            p['item_results'] = newItemList
-
-        bottle.redirect('/export')
+        if selectedItems and len(selectedItems)>0:
+            #remove all that isn't selected.
+            for p in partList:
+                itemResults = p.get('item_results',[])
+                newItemList = [item for item in itemResults if item['item'] in selectedItems]
+                p['item_results'] = newItemList
+            bottle.redirect('/export')
+        session['message'] = 'Please Select some items first'
+        bottle.redirect('/itemresults')
     bottle.redirect('/itemresults')
 
 
@@ -835,12 +838,14 @@ def export():
                 # TODO: fix item url since it is wrong in the triple store right now
                 itemurl = item['item'].replace('http://id.austalk.edu.au/item/', 'https://app.alveo.edu.au/catalog/austalk/')
                 iList.append(itemurl)
-
-        itemList = pyalveo.ItemGroup(iList, client)
         
+        if len(iList)==0:
+            session['message'] = "Select some items first."
+            bottle.redirect('/itemresults')
+        
+        itemList = pyalveo.ItemGroup(iList, client)
     except KeyError:
         session['message'] = "Select some items first."
-        
         bottle.redirect('/itemresults')
 
     if bottle.request.forms.get('listname') != None:
