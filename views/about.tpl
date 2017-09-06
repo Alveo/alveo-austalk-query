@@ -7,7 +7,7 @@
 <body>
 
 <div class="navi">
-	% include('nav.tpl', logged_in=logged_in, title="About")
+	% include('nav.tpl', title="About")
 </div>
 
 <div class="content">

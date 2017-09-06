@@ -64,10 +64,9 @@ def home():
     '''An introductory home page to welcome the user and brief them on the process'''
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
 
-    if not 'logged_in' in session:
-        session['logged_in'] = False
-
-    return bottle.template('home', results=results, message=session.pop('message',''), logged_in=session['logged_in'])
+    return bottle.template('home',
+                           message=session.pop('message',''), 
+                           name=session.get('name',None))
 
 @bottle.get('/start')
 def start():
@@ -87,13 +86,12 @@ def search():
 
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
 
-    if not 'logged_in' in session:
-        session['logged_in'] = False
+    client = session.get('client',None)
+    if client is None:
         session['message'] = "You must log in to view this page!"
-        
         bottle.redirect('/')
         
-    quer = alquery.AlQuery(session['client'])
+    quer = alquery.AlQuery(client)
 
     #try getting cached results
     try:
@@ -212,7 +210,10 @@ def search():
         #cache the results
         session['psearch_cache'] = results
 
-    return bottle.template('psearch', results=results, message=session.pop('message',''), logged_in=session['logged_in'])
+    return bottle.template('psearch', 
+                           results=results, 
+                           message=session.pop('message',''), 
+                           name=session.get('name',None))
 
 @bottle.post('/presults')
 def results():
@@ -220,13 +221,12 @@ def results():
 
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
 
-    if not 'logged_in' in session:
-        session['logged_in'] = False
+    client = session.get('client',None)
+    if client is None:
         session['message'] = "You must log in to view this page!"
-        
         bottle.redirect('/')
 
-    quer = alquery.AlQuery(session['client'])
+    quer = alquery.AlQuery(client)
 
     query = PREFIXES+ """
 
@@ -325,8 +325,12 @@ def results():
 
     undoExists = 'backupPartList' in session.itervalues()
 
-    return bottle.template('presults', resultsList=resultsList, resultCount=session['partcount'],
-                           message=session.pop('message',''),undo=undoExists, logged_in=session['logged_in'])
+    return bottle.template('presults', 
+                           resultsList=resultsList, 
+                           resultCount=session['partcount'],
+                           message=session.pop('message',''),
+                           undo=undoExists, 
+                           name=session.get('name',None))
 
 @bottle.get('/presults')
 def part_list():
@@ -334,10 +338,9 @@ def part_list():
 
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
 
-    if not 'logged_in' in session:
-        session['logged_in'] = False
+    client = session.get('client',None)
+    if client is None:
         session['message'] = "You must log in to view this page!"
-        
         bottle.redirect('/')
 
     try:
@@ -353,8 +356,12 @@ def part_list():
     undoExists = 'backupPartList' in session
     if undoExists:
         undoExists = len(session['backupPartList'])>0
-    return bottle.template('presults', resultsList=resultsList, resultCount=session['partcount'],
-                           message=session.pop('message',''),undo=undoExists, logged_in=session['logged_in'])
+    return bottle.template('presults', 
+                           resultsList=resultsList, 
+                           resultCount=session['partcount'],
+                           message=session.pop('message',''),
+                           undo=undoExists, 
+                           name=session.get('name',None))
 
 @bottle.get('/download/participants.csv')
 def download_participants_csv():
@@ -362,13 +369,12 @@ def download_participants_csv():
 
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
     
-    if not 'logged_in' in session:
-        session['logged_in'] = False
+    client = session.get('client',None)
+    if client is None:
         session['message'] = "You must log in to view this page!"
-        
         bottle.redirect('/')
 
-    quer = alquery.AlQuery(session['client'])
+    quer = alquery.AlQuery(client)
 
     try:
         resultsList = session['partlist']
@@ -410,10 +416,9 @@ def handle_parts():
 
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
 
-    if not 'logged_in' in session:
-        session['logged_in'] = False
+    client = session.get('client',None)
+    if client is None:
         session['message'] = "You must log in to view this page!"
-        
         bottle.redirect('/')
 
     partList = session['partlist']
@@ -476,13 +481,12 @@ def item_results():
 
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
 
-    if not 'logged_in' in session:
-        session['logged_in'] = False
+    client = session.get('client',None)
+    if client is None:
         session['message'] = "You must log in to view this page!"
-        
         bottle.redirect('/')
         
-    quer = alquery.AlQuery(session['client'])
+    quer = alquery.AlQuery(client)
 
     query = PREFIXES + """
     SELECT distinct ?id ?item ?prompt ?componentName ?media
@@ -583,8 +587,12 @@ def item_results():
 
     undoExists = 'backupItemList' in session and len(session['backupPartList'])>0
 
-    return bottle.template('itemresults', partList=partList, resultsCount=resultsCount, 
-                           message=session.pop('message',''),undo=undoExists, logged_in=session['logged_in'])
+    return bottle.template('itemresults', 
+                           partList=partList, 
+                           resultsCount=resultsCount, 
+                           message=session.pop('message',''),
+                           undo=undoExists, 
+                           name=session.get('name',None))
 
 @bottle.get('/itemresults')
 def item_list():
@@ -592,10 +600,9 @@ def item_list():
 
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
 
-    if not 'logged_in' in session:
-        session['logged_in'] = False
+    client = session.get('client',None)
+    if client is None:
         session['message'] = "You must log in to view this page!"
-        
         bottle.redirect('/')
 
     try:
@@ -609,8 +616,12 @@ def item_list():
     undoExists = 'backupItemList' in session
     if undoExists:
         undoExists = len(session['backupItemList'])>0
-    return bottle.template('itemresults', partList=partList, resultsCount=session['itemcount'],
-                           message=session.pop('message',''),undo=undoExists, logged_in=session['logged_in'])
+    return bottle.template('itemresults', 
+                           partList=partList, 
+                           resultsCount=session['itemcount'],
+                           message=session.pop('message',''),
+                           undo=undoExists, 
+                           name=session.get('name',None))
 
 
 @bottle.get('/download/items.csv')
@@ -620,13 +631,12 @@ def download_items_csv():
 
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
 
-    if not 'logged_in' in session:
-        session['logged_in'] = False
+    client = session.get('client',None)
+    if client is None:
         session['message'] = "You must log in to view this page!"
-        
         bottle.redirect('/')
     
-    quer = alquery.AlQuery(session['client'])
+    quer = alquery.AlQuery(client)
 
     try:
         #incase the list was created but for some reason the user removes all elements or searches nothing.
@@ -681,10 +691,9 @@ def handle_items():
 
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
 
-    if not 'logged_in' in session:
-        session['logged_in'] = False
+    client = session.get('client',None)
+    if client is None:
         session['message'] = "You must log in to view this page!"
-        
         bottle.redirect('/')
 
     partList = session['partlist']
@@ -753,10 +762,9 @@ def item_search():
 
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
     
-    if not 'logged_in' in session:
-        session['logged_in'] = False
+    client = session.get('client',None)
+    if client is None:
         session['message'] = "You must log in to view this page!"
-        
         bottle.redirect('/')
         
 
@@ -767,20 +775,22 @@ def item_search():
         
         bottle.redirect('/psearch')
 
-    return bottle.template('itemsearch',results=results, message=session.pop('message',''), logged_in=session['logged_in'])
+    return bottle.template('itemsearch',
+                           message=session.pop('message',''), 
+                           name=session.get('name',None))
 
 
 @bottle.get('/itemsearch/sentences')
 def getSentences():
 
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
-
-    if not 'logged_in' in session:
-        session['logged_in'] = False
+    
+    client = session.get('client',None)
+    if client is None:
         return "<option value="">You must login to view results!</option>"
         
     
-    quer = alquery.AlQuery(session['client'])
+    quer = alquery.AlQuery(client)
 
     try:
         selectedComp = bottle.request.query['sentence']
@@ -812,11 +822,8 @@ def export():
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
 
     client = session.get('client',None)
-
-    if not 'logged_in' in session or client is None:
-        session['logged_in'] = False
+    if client is None:
         session['message'] = "You must log in to view this page!"
-        
         bottle.redirect('/')
 
     #create a single item list so it can be passed to pyalveo
@@ -852,8 +859,12 @@ def export():
         bottle.redirect('/')
 
     itemLists = client.get_item_lists()
-    return bottle.template('export', logged_in=session['logged_in'], itemLists=itemLists,
-                           listUrl=listUrl,message=session.pop('message',''),itemCount=session['itemcount'])
+    return bottle.template('export', 
+                           name=session.get('name',None), 
+                           itemLists=itemLists,
+                           listUrl=listUrl,
+                           message=session.pop('message',''),
+                           itemCount=session['itemcount'])
 
 
 @bottle.get('/oauth/user_data')
@@ -869,14 +880,12 @@ def oauth_user_data():
 def oauth_callback():
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
     if not 'client' in session:
+        session['message'] = 'You must log in via <a href="/">this link</a>'
         bottle.redirect('/')
-        session['logged_in'] = False
-        session['message'] = "You must log in properly!"
-        
         
     if session['client'].oauth.on_callback(bottle.request.url):
         res = session['client'].oauth.get_user_data()
-        session['logged_in'] = "%s %s" % (res['first_name'],res['last_name'])
+        session['name'] = "%s %s" % (res['first_name'],res['last_name'])
         session['message'] = "Successfully Logged In!"
         
         
@@ -939,17 +948,6 @@ def error500(error):
     bottle.response.set_header('location','/')
     return 'this is meant to redirect'
 
-@bottle.get('/login')
-def login():
-    '''Login page.'''
-    session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
-
-    if not 'logged_in' in session:
-        session['logged_in'] = False
-        
-
-    return bottle.template('login', message=session.pop('message',''), logged_in=session['logged_in'])
-
 @bottle.get('/logout')
 def logout():
     '''Logout and redirect to login page
@@ -961,29 +959,24 @@ def logout():
         pass
     session.delete()
     session['message'] = "You have successfully logged out!"
-    session['logged_in'] = False
     
     bottle.redirect('/')
 
 @bottle.get('/about')
 def about():
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
-    
-    if not 'logged_in' in session:
-        session['logged_in'] = False
-        
 
-    return bottle.template('about', logged_in=session['logged_in'])
+    return bottle.template('about', 
+                           message=session.pop('message',''),
+                           name=session.get('name',None))
 
 @bottle.get('/help')
 def help():
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
-
-    if not 'logged_in' in session:
-        session['logged_in'] = False
-        
-
-    return bottle.template('help', logged_in=session['logged_in'])
+    
+    return bottle.template('help', 
+                           message=session.pop('message',''),
+                           name=session.get('name',None))
 
 @bottle.get('/apikeylogin')
 @bottle.post('/apikeylogin')
@@ -997,7 +990,7 @@ def apikey_login():
         client = pyalveo.Client(api_url=BASE_URL,api_key=apiKey,verifySSL=False)
         res = client.oauth.get_user_data()
         session['client'] = client
-        session['logged_in'] = "%s %s" % (res['first_name'],res['last_name'])
+        session['name'] = "%s %s" % (res['first_name'],res['last_name'])
         session['message'] = "Successfully Logged In!"
         
     bottle.redirect('/')

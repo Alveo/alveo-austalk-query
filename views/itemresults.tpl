@@ -9,7 +9,7 @@
 
 
 <div class="navi">
-	% include('nav.tpl', logged_in=logged_in, title="IResults")
+	% include('nav.tpl', title="IResults")
 </div>
 
 

@@ -7,7 +7,7 @@
 <body>
 
 <div class="navi">
-	% include('nav.tpl', logged_in=logged_in, title="Log In")
+	% include('nav.tpl', title="Log In")
 </div>
 
 <div class="content">
@@ -21,7 +21,7 @@
 
 <h4>Here you can explore a large set of Australian linguistic data with over 800 participants and thousands of items to choose from.</h4>
 <p>Start by using our easy to use search page to find all the participants relevant to your study. Then search for your desired words and sentences and easily export this data to the Alveo website</p>
-%if logged_in:
+%if name:
 <a type="button" class="btn btn-default" href="/start?corpus=austalk"><h5>&nbsp;&nbsp;Click here to Start&nbsp;&nbsp;</h5></a>
 %else:
 <form action="/login" method="POST">

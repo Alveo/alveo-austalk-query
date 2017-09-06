@@ -20,7 +20,7 @@
 <body>
 
 <div class="navi">
-	% include('nav.tpl', logged_in=logged_in, title="ISearch")
+	% include('nav.tpl',title="ISearch")
 </div>
 
 <div class="content">
