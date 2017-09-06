@@ -1006,12 +1006,16 @@ def apikey_login():
 def logging_in():
     '''Logs the user in with their API key.'''
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
-
-    oauth_dict = {
-                  'client_id':client_id,
-                  'client_secret':client_secret,
-                  'redirect_url':redirect_url
-                  }
+    
+    try:
+        oauth_dict = {
+                      'client_id':client_id,
+                      'client_secret':client_secret,
+                      'redirect_url':redirect_url
+                      }
+    except:
+        session['message'] = "No client id set. Please ensure the settings are correctly setup."
+        bottle.redirect('/')
     client = pyalveo.Client(api_url=BASE_URL,oauth=oauth_dict,verifySSL=False)
     url = client.oauth.get_authorisation_url()
     session['client'] = client
