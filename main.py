@@ -75,9 +75,6 @@ def home():
         session['message'] = ""
         message = session['message']
         session.save()
-        
-    session['corpus'] = bottle.request.query.get('corpus','austalk')
-    session.save()
 
     return bottle.template('home', results=results, message=message, logged_in=session['logged_in'])
 
@@ -126,9 +123,9 @@ def search():
                          'mother_education_level','mother_cultural_heritage','father_pob_country',
                          'father_professional_category','father_education_level','father_cultural_heritage']
 
-        results = quer.simple_values_search(session['corpus'],simple_relations,sortAlphabetically=True)
+        results = quer.simple_values_search(session.get('corpus','austalk'),simple_relations,sortAlphabetically=True)
 
-        results['city'] = quer.results_list(session['corpus'], PREFIXES+
+        results['city'] = quer.results_list(session.get('corpus','austalk'), PREFIXES+
         """
             SELECT distinct ?val
             where {
@@ -137,7 +134,7 @@ def search():
               ?site austalk:city ?val .}
               order by asc(ucase(str(?val)))""")
 
-        results['first_language'] = quer.results_list(session['corpus'], PREFIXES+
+        results['first_language'] = quer.results_list(session.get('corpus','austalk'), PREFIXES+
         """
             SELECT distinct ?flang
             WHERE {{
@@ -151,7 +148,7 @@ def search():
                     ?flang iso639schema:name ?y}}}
             ORDER BY ?part""")
 
-        results['first_language_int'] = quer.results_list(session['corpus'], PREFIXES+
+        results['first_language_int'] = quer.results_list(session.get('corpus','austalk'), PREFIXES+
         """
             SELECT distinct ?val
             WHERE {
@@ -159,7 +156,7 @@ def search():
                 ?part austalk:first_language ?val .}
             ORDER BY ?part""")
 
-        results['mother_first_language'] = quer.results_list(session['corpus'], PREFIXES+
+        results['mother_first_language'] = quer.results_list(session.get('corpus','austalk'), PREFIXES+
         """
             SELECT distinct ?flang
             WHERE {{
@@ -173,7 +170,7 @@ def search():
                     ?flang iso639schema:name ?y}}}
             ORDER BY ?part""")
 
-        results['mother_first_language_int'] = quer.results_list(session['corpus'], PREFIXES+
+        results['mother_first_language_int'] = quer.results_list(session.get('corpus','austalk'), PREFIXES+
         """
             SELECT distinct ?val
             WHERE {
@@ -181,7 +178,7 @@ def search():
                 ?part austalk:mother_first_language ?val .}
             ORDER BY ?part""")
 
-        results['father_first_language'] = quer.results_list(session['corpus'], PREFIXES+
+        results['father_first_language'] = quer.results_list(session.get('corpus','austalk'), PREFIXES+
         """
             SELECT distinct ?flang
             WHERE {{
@@ -195,7 +192,7 @@ def search():
                     ?flang iso639schema:name ?y}}}
             ORDER BY ?part""")
 
-        results['father_first_language_int'] = quer.results_list(session['corpus'], PREFIXES+
+        results['father_first_language_int'] = quer.results_list(session.get('corpus','austalk'), PREFIXES+
         """
             SELECT distinct ?val
             WHERE {
@@ -203,7 +200,7 @@ def search():
                 ?part austalk:father_first_language ?val .}
             ORDER BY ?part""")
         
-        results['country_hist'] = quer.results_list(session['corpus'], PREFIXES+
+        results['country_hist'] = quer.results_list(session.get('corpus','austalk'), PREFIXES+
         """
             SELECT distinct ?country
             WHERE {
@@ -212,7 +209,7 @@ def search():
                 ?rh austalk:country ?country . 
             } ORDER BY ?country""")
         
-        results['town_hist'] = quer.results_list(session['corpus'], PREFIXES+
+        results['town_hist'] = quer.results_list(session.get('corpus','austalk'), PREFIXES+
         """
             SELECT distinct ?town
             WHERE {
@@ -221,7 +218,7 @@ def search():
                 ?rh austalk:town ?town . 
             } ORDER BY ?town""")
         
-        results['state_hist'] = quer.results_list(session['corpus'], PREFIXES+
+        results['state_hist'] = quer.results_list(session.get('corpus','austalk'), PREFIXES+
         """
             SELECT distinct ?state
             WHERE {
@@ -346,7 +343,7 @@ def results():
 
     query = query + qfilter + "} \nORDER BY ?id"
     
-    resultsList = quer.results_dict_list(session['corpus'], query)
+    resultsList = quer.results_dict_list(session.get('corpus','austalk'), query)
     session['partfilters'] = qfilter #so we can use the filters later again
     session['partlist'] = resultsList
     session['partcount'] = session['resultscount']
@@ -421,7 +418,7 @@ def download_participants_csv():
 
     query = qbuilder.get_everything_from_participants(filters=session['partfilters'])
 
-    resultsList = quer.results_dict_list(session['corpus'], query)
+    resultsList = quer.results_dict_list(session.get('corpus','austalk'), query)
     
     #modify the output so it is more human readable
     for row in resultsList:
@@ -594,7 +591,7 @@ def item_results():
         
         query = query[:-3] + ')\n}'
     
-    results = quer.results_dict_list(session['corpus'], query)
+    results = quer.results_dict_list(session.get('corpus','austalk'), query)
     
     resultsCount = 0
     
@@ -702,7 +699,7 @@ def download_items_csv():
                 #now get all participant info
                 query = qbuilder.get_everything_from_participants(id=part['id'])
                 new = x.copy()
-                results = quer.results_dict_list(session['corpus'], query)
+                results = quer.results_dict_list(session.get('corpus','austalk'), query)
                 new.update(results[0])
                 resultsList.append(new)
     else:
@@ -864,7 +861,7 @@ def getSentences():
         ?item austalk:prompt ?prompt .
     }
     ''' % selectedComp
-    results = quer.results_dict_list(session['corpus'], query)
+    results = quer.results_dict_list(session.get('corpus','austalk'), query)
     return '<option value="">Any</option>\n'+''.join('<option value="%s">%s</option>\n' % (s['prompt'],s['prompt']) for s in results)
 
 @bottle.get('/export')
