@@ -282,7 +282,7 @@ def results():
     regexList = [arg for arg in searchArgs if arg[0] in filterTable['regex']]
     for item in regexList:
         if item[0]=='id':
-            qfilter = qfilter + qbuilder.regex_filter('id',toString=True,prepend="http://id.austalk.edu.au/participant/")
+            qfilter = qfilter + qbuilder.regex_filter('id',toString=True,prepend="https://app.alveo.edu.au/speakers/%s/"%session.get('corpus','austalk'))
         else:
             qfilter = qfilter + qbuilder.regex_filter(item[0])
 
@@ -493,8 +493,8 @@ def item_results():
     WHERE {
       ?item a ausnc:AusNCObject .
       ?item olac:speaker ?id .
-      ?item austalk:prompt ?prompt .
       ?item austalk:prototype ?prototype .
+      ?prototype austalk:prompt ?prompt .
       ?item austalk:componentName ?componentName .
       ?item ausnc:document ?media .
       ?media austalk:version 1 .
@@ -518,7 +518,7 @@ def item_results():
     else:
         query = query + qbuilder.regex_filter('prompt')
     query = query + qbuilder.simple_filter('componentName')
-    query = query + qbuilder.to_str_filter('prototype',prepend="http://id.austalk.edu.au/protocol/item/")
+    query = query + qbuilder.to_str_filter('prototype',prepend="https://app.alveo.edu.au/protocol/item/")
 
     if bottle.request.forms.get('comptype') != "":
         query=query+"""FILTER regex(?componentName, "%s", "i")""" % (bottle.request.forms.get('comptype'))
@@ -835,7 +835,7 @@ def export():
         for part in session['partlist']:
             for item in part['item_results']:
                 # TODO: fix item url since it is wrong in the triple store right now
-                itemurl = item['item'].replace('http://id.austalk.edu.au/item/', 'https://app.alveo.edu.au/catalog/austalk/')
+                itemurl = item['item'].replace('http://id.austalk.edu.au/item/', 'https://app.alveo.edu.au/catalog/%s/'%session.get('corpus','austalk'))
                 iList.append(itemurl)
         
         if len(iList)==0:
