@@ -1,21 +1,4 @@
-<!DOCTYPE html>
-<html>
-<head>
-	% include('bshead.tpl')
-</head>
-
-<body>
-
-<div class="navi">
-	% include('nav.tpl', logged_in=logged_in, title="PResults")
-</div>
-
-<div class="content">
-	%if len(message)>0:
-		<div class="alert alert-warning" role="alert">
-			<p align="center"><b>{{!message}}</b></p>
-		</div>
-	%end
+%rebase("base-page")
 <h4>Number of Participants Found: {{resultCount}}</h4>
 <p>You can now search for items related to the selected participants, or select all items for this list of
 participants.</p>
@@ -65,9 +48,3 @@ all participants). Please be patient.</b></p>
 	</div>
 	
 </form>
-
-</div>
-	% include('bsfoot.tpl')
-</body>
-
-</html>

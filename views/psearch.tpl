@@ -1,30 +1,4 @@
-<!DOCTYPE html>
-<html>
-<head>
-	% include('bshead.tpl')
-	
-</head>
-
-
-
-<body>
-
-<div class="navi">
-	% include('nav.tpl', logged_in=logged_in, title="PSearch")
-
-</div>
-
-
-
-
-<div class="content">
-	%if len(message)>0:
-	<div class="alert alert-warning" role="alert">
-		<p align="center"><b>{{!message}}</b></p>
-	</div>
-	%end
-
-
+%rebase("base-page")
 <form action="/presults" method="POST" style="width:98%;margin:auto;">
 	<br><p style="font: 15px arial, sans-serif;">Here you can search for your desired participants. Click on each of the headings to expand all the available criteria.<br>When you are done click submit and you'll be provided with a list of participants fulfilling your criteria.</p>
 	<button type="submit" style="float:right;" class="btn btn-default">Submit</button><br><br>
@@ -133,7 +107,7 @@
 							</td>
 							<td class="mid">
 								<div class="form-group">
-									<input type="text" class="form-control" name="pob_town" id="pob_town" placeholder="NSW">
+									<input type="text" class="form-control" name="pob_state" id="pob_state" placeholder="NSW">
 								</div>
 							</td>
 							<td class="right">
@@ -933,8 +907,4 @@ Below explains the different ways you can utilize this along with examples.</p>
 	</tr>
 </table>
 <br><br><br>
-</div>
-	% include('bsfoot.tpl')
-</body>
 
-</html>

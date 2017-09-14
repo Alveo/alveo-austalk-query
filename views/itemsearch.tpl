@@ -1,35 +1,4 @@
-<!DOCTYPE html>
-<html>
-<head>
-	% include('bshead.tpl')
-	
-	<script>
-		$(document).ready(function(){
-			$('[name="componentName"]').click(function(){
-				if($('[name=componentName]').val()!=""){
-					$.ajax({url: "/itemsearch/sentences?sentence="+$('[name=componentName]').val(), async: true, success: function(result){
-						$('[name="fullprompt"]').html(result);
-					}});
-					$('[name="fullprompt"]').html('<option value="">Loading Results...</option>\n');
-				}
-			});
-		});
-	</script>
-</head>
-
-<body>
-
-<div class="navi">
-	% include('nav.tpl', logged_in=logged_in, title="ISearch")
-</div>
-
-<div class="content">
-	%if len(message)>0:
-		<div class="alert alert-warning" role="alert">
-			<p align="center"><b>{{!message}}</b></p>
-		</div>
-	%end
-
+%rebase("base-page")
 <form action="/itemresults" method="POST" style="width:98%;margin:auto;">
 	<br><p style="font: 15px arial, sans-serif;">Here you can search for your desired participants. Click on each of the headings to expand all the available criteria.<br>When you are done click submit and you'll be provided with a list of participants fulfilling your criteria.</p>
 	<button type="submit" style="float:right;" class="btn btn-default">Submit</button><br><br>
@@ -211,8 +180,4 @@
 	<td>Using the Component field you can search for a specific component if desired (i.e, "yes-no-opening-2".<br>
 	The Component Type drop-down menu will select by a broader category of components (all "yes-no" type components.</td>
 	</tr>
-</div>
-	% include('bsfoot.tpl')
-</body>
-
-</html>
+</table>

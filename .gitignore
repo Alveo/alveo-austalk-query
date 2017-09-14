@@ -13,4 +13,4 @@ __pycache__/
 keys/*
 
 #Settings file
-settings.py
+#settings.py
