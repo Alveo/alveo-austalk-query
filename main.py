@@ -1052,7 +1052,10 @@ def create_log(event,data={}):
     if ip==None:
         ip = bottle.request.environ.get('REMOTE_ADDR') #@UndefinedVariable
         
-    session_time = str(datetime.now()-session.get('login_time',datetime.now())).split('.')[0]
+    login_time = session.get('login_time',None)
+    session_time = "0:00:00"
+    if login_time:
+        session_time = str(datetime.now()-login_time).split('.')[0]
     
     fields = {'Event':event,
               'User':session.get('name','None'),
