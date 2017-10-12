@@ -1076,6 +1076,8 @@ def create_log(event,data={}):
     if login_time:
         session_time = str(datetime.now()-login_time).split('.')[0]
     
+    fields_ordered_list = ['Event','User','Email','IP Address','Session Time','Event Time','Data']
+    
     fields = {'Event':event,
               'User':session.get('name','None'),
               'Email':session.get('email','None'),
@@ -1091,7 +1093,7 @@ def create_log(event,data={}):
     #Open Log file and init if not exists or empty
     with open(log_file, 'a+') as f:
         size = os.path.getsize(log_file)
-        writer = csv.DictWriter(f,fieldnames=fields.keys())
+        writer = csv.DictWriter(f,fieldnames=fields_ordered_list)
         if size == 0:
             writer.writeheader()
         writer.writerow(fields)
