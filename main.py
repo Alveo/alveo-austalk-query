@@ -856,7 +856,7 @@ def export():
             listUrl = pyalveo.Client.get_item_list_by_name(client,listName).list_url
             message = 'List exported to Alveo. Next step is to <a href='+listUrl+' target="_blank">click here</a> to go directly to your list.'
         except:
-            message = "List exported to Alveo. Next step is to click the link to the alveo website to see your items."
+            message = "List exported to Alveo. Next step is to click on your name in the top right and click on 'Your Lists'."
 
         session['message'] = message
         
