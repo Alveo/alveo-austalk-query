@@ -61,7 +61,7 @@
 						</tr>
 						<tr>
 							<td class="left">
-								<label for="city"><b>Test Location:</b></label>
+								<label for="city"><b>Recording Site:</b></label>
 							</td>
 							<td class="mid">
 								<div class="form-group">
@@ -74,7 +74,7 @@
 								</div>
 							</td>
 							<td class="right">
-								<p>This is the location where the participant was tested and is a good way to select a group of participants known to you.</p>
+								<p>This is the location where the participant was recorded and is a good way to select a group of participants known to you.</p>
 							</td>
 						</tr>
 					</table>
