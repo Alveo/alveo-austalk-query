@@ -16,9 +16,10 @@ import socket
 import sys
 import traceback
 import pyalveo
-from settings import *
+from datetime import datetime
 import csv,json
 from io import BytesIO
+from settings import *
 
 client = None
 
@@ -857,7 +858,8 @@ def export():
             message = 'List exported to Alveo. Next step is to <a href='+listUrl+' target="_blank">click here</a> to go directly to your list.'
         except:
             message = "List exported to Alveo. Next step is to click on your name in the top right and click on 'Your Lists'."
-
+        
+        create_log('ListExport',{'listName':listName})
         session['message'] = message
         
         bottle.redirect('/')
@@ -889,8 +891,11 @@ def oauth_callback():
         
     if session['client'].oauth.on_callback(bottle.request.url):
         res = session['client'].oauth.get_user_data()
-        session['name'] = "%s %s" % (res['first_name'],res['last_name'])
+        session['email'] = res.get('email','None')
+        session['login_time'] = datetime.now()
+        session['name'] = "%s %s" % (res.get('first_name',''), res.get('last_name',''))
         session['message'] = "Successfully Logged In!"
+        create_log('UserLogin',{'method':'oauth2'})
         
         
     #Lets check to see if item results already exist in the session
@@ -938,8 +943,11 @@ def error404(error):
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
     session['message'] = "Sorry, the page you're looking for doesn't exist."
     
+    create_log('Error404',{'route':bottle.request.query_string})
+    
     bottle.response.status = 303
     bottle.response.set_header('location','/')
+    
     return 'this is meant to redirect'
 
     
@@ -947,6 +955,8 @@ def error404(error):
 def error500(error):
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
     session['message'] = "Sorry, something went wrong! Error: 500 Internal Server Error"
+    
+    create_log('Error500',{'route':bottle.request.query_string,'session_dump':dict(session)})
     
     bottle.response.status = 303
     bottle.response.set_header('location','/')
@@ -961,6 +971,7 @@ def logout():
         session['client'].oauth.revoke_access()
     except KeyError:
         pass
+    create_log('UserLogout')
     session.delete()
     session['message'] = "You have successfully logged out!"
     
@@ -994,9 +1005,11 @@ def apikey_login():
         client = pyalveo.Client(api_url=BASE_URL,api_key=apiKey,verifySSL=False)
         res = client.oauth.get_user_data()
         session['client'] = client
-        session['name'] = "%s %s" % (res['first_name'],res['last_name'])
+        session['email'] = res.get('email','None')
+        session['login_time'] = datetime.now()
+        session['name'] = "%s %s" % (res.get('first_name',''), res.get('last_name',''))
         session['message'] = "Successfully Logged In!"
-        
+        create_log('UserLogin',{'method':'apiKey'})
     bottle.redirect('/')
 
 @bottle.get('/login')
@@ -1020,6 +1033,51 @@ def logging_in():
     session['corpus'] = bottle.request.query.get('corpus','austalk')
     
     bottle.redirect(url)
+
+def create_log(event,data):
+    '''
+        @param event: A short string categorising the event that occurred. 
+                    Eg: Error500, UserLogin
+        @type event: str
+        @param data: A Dict with relevant data to the event in a Key-Value Format. 
+                    Contains data such as recent search parameters.
+        @type data: dict
+        @return: True if writing log was successful, false otherwise.
+        @rtype: boolean
+    '''
+    session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
+    
+    ip = bottle.request.environ.get('HTTP_X_FORWARDED_FOR') #@UndefinedVariable
+    if ip==None:
+        ip = bottle.request.environ.get('REMOTE_ADDR') #@UndefinedVariable
+        
+    session_time = str(datetime.now()-session.get('login_time',datetime.now())).split('.')[0]
+    
+    fields = {'Event':event,
+              'User':session.get('name','None'),
+              'Email':session.get('email','None'),
+              'IP Address':ip,
+              'Session Time':session_time,
+              'Event Time':datetime.now(),
+              'Data':str(data)
+              }
+    
+    #Print to console log data as dict with headers as keys and row as values.
+    print(str(fields))
+    
+    #Open Log file and init if not exists or empty
+    with open(log_file, 'a+') as f:
+        size = os.path.getsize(log_file)
+        writer = csv.writer(f,fieldnames=fields.keys())
+        if size == 0:
+            writer.writeheader()
+        writer.writerow(fields)
+        
+    #If file is greater than 5Mb then rename it. Next log will create a new one
+    if size > max_log_size*1024*1024:
+        date = datetime.today().strftime('%d-%m-%Y-%H-%M')
+        new = log_file[:-4]+'-backup-'+date+log_file[-4:]
+        os.rename(log_file,new)
 
 # By default, the server will allow negotiations with extremely old protocols
 # that are susceptible to attacks, so we only allow TLSv1.2
