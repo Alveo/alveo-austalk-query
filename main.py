@@ -67,6 +67,7 @@ def home():
 
     return bottle.template('home',
                            message=session.pop('message',''), 
+                           role=session.get('role',''),
                            name=session.get('name',None))
 
 @bottle.get('/start')
@@ -872,6 +873,22 @@ def export():
                            itemCount=session['itemcount'])
 
 
+@bottle.get('/download/logs.csv')
+def download_logs():
+    '''Returns a csv file download of the Apps Logs.'''
+
+    session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
+
+    if session.get('role','').lower()=='admin':
+        #make response header so that file will be downloaded.
+        bottle.response.headers["Content-Disposition"] = "attachment; filename=items.csv"
+        bottle.response.headers["Content-type"] = "text/csv"
+    
+        return bottle.static_file(log_file, root='./',download=True)
+    
+    session['message'] = "You don't have permission to access this file."
+    bottle.redirect('/')
+
 @bottle.get('/oauth/user_data')
 def oauth_user_data():
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
@@ -891,6 +908,7 @@ def oauth_callback():
     if session['client'].oauth.on_callback(bottle.request.url):
         res = session['client'].oauth.get_user_data()
         session['email'] = res.get('email','None')
+        session['role'] = res.get('role','None')
         session['login_time'] = datetime.now()
         session['name'] = "%s %s" % (res.get('first_name',''), res.get('last_name',''))
         session['message'] = "Successfully Logged In!"
@@ -1007,6 +1025,7 @@ def apikey_login():
         res = client.oauth.get_user_data()
         session['client'] = client
         session['email'] = res.get('email','None')
+        session['role'] = res.get('role','None')
         session['login_time'] = datetime.now()
         session['name'] = "%s %s" % (res.get('first_name',''), res.get('last_name',''))
         session['message'] = "Successfully Logged In!"
