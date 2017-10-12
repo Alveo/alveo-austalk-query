@@ -84,7 +84,6 @@ def search():
     '''The home page and participant search page. Drop-down lists are populated from the SPARQL database and the template returned.
     Displays the contents of session['message'] if one is set.'''
     
-
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
 
     client = session.get('client',None)
@@ -221,7 +220,7 @@ def results():
     '''Perfoms a search of participants and display the results as a table. Saves the results in the session so they can be retrieved later'''
 
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
-
+    
     client = session.get('client',None)
     if client is None:
         session['message'] = "You must log in to view this page!"
@@ -943,7 +942,7 @@ def error404(error):
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
     session['message'] = "Sorry, the page you're looking for doesn't exist."
     
-    create_log('Error404',{'route':bottle.request.query_string})
+    create_log('Error404',{'route':bottle.request.url})
     
     bottle.response.status = 303
     bottle.response.set_header('location','/')
@@ -956,7 +955,9 @@ def error500(error):
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
     session['message'] = "Sorry, something went wrong! Error: 500 Internal Server Error"
     
-    create_log('Error500',{'route':bottle.request.query_string,'session_dump':dict(session)})
+    create_log('Error500',{'route':bottle.request.url,
+                           'session_dump':dict(session),
+                           'last_traceback':error.traceback})
     
     bottle.response.status = 303
     bottle.response.set_header('location','/')
@@ -1034,7 +1035,7 @@ def logging_in():
     
     bottle.redirect(url)
 
-def create_log(event,data):
+def create_log(event,data={}):
     '''
         @param event: A short string categorising the event that occurred. 
                     Eg: Error500, UserLogin
@@ -1058,7 +1059,7 @@ def create_log(event,data):
               'Email':session.get('email','None'),
               'IP Address':ip,
               'Session Time':session_time,
-              'Event Time':datetime.now(),
+              'Event Time':datetime.now().strftime('%d-%m-%Y %H:%M:%S'),
               'Data':str(data)
               }
     
@@ -1068,13 +1069,13 @@ def create_log(event,data):
     #Open Log file and init if not exists or empty
     with open(log_file, 'a+') as f:
         size = os.path.getsize(log_file)
-        writer = csv.writer(f,fieldnames=fields.keys())
+        writer = csv.DictWriter(f,fieldnames=fields.keys())
         if size == 0:
             writer.writeheader()
         writer.writerow(fields)
         
-    #If file is greater than 5Mb then rename it. Next log will create a new one
-    if size > max_log_size*1024*1024:
+    #If file is greater than max_log_size (in bytes) then rename it. Next log will create a new one
+    if size > max_log_size:
         date = datetime.today().strftime('%d-%m-%Y-%H-%M')
         new = log_file[:-4]+'-backup-'+date+log_file[-4:]
         os.rename(log_file,new)
