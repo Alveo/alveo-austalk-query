@@ -45,7 +45,7 @@
 						</tr>
 						<tr>
 							<td class="left">
-								<label for="wlist"><b>Word List:</b></label>
+								<label for="wlist"><b>Predefined Word List:</b></label>
 							</td>
 							<td class="mid">
 								<div class="form-group">
@@ -58,7 +58,9 @@
 								</div>
 							</td>
 							<td class="right">
-								<p></p>
+								<p>You can choose one of the pre-defined Word Lists, where all the items match a specific pattern. <br>
+								<a href="https://austalk.edu.au/sites/default/files/IS11-AusTalk.pdf" target="_blank">Click here for more information.</a></td>
+								</p>
 							</td>
 						</tr>
 					</table>
@@ -176,8 +178,13 @@
 		<p>You can also use SPARQL's regular expression syntax ('.' is a wildcard character, '*' matches 0-many of the previous expression, etc.). Searches are not case-sensitive.</p></td>
 	</tr>
 	<tr>
+	<td><b>Predefined Word Lists:</b></td>
+	<td>You can choose one of the pre-defined Word Lists, where all the items match a specific pattern (see Burnham et al. (2011) "Building an Audio-Visual Corpus of Australian English: Large Corpus Collection with an Economical Portable and Replicable Black Box". Interspeech 2011.<br>
+		<a href="https://austalk.edu.au/sites/default/files/IS11-AusTalk.pdf" target="_blank">Click here for more information.</a></td>
+	</tr>
+	<tr>
 	<td><b>Component/Component Type:</b></td>
-	<td>Using the Component field you can search for a specific component if desired (i.e, "yes-no-opening-2".<br>
-	The Component Type drop-down menu will select by a broader category of components (all "yes-no" type components.</td>
+	<td>Using the Component field you can search for a specific component if desired (i.e, "yes-no-opening-2").<br>
+	The Component Type drop-down menu will select by a broader category of components (all "yes-no" type components).</td>
 	</tr>
 </table>
