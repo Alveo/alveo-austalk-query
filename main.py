@@ -609,7 +609,7 @@ def item_list():
     try:
         partList = session['partlist']
         test = session['partlist'][0]['item_results']#should have something here
-    except KeyError:
+    except (KeyError,IndexError):
         session['message'] = "Perform an item search first."
         
         bottle.redirect('/itemsearch')
