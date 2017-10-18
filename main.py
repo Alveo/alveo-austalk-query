@@ -1032,13 +1032,16 @@ def apikey_login():
     if apiKey:
         client = pyalveo.Client(api_url=BASE_URL,api_key=apiKey,verifySSL=False)
         res = client.oauth.get_user_data()
-        session['client'] = client
-        session['email'] = res.get('email','None')
-        session['role'] = res.get('role','None')
-        session['login_time'] = datetime.now()
-        session['name'] = "%s %s" % (res.get('first_name',''), res.get('last_name',''))
-        session['message'] = "Successfully Logged In!"
-        create_log('UserLogin',{'method':'apiKey'})
+        if not res is None:
+            session['client'] = client
+            session['email'] = res.get('email','None')
+            session['role'] = res.get('role','None')
+            session['login_time'] = datetime.now()
+            session['name'] = "%s %s" % (res.get('first_name',''), res.get('last_name',''))
+            session['message'] = "Successfully Logged In!"
+            create_log('UserLogin',{'method':'apiKey'})
+        else:
+            session['message'] = 'Failed to Login: Your API Key is Incorrect'
     bottle.redirect('/')
 
 @bottle.get('/login')
