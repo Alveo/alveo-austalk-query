@@ -971,7 +971,15 @@ def error404(error):
 @bottle.error(500)
 def error500(error):
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
+    
     session['message'] = "Sorry, something went wrong! Error: 500 Internal Server Error"
+    
+    try:
+        if error.exception.http_status_code=='403':
+            session['message'] = '''You are not authorized to access this resource. 
+                    Please accept the <a href="https://app.alveo.edu.au/account/licence_agreements">%s User Agreement</a>''' % session.get('corpus','austalk')
+    except:
+        pass
     
     create_log('Error500',{'route':bottle.request.url,
                            'session_dump':dict(session),
