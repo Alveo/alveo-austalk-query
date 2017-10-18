@@ -979,15 +979,23 @@ def error500(error):
             session['message'] = '''You are not authorized to access this resource. 
                     Please accept the <a href="https://app.alveo.edu.au/account/licence_agreements" target="_blank">
                     %s User Agreement</a>''' % session.get('corpus','austalk')
+        elif error.exception.http_status_code==401:
+            bottle.response.status = 303
+            bottle.response.set_header('location','/login')
+            return 'this is meant to redirect'
     except:
         pass
     
-    create_log('Error500',{'route':bottle.request.url,
-                           'session_dump':dict(session),
-                           'last_traceback':error.traceback})
+    data = {'route':bottle.request.url,
+           'session_dump':dict(session),
+           'last_traceback':error.traceback}
+    if session.get('client',None):
+        data['client'] = session.get('client').to_json()
+    
+    create_log('Error500',data)
     
     bottle.response.status = 303
-    bottle.response.set_header('location','/')
+    bottle.response.set_header('location','/login')
     return 'this is meant to redirect'
 
 @bottle.get('/logout')
