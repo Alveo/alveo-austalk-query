@@ -973,16 +973,15 @@ def error500(error):
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
     
     session['message'] = "Sorry, something went wrong! Error: 500 Internal Server Error"
-    
+    location = '/'
     try:
         if error.exception.http_status_code==403:
             session['message'] = '''You are not authorized to access this resource. 
                     Please accept the <a href="https://app.alveo.edu.au/account/licence_agreements" target="_blank">
                     %s User Agreement</a>''' % session.get('corpus','austalk')
+            
         elif error.exception.http_status_code==401:
-            bottle.response.status = 303
-            bottle.response.set_header('location','/login')
-            return 'this is meant to redirect'
+            location = '/login'
     except:
         pass
     
@@ -995,7 +994,7 @@ def error500(error):
     create_log('Error500',data)
     
     bottle.response.status = 303
-    bottle.response.set_header('location','/login')
+    bottle.response.set_header('location',location)
     return 'this is meant to redirect'
 
 @bottle.get('/logout')
