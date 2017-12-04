@@ -912,6 +912,9 @@ def oauth_callback():
         session['login_time'] = datetime.now()
         session['name'] = "%s %s" % (res.get('first_name',''), res.get('last_name',''))
         session['message'] = "Successfully Logged In!"
+        if not session['client'].oauth.api_key:
+            session['client'].oauth.api_key = res.get('apiKey',None)
+            create_log('DEBUG',{'notes':'Had to retrieve API Key from User Data','api_key':'Not None' if res.get('apiKey',None) else 'None'})
         create_log('UserLogin',{'method':'oauth2'})
         
         
