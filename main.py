@@ -905,6 +905,7 @@ def oauth_callback():
         session['message'] = 'You must log in via <a href="/">this link</a>'
         bottle.redirect('/')
         
+    success = False;
     if session['client'].oauth.on_callback(bottle.request.url):
         res = session['client'].oauth.get_user_data()
         session['email'] = res.get('email','None')
@@ -912,10 +913,16 @@ def oauth_callback():
         session['login_time'] = datetime.now()
         session['name'] = "%s %s" % (res.get('first_name',''), res.get('last_name',''))
         session['message'] = "Successfully Logged In!"
+        success = True
         if not session['client'].oauth.api_key:
             session['client'].oauth.api_key = res.get('apiKey',None)
             create_log('DEBUG',{'notes':'Had to retrieve API Key from User Data','api_key':'Not None' if res.get('apiKey',None) else 'None'})
-        create_log('UserLogin',{'method':'oauth2'})
+            if(not res.get('apiKey',None)):
+                success = False
+                session.delete()
+                session['message'] = 'Unable to Login Properly! No API Key Available, please <a href="https://app.alveo.edu.au/account/generate_token">click here</a> and generate your API Key!'
+                
+        create_log('UserLogin',{'method':'oauth2','success':success})
         
         
     #Lets check to see if item results already exist in the session
