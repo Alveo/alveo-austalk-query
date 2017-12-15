@@ -919,9 +919,10 @@ def oauth_callback():
             create_log('DEBUG',{'notes':'Had to retrieve API Key from User Data','api_key':'Not None' if res.get('apiKey',None) else 'None'})
             if(not res.get('apiKey',None)):
                 success = False
+                create_log('UserLogin',{'method':'oauth2','success':success,"reason":"No API Key generated!"})
                 session.delete()
                 session['message'] = 'Unable to Login Properly! No API Key Available, please <a href="https://app.alveo.edu.au/account/generate_token">click here</a> and generate your API Key!'
-                
+                bottle.redirect('/')
         create_log('UserLogin',{'method':'oauth2','success':success})
         
         
