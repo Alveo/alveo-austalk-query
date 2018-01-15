@@ -65,7 +65,7 @@ def boolean_filter(fName,custom=None):
     else:
         val = request.forms.get(fName)
     if val:
-        return """FILTER(?%s="%s"^^xsd:boolean)\n""" % (fName, val)
+        return """FILTER(?%s="%s")\n""" % (fName, val)
     else:
         return ''     
     
