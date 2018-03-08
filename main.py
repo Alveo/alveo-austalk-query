@@ -985,14 +985,16 @@ def error500(error):
     
     session['message'] = "Sorry, something went wrong! Error: 500 Internal Server Error"
     location = '/'
+    err_type = "Error500"
     try:
         if error.exception.http_status_code==403:
             session['message'] = '''You are not authorized to access this resource. 
                     Please accept the <a href="https://app.alveo.edu.au/account/licence_agreements" target="_blank">
                     %s User Agreement</a>''' % session.get('corpus','austalk')
-            
+            err_type = "Error403"
         elif error.exception.http_status_code==401:
             location = '/login'
+            err_type = "Error401"
     except:
         pass
     
