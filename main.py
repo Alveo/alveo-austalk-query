@@ -487,7 +487,7 @@ def item_results():
         session['message'] = "You must log in to view this page!"
         bottle.redirect('/')
     
-    if len(session.get('partList',[]))==0 or session.get('partCount',0)==0:
+    if len(session.get('partlist',[]))==0 or session.get('partcount',0)==0:
         session['message'] = "Please first select some Participants."
         bottle.redirect('/psearch')
         
@@ -774,9 +774,10 @@ def item_search():
         session['message'] = "You must log in to view this page!"
         bottle.redirect('/')
         
-    if len(session.get('partList',[]))==0 or session.get('partCount',0)==0:
-        session['message'] = "Please first select some Participants."
+    if len(session.get('partlist',[]))==0 or session.get('partcount',0)==0:
+        session['message'] = "Please first select some Participants. "
         bottle.redirect('/psearch')
+        
 
     return bottle.template('itemsearch',
                            message=session.pop('message',''), 
