@@ -486,6 +486,10 @@ def item_results():
     if client is None:
         session['message'] = "You must log in to view this page!"
         bottle.redirect('/')
+    
+    if len(session.get('partList',[]))==0 or session.get('partCount',0)==0:
+        session['message'] = "Please first select some Participants."
+        bottle.redirect('/psearch')
         
     quer = alquery.AlQuery(client)
 
@@ -770,12 +774,8 @@ def item_search():
         session['message'] = "You must log in to view this page!"
         bottle.redirect('/')
         
-
-    try:
-        partList = session['partlist'] #@UnusedVariable
-    except KeyError:
-        session['message'] = "Select some participants first."
-        
+    if len(session.get('partList',[]))==0 or session.get('partCount',0)==0:
+        session['message'] = "Please first select some Participants."
         bottle.redirect('/psearch')
 
     return bottle.template('itemsearch',
