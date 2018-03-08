@@ -1004,7 +1004,7 @@ def error500(error):
     if session.get('client',None):
         data['client'] = session.get('client').to_json()
     
-    create_log('Error500',data)
+    create_log(err_type,data)
     
     bottle.response.status = 303
     bottle.response.set_header('location',location)
