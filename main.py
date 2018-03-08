@@ -422,7 +422,7 @@ def handle_parts():
         session['message'] = "You must log in to view this page!"
         bottle.redirect('/')
 
-    partList = session['partlist']
+    partList = session.get('partlist',[])
     selectedParts = bottle.request.forms.getall('selected')
 
     function = bottle.request.forms.get('submit')
