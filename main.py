@@ -16,9 +16,10 @@ import socket
 import sys
 import traceback
 import pyalveo
-from settings import *
+from datetime import datetime
 import csv,json
 from io import BytesIO
+from settings import *
 
 client = None
 
@@ -66,6 +67,7 @@ def home():
 
     return bottle.template('home',
                            message=session.pop('message',''), 
+                           role=session.get('role',''),
                            name=session.get('name',None))
 
 @bottle.get('/start')
@@ -83,7 +85,6 @@ def search():
     '''The home page and participant search page. Drop-down lists are populated from the SPARQL database and the template returned.
     Displays the contents of session['message'] if one is set.'''
     
-
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
 
     client = session.get('client',None)
@@ -220,7 +221,7 @@ def results():
     '''Perfoms a search of participants and display the results as a table. Saves the results in the session so they can be retrieved later'''
 
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
-
+    
     client = session.get('client',None)
     if client is None:
         session['message'] = "You must log in to view this page!"
@@ -421,7 +422,7 @@ def handle_parts():
         session['message'] = "You must log in to view this page!"
         bottle.redirect('/')
 
-    partList = session['partlist']
+    partList = session.get('partlist',[])
     selectedParts = bottle.request.forms.getall('selected')
 
     function = bottle.request.forms.get('submit')
@@ -485,6 +486,10 @@ def item_results():
     if client is None:
         session['message'] = "You must log in to view this page!"
         bottle.redirect('/')
+    
+    if len(session.get('partlist',[]))==0 or session.get('partcount',0)==0:
+        session['message'] = "Please first select some Participants."
+        bottle.redirect('/psearch')
         
     quer = alquery.AlQuery(client)
 
@@ -608,7 +613,7 @@ def item_list():
     try:
         partList = session['partlist']
         test = session['partlist'][0]['item_results']#should have something here
-    except KeyError:
+    except (KeyError,IndexError):
         session['message'] = "Perform an item search first."
         
         bottle.redirect('/itemsearch')
@@ -769,13 +774,10 @@ def item_search():
         session['message'] = "You must log in to view this page!"
         bottle.redirect('/')
         
-
-    try:
-        partList = session['partlist'] #@UnusedVariable
-    except KeyError:
-        session['message'] = "Select some participants first."
-        
+    if len(session.get('partlist',[]))==0 or session.get('partcount',0)==0:
+        session['message'] = "Please first select some Participants. "
         bottle.redirect('/psearch')
+        
 
     return bottle.template('itemsearch',
                            message=session.pop('message',''), 
@@ -856,8 +858,9 @@ def export():
             listUrl = pyalveo.Client.get_item_list_by_name(client,listName).list_url
             message = 'List exported to Alveo. Next step is to <a href='+listUrl+' target="_blank">click here</a> to go directly to your list.'
         except:
-            message = "List exported to Alveo. Next step is to click the link to the alveo website to see your items."
-
+            message = "List exported to Alveo. Next step is to click on your name in the top right and click on 'Your Lists'."
+        
+        create_log('ListExport',{'listName':listName})
         session['message'] = message
         
         bottle.redirect('/')
@@ -870,6 +873,22 @@ def export():
                            message=session.pop('message',''),
                            itemCount=session['itemcount'])
 
+
+@bottle.get('/download/logs.csv')
+def download_logs():
+    '''Returns a csv file download of the Apps Logs.'''
+
+    session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
+
+    if session.get('role','').lower()=='admin':
+        #make response header so that file will be downloaded.
+        bottle.response.headers["Content-Disposition"] = "attachment; filename=items.csv"
+        bottle.response.headers["Content-type"] = "text/csv"
+    
+        return bottle.static_file(log_file, root='./',download=True)
+    
+    session['message'] = "You don't have permission to access this file."
+    bottle.redirect('/')
 
 @bottle.get('/oauth/user_data')
 def oauth_user_data():
@@ -887,10 +906,25 @@ def oauth_callback():
         session['message'] = 'You must log in via <a href="/">this link</a>'
         bottle.redirect('/')
         
+    success = False;
     if session['client'].oauth.on_callback(bottle.request.url):
         res = session['client'].oauth.get_user_data()
-        session['name'] = "%s %s" % (res['first_name'],res['last_name'])
+        session['email'] = res.get('email','None')
+        session['role'] = res.get('role','None')
+        session['login_time'] = datetime.now()
+        session['name'] = "%s %s" % (res.get('first_name',''), res.get('last_name',''))
         session['message'] = "Successfully Logged In!"
+        success = True
+        if not session['client'].oauth.api_key:
+            session['client'].oauth.api_key = res.get('apiKey',None)
+            create_log('DEBUG',{'notes':'Had to retrieve API Key from User Data','api_key':'Not None' if res.get('apiKey',None) else 'None'})
+            if(not res.get('apiKey',None)):
+                success = False
+                create_log('UserLogin',{'method':'oauth2','success':success,"reason":"No API Key generated!"})
+                del session['client']
+                session['message'] = 'Unable to Login Properly! No API Key Available, please <a href="https://app.alveo.edu.au/account/generate_token">click here</a> and generate your API Key!'
+                bottle.redirect('/')
+        create_log('UserLogin',{'method':'oauth2','success':success})
         
         
     #Lets check to see if item results already exist in the session
@@ -938,18 +972,43 @@ def error404(error):
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
     session['message'] = "Sorry, the page you're looking for doesn't exist."
     
+    create_log('Error404',{'route':bottle.request.url})
+    
     bottle.response.status = 303
     bottle.response.set_header('location','/')
+    
     return 'this is meant to redirect'
 
     
 @bottle.error(500)
 def error500(error):
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
+    
     session['message'] = "Sorry, something went wrong! Error: 500 Internal Server Error"
+    location = '/'
+    err_type = "Error500"
+    try:
+        if error.exception.http_status_code==403:
+            session['message'] = '''You are not authorized to access this resource. 
+                    Please accept the <a href="https://app.alveo.edu.au/account/licence_agreements" target="_blank">
+                    %s User Agreement</a>''' % session.get('corpus','austalk')
+            err_type = "Error403"
+        elif error.exception.http_status_code==401:
+            location = '/login'
+            err_type = "Error401"
+    except:
+        pass
+    
+    data = {'route':bottle.request.url,
+           'session_dump':dict(session),
+           'last_traceback':error.traceback}
+    if session.get('client',None):
+        data['client'] = session.get('client').to_json()
+    
+    create_log(err_type,data)
     
     bottle.response.status = 303
-    bottle.response.set_header('location','/')
+    bottle.response.set_header('location',location)
     return 'this is meant to redirect'
 
 @bottle.get('/logout')
@@ -961,6 +1020,7 @@ def logout():
         session['client'].oauth.revoke_access()
     except KeyError:
         pass
+    create_log('UserLogout')
     session.delete()
     session['message'] = "You have successfully logged out!"
     
@@ -993,10 +1053,16 @@ def apikey_login():
     if apiKey:
         client = pyalveo.Client(api_url=BASE_URL,api_key=apiKey,verifySSL=False)
         res = client.oauth.get_user_data()
-        session['client'] = client
-        session['name'] = "%s %s" % (res['first_name'],res['last_name'])
-        session['message'] = "Successfully Logged In!"
-        
+        if not res is None:
+            session['client'] = client
+            session['email'] = res.get('email','None')
+            session['role'] = res.get('role','None')
+            session['login_time'] = datetime.now()
+            session['name'] = "%s %s" % (res.get('first_name',''), res.get('last_name',''))
+            session['message'] = "Successfully Logged In!"
+            create_log('UserLogin',{'method':'apiKey'})
+        else:
+            session['message'] = 'Failed to Login: Your API Key is Incorrect'
     bottle.redirect('/')
 
 @bottle.get('/login')
@@ -1020,6 +1086,56 @@ def logging_in():
     session['corpus'] = bottle.request.query.get('corpus','austalk')
     
     bottle.redirect(url)
+
+def create_log(event,data={}):
+    '''
+        @param event: A short string categorising the event that occurred. 
+                    Eg: Error500, UserLogin
+        @type event: str
+        @param data: A Dict with relevant data to the event in a Key-Value Format. 
+                    Contains data such as recent search parameters.
+        @type data: dict
+        @return: True if writing log was successful, false otherwise.
+        @rtype: boolean
+    '''
+    session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
+    
+    ip = bottle.request.environ.get('HTTP_X_FORWARDED_FOR') #@UndefinedVariable
+    if ip==None:
+        ip = bottle.request.environ.get('REMOTE_ADDR') #@UndefinedVariable
+        
+    login_time = session.get('login_time',None)
+    session_time = "0:00:00"
+    if login_time:
+        session_time = str(datetime.now()-login_time).split('.')[0]
+    
+    fields_ordered_list = ['Event','User','Email','IP Address','Session Time','Event Time','Data']
+    
+    fields = {'Event':event,
+              'User':session.get('name','None'),
+              'Email':session.get('email','None'),
+              'IP Address':ip,
+              'Session Time':session_time,
+              'Event Time':datetime.now().strftime('%d-%m-%Y %H:%M:%S'),
+              'Data':str(data)
+              }
+    
+    #Print to console log data as dict with headers as keys and row as values.
+    print(str(fields))
+    
+    #Open Log file and init if not exists or empty
+    with open(log_file, 'a+') as f:
+        size = os.path.getsize(log_file)
+        writer = csv.DictWriter(f,fieldnames=fields_ordered_list)
+        if size == 0:
+            writer.writeheader()
+        writer.writerow(fields)
+        
+    #If file is greater than max_log_size (in bytes) then rename it. Next log will create a new one
+    if size > max_log_size:
+        date = datetime.today().strftime('%d-%m-%Y-%H-%M')
+        new = log_file[:-4]+'-backup-'+date+log_file[-4:]
+        os.rename(log_file,new)
 
 # By default, the server will allow negotiations with extremely old protocols
 # that are susceptible to attacks, so we only allow TLSv1.2

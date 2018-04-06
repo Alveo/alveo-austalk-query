@@ -1,7 +1,6 @@
 %rebase("base-page")
 <h4>Number of Selected Items: {{itemCount}}</h4>
-<p>Select an item list to add your selected items too or export to a
-	new list</p>
+<p>To export to a New List, enter the new list name in the box and click 'Export to New List'. Or choose an existing Item List and click 'Add to Existing List'</p>
 <table>
 	<tr>
 		<td>

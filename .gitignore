@@ -14,3 +14,5 @@ keys/*
 
 #Settings file
 #settings.py
+#Log Files
+log*
