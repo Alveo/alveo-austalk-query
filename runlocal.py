@@ -44,18 +44,18 @@ if __name__ == '__main__':
     if len(sys.argv)>1:
         if len(sys.argv)>2 and sys.argv[2]=='--no-ssl':
             if not port:
-                    post = 80
+                    port = 80
             bottle.run(app=app, host=sys.argv[1], port=port, debug=True)
         else:
             if sys.argv[1]=='--no-ssl':
                 if not port:
-                    post = 80
+                    port = 80
                 bottle.run(app=app, host=ip, port=port, debug=True)
             else:
                 if not port:
-                    post = 443
+                    port = 443
                 bottle.run(app=app, host=sys.argv[1], port=port, debug=True,server=SSLCherryPyServer)
     else:
         if not port:
-            post = 443
+            port = 443
         bottle.run(app=app, host=ip, port=port, debug=True,server=SSLCherryPyServer)
