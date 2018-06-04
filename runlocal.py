@@ -1,13 +1,14 @@
 """
     A server to run the application locally for development
 """
-
+import sys, socket
 from cherrypy import wsgiserver
 from cherrypy.wsgiserver.ssl_pyopenssl import pyOpenSSLAdapter
 from OpenSSL import SSL
 
-
-from .main import app
+import bottle
+from main import app
+from settings import *
 
 
 # By default, the server will allow negotiations with extremely old protocols

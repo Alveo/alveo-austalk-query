@@ -133,7 +133,7 @@ class AlQuery(object):
             session.save()
             return []
         
-        x = len(rlist)/len(head)
+        x = int(len(rlist)/len(head))
         
         results = []
         for i in range(x):
