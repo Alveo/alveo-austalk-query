@@ -587,7 +587,7 @@ def item_results():
     session['itemcount'] = resultsCount
     
 
-    undoExists = 'backupItemList' in session and len(session['backupPartList'])>0
+    undoExists = 'backupItemList' in session and len(session['backupItemList'])>0
 
     return bottle.template('itemresults', 
                            partList=partList, 
