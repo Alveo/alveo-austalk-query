@@ -18,6 +18,10 @@ import csv,json
 from io import BytesIO
 from settings import *
 
+# need to increase the allowed request size for large item lists to be posted
+# value is in bytes, so 10 * 1M should be plenty
+bottle.BaseRequest.MEMFILE_MAX = 10 * 1024 * 1024
+
 client = None
 
 #used to inform the user when they're not logged in.
@@ -585,7 +589,7 @@ def item_results():
     partList = partDict.values()
     
     session['itemcount'] = resultsCount
-    
+
 
     undoExists = 'backupItemList' in session and len(session['backupItemList'])>0
 
