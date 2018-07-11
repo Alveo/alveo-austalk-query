@@ -4,18 +4,18 @@
 Speakers.</p>
 <p><b>Selecting items for large numbers of speakers can take a long time (up to 15 minutes if selecting for
 all speakers). Please be patient.</b></p>
-<a type="button" class="btn btn-default" href="/download/speakers.csv">Download all metadata as CSV</a>
+<a type="button" class="btn btn-default" href="/download/speakers.csv">Download all Speaker metadata as CSV</a>
 <form action="/handleparts" method="POST" class="form-inline" role="form"><br>
 	<div class="form-group" style="float:left;">
-		<button type="button" class="btn btn-default" onClick="selectAll()"  >Select All</button>
+		<button type="button" class="btn btn-default" onClick="selectAll()"  >Select All Speakers</button>
 		<button type="button" class="btn btn-default" onClick="selectNone()" >Select None</button>
 	</div>
 	<div class="form-group" style="float:right;">
 		%if undo:
 		<button type="submit" class="btn btn-default" name="submit" value="undo">Undo</button>
 		%end
-		<button type="submit" class="btn btn-default" name="submit" value="remove">Remove Selected</button>
-		<button type="submit" class="btn btn-default" name="submit" value="search">Search Items From Selected</button>
+		<button type="submit" class="btn btn-default" name="submit" value="remove">Remove Selected Speakers</button>
+		<button type="submit" class="btn btn-default" name="submit" value="search">Search Items From Selected Speakers</button>
 	</div>
 	
 	<div class="rTable">
@@ -39,7 +39,7 @@ all speakers). Please be patient.</b></p>
 					<div class="rTableCell">{{row['gender']}}</div>
 					<div class="rTableCell">{{row['age']}}</div>
 					<div class="rTableCell">{{row['first_language']}}</div>
-					<div class="rTableCell">{{row['city']}}</div>
+					<div class="rTableCell">{{row['institution']}}</div>
 					<div class="rTableCell">{{row['pob_town']}}</div>
 					<div class="rTableCellRight">{{row['pob_country']}}</div>
 				</label>

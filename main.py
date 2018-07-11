@@ -103,13 +103,14 @@ def search():
 
         results = quer.simple_values_search(session.get('corpus','austalk'),simple_relations,sortAlphabetically=True)
 
-        results['city'] = quer.results_list(session.get('corpus','austalk'), PREFIXES+
+        results['inst'] = quer.results_list(session.get('corpus','austalk'), PREFIXES+
         """
             SELECT distinct ?val
             where {
               ?part a foaf:Person .
               ?part austalk:recording_site ?site .
-              ?site austalk:city ?val .}
+              ?site austalk:institution ?val .
+              }
               order by asc(ucase(str(?val)))""")
 
         results['first_language'] = quer.results_list(session.get('corpus','austalk'), PREFIXES+
@@ -228,13 +229,13 @@ def results():
 
     query = PREFIXES+ """
 
-    SELECT distinct ?id ?gender ?age ?city ?first_language ?pob_country ?pob_town"""
+    SELECT distinct ?id ?gender ?age ?institution ?first_language ?pob_country ?pob_town"""
 
     query = query + """
     WHERE {
         ?id a foaf:Person .
         ?id austalk:recording_site ?recording_site .
-        ?recording_site austalk:city ?city .
+        ?recording_site austalk:institution ?institution .
         ?id foaf:age ?age .
         ?id foaf:gender ?gender .
         OPTIONAL { ?id austalk:residential_history ?rh . 
@@ -250,7 +251,7 @@ def results():
     """
     #special args is anything all the form arguments that need something more than a simple filter.
     filterTable = {
-                   'simple':['gender','city','pob_state','cultural_heritage','ses','professional_category',
+                   'simple':['gender','institution','pob_state','cultural_heritage','ses','professional_category',
                              'education_level','mother_cultural_heritage','father_cultural_heritage','pob_town',
                              'mother_professional_category','father_professional_category','mother_education_level',
                              'father_education_level','mother_pob_state','mother_pob_town','father_pob_state',
@@ -261,7 +262,8 @@ def results():
                    'multiselect':['pob_country','father_pob_country','mother_pob_country','hist_town','hist_state','hist_country'],
                    'to_str':['first_language','mother_first_language','father_first_language'],
                    'num_range':['age','age_from','age_to'],
-                   'original_where':['id','city','age','gender','first_language','pob_country','pob_town','age_from','age_to',
+                   'recording_site':['institution'],
+                   'original_where':['id','institution','age','gender','first_language','pob_country','pob_town','age_from','age_to',
                                      'hist_town','hist_state','hist_country']
                 }
 
@@ -311,6 +313,8 @@ def results():
     simpleList = [arg for arg in searchArgs if arg[0] in filterTable['simple']]
     for item in simpleList:
         qfilter = qfilter + qbuilder.simple_filter(item[0])
+        
+    
 
     query = query + qfilter + "} \nORDER BY ?id"
     

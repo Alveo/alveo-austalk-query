@@ -7,7 +7,7 @@
 			<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#gspeaker">
 				<h4 class="panel-title">Speaker Details</h4>
 			</div>
-			<div id="gspeaker" class="panel-collapse collapse in">
+			<div id="gspeaker" class="panel-collapse collapse">
 				<div class="panel-body">
 					<table>
 						<tr>
@@ -65,10 +65,10 @@
 							</td>
 							<td class="mid">
 								<div class="form-group">
-									<select class="form-control" name="city" id="city">
+									<select class="form-control" name="institution" id="institution">
 									    <option value = "">Any</option>
-										% for city in results['city']:
-											<option value="{{city}}">{{city}}</option>
+										% for inst in results['inst']:
+											<option value="{{inst}}">{{inst}}</option>
 										% end
 									</select>
 								</div>
