@@ -3,13 +3,13 @@
 
 <h4>Number of Items found: {{resultsCount}}</h4>
 <p>You can now browse all the items found by your search. Click on
-	the participants to expand a list of all their recordings.</p>
+	the Speakers to expand a list of all their recordings.</p>
 
 <a type="button" class="btn btn-default" href="/download/items.csv">Download
 	item metadata as CSV</a>
 <a type="button" class="btn btn-default"
 	href="/download/itemswithpartdata.csv">Download item metadata as
-	CSV with participant data</a>
+	CSV with speaker data</a>
 <br>
 <br>
 <form action="/handleitems" method="POST">
@@ -39,7 +39,7 @@
 			<div class="rTableBody">
 
 				<div class="rTableRow">
-					<div class="rTableHead" style="width: 12%;">Participant</div>
+					<div class="rTableHead" style="width: 12%;">Speaker</div>
 					<div class="rTableHead" style="width: 12%;">Gender</div>
 					<div class="rTableHead" style="width: 12%;">Age</div>
 					<div class="rTableHead">First Language</div>
@@ -56,7 +56,7 @@
 		% for row in partList:
 		<div class="rTable">
 			<div class="rTableBody">
-				<div name="participant" class="rTableRow" data-toggle="collapse"
+				<div name="speaker" class="rTableRow" data-toggle="collapse"
 					data-parent="#accordion" href="#{{row['id'].split('/')[-1]}}">
 					<div class="rTableCellLeft" style="width: 12%;">
 						<b>{{row['id'].split('/')[-1]}}</b>

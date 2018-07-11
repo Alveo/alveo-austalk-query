@@ -1,18 +1,18 @@
 %rebase("base-page")
 <form action="/presults" method="POST" style="width:98%;margin:auto;">
-	<br><p style="font: 15px arial, sans-serif;">Here you can search for your desired participants. Click on each of the headings to expand all the available criteria.<br>When you are done click submit and you'll be provided with a list of participants fulfilling your criteria.</p>
+	<br><p style="font: 15px arial, sans-serif;">Here you can search for your desired speakers. Click on each of the headings to expand all the available criteria.<br>When you are done click submit and you'll be provided with a list of participants fulfilling your criteria.</p>
 	<button type="submit" style="float:right;" class="btn btn-default">Submit</button><br><br>
 	<div class="panel-group" id="accordion" >
 		<div class="panel panel-default">
-			<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#gparticipant">
-				<h4 class="panel-title">Participant Details</h4>
+			<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#gspeaker">
+				<h4 class="panel-title">Speaker Details</h4>
 			</div>
-			<div id="gparticipant" class="panel-collapse collapse in">
+			<div id="gspeaker" class="panel-collapse collapse in">
 				<div class="panel-body">
 					<table>
 						<tr>
 							<td class="left">
-								<label for="id"><b>Participant Id:</b></label>
+								<label for="id"><b>Speaker Id:</b></label>
 							</td>
 							<td class="mid">
 								<div class="form-group">
@@ -20,7 +20,7 @@
 								</div>
 							</td>
 							<td class="right">
-								<p>You can search for individual speakers by entering their participant id's. You can also use SPARQL's regular expression syntax. Some examples, '.' is a wildcard character, '*' matches 0-many of the previous expression. Partial searches can also work using "^" and/or "$" at the beginning and the end respectively. Searches are not case-sensitive. More information on it's special usage is below.</p>
+								<p>You can search for individual speakers by entering their speaker id's. You can also use SPARQL's regular expression syntax. Some examples, '.' is a wildcard character, '*' matches 0-many of the previous expression. Partial searches can also work using "^" and/or "$" at the beginning and the end respectively. Searches are not case-sensitive. More information on it's special usage is below.</p>
 							</td>
 						</tr>
 						<tr>
@@ -43,7 +43,7 @@
 								</div>
 							</td>
 							<td class="right">
-								<p>You can search by the gender of the participants.</p>
+								<p>You can search by the gender of the speakers.</p>
 							</td>
 						</tr>
 						<tr>
@@ -74,7 +74,7 @@
 								</div>
 							</td>
 							<td class="right">
-								<p>This is the location where the participant was recorded and is a good way to select a group of participants known to you.</p>
+								<p>This is the location where the speaker was recorded and is a good way to select a group of participants known to you.</p>
 							</td>
 						</tr>
 					</table>
@@ -98,7 +98,7 @@
 								</div>
 							</td>
 							<td class="right">
-								<p>You can search by the town of which the participant was born in. It currently doesn't support multiple towns.</p>
+								<p>You can search by the town of which the speaker was born in. It currently doesn't support multiple towns.</p>
 							</td>
 						</tr>
 						<tr>
@@ -111,7 +111,7 @@
 								</div>
 							</td>
 							<td class="right">
-								<p>Here you can select the State or Territory the participants were born in. You must enter the abbreviated names of the states such as "VIC" or "WA". This works for international states however very few are given and may not represent an accurate abbreviation for that state.</p>
+								<p>Here you can select the State or Territory the speakers were born in. You must enter the abbreviated names of the states such as "VIC" or "WA". This works for international states however very few are given and may not represent an accurate abbreviation for that state.</p>
 							</td>
 						</tr>
 						<tr>
@@ -129,7 +129,7 @@
 								</div>
 							</td>
 							<td class="right">
-								<p>You're able to select the country the participants was born in. You are able to select multiple countries by holding down the Ctrl button (Command button on Mac) and selecting the countries you wish. You can also Select a range of countries by holding down SHIFT. Please note that if you wish for everyone born in Australia, you'll need to select both "AU" and "Australia" due to inconsistencies in the data.</p>
+								<p>You're able to select the country the speakers was born in. You are able to select multiple countries by holding down the Ctrl button (Command button on Mac) and selecting the countries you wish. You can also Select a range of countries by holding down SHIFT. Please note that if you wish for everyone born in Australia, you'll need to select both "AU" and "Australia" due to inconsistencies in the data.</p>
 							</td>
 						</tr>
 					</table>
@@ -158,7 +158,7 @@
 								</div>
 							</td>
 							<td class="right">
-								<p>You can search by the town of which the participant have lived in.</p>
+								<p>You can search by the town of which the speaker have lived in.</p>
 							</td>
 						</tr>
 						<tr>
@@ -176,7 +176,7 @@
 								</div>
 							</td>
 							<td class="right">
-								<p>Here you can select the State or Territory the participants have lived in. You must enter the abbreviated names of the states such as "VIC" or "WA". This works for international states however very few are given and may not represent an accurate abbreviation for that state.</p>
+								<p>Here you can select the State or Territory the speakers have lived in. You must enter the abbreviated names of the states such as "VIC" or "WA". This works for international states however very few are given and may not represent an accurate abbreviation for that state.</p>
 							</td>
 						</tr>
 						<tr>
@@ -194,7 +194,7 @@
 								</div>
 							</td>
 							<td class="right">
-								<p>You're able to select the country the participants have lived in. You are able to select multiple countries by holding down the Ctrl button (Command button on Mac) and selecting the countries you wish. You can also Select a range of countries by holding down SHIFT. Please note that if you wish for everyone born in Australia, you'll need to select both "AU" and "Australia" due to inconsistencies in the data.</p>
+								<p>You're able to select the country the speakers have lived in. You are able to select multiple countries by holding down the Ctrl button (Command button on Mac) and selecting the countries you wish. You can also Select a range of countries by holding down SHIFT. Please note that if you wish for everyone born in Australia, you'll need to select both "AU" and "Australia" due to inconsistencies in the data.</p>
 							</td>
 						</tr>
 						<tr>
@@ -207,7 +207,7 @@
 								</div>
 							</td>
 							<td class="right">
-								<p>Here you can specify what age the participants were when they moved to the provided historical address. Enter a single number to search for a specific age. Enter two numbers separated by a hyphen (e.g, "18-50") to search for a range of ages.<br>Enter a negative number (e.g, "-50") to search for people at or under a specific age.<br>Enter a number followed by a + (e.g, "50+") to search for people at or over a specific age.</p>
+								<p>Here you can specify what age the speakers were when they moved to the provided historical address. Enter a single number to search for a specific age. Enter two numbers separated by a hyphen (e.g, "18-50") to search for a range of ages.<br>Enter a negative number (e.g, "-50") to search for people at or under a specific age.<br>Enter a number followed by a + (e.g, "50+") to search for people at or over a specific age.</p>
 							</td>
 						</tr>
 						<tr>
@@ -220,7 +220,7 @@
 								</div>
 							</td>
 							<td class="right">
-								<p>Here you can specify what age the participants were when they moved out of the provided historical address. The same format can be used as the 'Age From' Field.<br>If you set this field to be the same value as the age field when using a specific age and leaving Age From empty, you can find their latest address.</p>
+								<p>Here you can specify what age the speakers were when they moved out of the provided historical address. The same format can be used as the 'Age From' Field.<br>If you set this field to be the same value as the age field when using a specific age and leaving Age From empty, you can find their latest address.</p>
 							</td>
 						</tr>
 					</table>
@@ -270,7 +270,7 @@
 								</div>
 							</td>
 							<td class="right">
-								<p>You can select the desired level of qualification of the participants. It is currently not supported if you wish to select participants with 'at least' some level of qualification.</p>
+								<p>You can select the desired level of qualification of the speakers. It is currently not supported if you wish to select participants with 'at least' some level of qualification.</p>
 							</td>
 						</tr>
 						<tr>
@@ -287,7 +287,7 @@
 								</div>
 							</td>
 							<td class="right">
-								<p>Only about half of the participants have data for this field. If a choice is specified, participants with unknown socio-economic status will be omitted from results.</p>
+								<p>Only about half of the speakers have data for this field. If a choice is specified, participants with unknown socio-economic status will be omitted from results.</p>
 							</td>
 						</tr>
 					</table>
@@ -316,7 +316,7 @@
 								</div>
 							</td>
 							<td class="right">
-								<p>Here you can select the desired first language of the participants.</p>
+								<p>Here you can select the desired first language of the speakers.</p>
 							</td>
 						</tr>
 						<tr>
@@ -347,7 +347,7 @@
 								</div>
 							</td>
 							<td class="right">
-								<p>You can select the desired cultural heritage of the participants. Keep in mind that there is a lot of overlap with the provided heritages. At the moment only selecting one is supported. </p>
+								<p>You can select the desired cultural heritage of the speakers. Keep in mind that there is a lot of overlap with the provided heritages. At the moment only selecting one is supported. </p>
 							</td>
 						</tr>
 					</table>
@@ -356,7 +356,7 @@
 		</div>
 		<div class="panel panel-default">
 			<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#gdpi">
-				<h4 class="panel-title">Detailed Participant Information</h4>
+				<h4 class="panel-title">Detailed Speaker Information</h4>
 			</div>
 			<div id="gdpi" class="panel-collapse collapse">
 				<div class="panel-body">

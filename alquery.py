@@ -63,7 +63,7 @@ class AlQuery(object):
         
         for row in results:
             html = html + "</tr><tr>"
-            html = html + """<td><input type="checkbox" name="selected" value="%s">""" % ((row['item']) if isItem else (row['participant'])  )     
+            html = html + """<td><input type="checkbox" name="selected" value="%s">""" % ((row['item']) if isItem else (row['speaker'])  )     
                  
             for item in row.items():               
                 if re.match("""http:|https:""", item[1]) != None:
@@ -114,6 +114,8 @@ class AlQuery(object):
         @returns: A list of all results.
         """
         session = bottle.request.environ.get('beaker.session') #@UndefinedVariable
+        
+        print query
         
         searchResults = self.client.sparql_query(collection, query)
    

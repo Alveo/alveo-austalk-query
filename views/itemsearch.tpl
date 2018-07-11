@@ -1,6 +1,6 @@
 %rebase("base-page")
 <form action="/itemresults" method="POST" style="width:98%;margin:auto;">
-	<br><p style="font: 15px arial, sans-serif;">Here you can search for your desired participants. Click on each of the headings to expand all the available criteria.<br>When you are done click submit and you'll be provided with a list of participants fulfilling your criteria.</p>
+	<br><p style="font: 15px arial, sans-serif;">Here you can search for your desired speakers. Click on each of the headings to expand all the available criteria.<br>When you are done click submit and you'll be provided with a list of speakers fulfilling your criteria.</p>
 	<button type="submit" style="float:right;" class="btn btn-default">Submit</button><br><br>
 	<div class="panel-group" id="accordion" >
 		<div class="panel panel-default">

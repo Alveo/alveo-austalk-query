@@ -12,7 +12,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="description" content="Explore a large set of Australian linguistic data with over 800 participants and thousands of items.">
+	<meta name="description" content="Explore a large set of Australian linguistic data with over 800 speakers and thousands of items.">
 	<meta name="author" content="The Alveo Project">
 	<link href="http://alveo.edu.au/wp-content/themes/hcsvlab/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon" />
 	<title>Alveo Query Engine</title>
@@ -46,8 +46,8 @@
 				<div class="navbar-collapse collapse">
 					<div class="navbar-left">
 						<ul class="nav navbar-nav">
-							<li {{!'class="active"' if page=='PSearch' else ''}}><a href="/psearch">Search Participants</a></li>
-							<li {{!'class="active"' if page=='PResults' else ''}}><a href="/presults">Participant List</a></li>
+							<li {{!'class="active"' if page=='PSearch' else ''}}><a href="/psearch">Search Speakers</a></li>
+							<li {{!'class="active"' if page=='PResults' else ''}}><a href="/presults">Speaker List</a></li>
 							<li {{!'class="active"' if page=='ISearch' else ''}}><a href="/itemsearch">Search Items</a></li>
 							<li {{!'class="active"' if page=='IResults' else ''}}><a href="/itemresults">Item List</a></li>
 							<li {{!'class="active"' if page=='Export' else ''}}><a href="/export">Export</a></li>
