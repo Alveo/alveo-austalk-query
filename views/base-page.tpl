@@ -14,7 +14,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="description" content="Explore a large set of Australian linguistic data with over 800 speakers and thousands of items.">
 	<meta name="author" content="The Alveo Project">
-	<link href="http://alveo.edu.au/wp-content/themes/hcsvlab/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon" />
+	<link href="https://app.alveo.edu.au/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon" />
 	<title>Alveo Query Engine</title>
 	<!-- Bootstrap core CSS -->
 	<link href="/styles/bootstrap.min.css" rel="stylesheet">
