@@ -7,26 +7,20 @@ If you wish to select all speakers minus a few, select the speakers you wish to 
 "Remove Selected Speakers". When you have your desired list, click "Select All Speakers" and then 
 "Search Items from Selected Speakers"</p>
 
-<a type="button" class="btn btn-default" href="/download/speakers.csv">Download all Speaker metadata as CSV</a>
-<form action="/handleparts" method="POST" class="form-inline" role="form"><br>
-	<div class="form-group" style="float:left;">
-		<button type="button" class="btn btn-default" onClick="selectAll()"  >Select All Speakers</button>
-		<button type="button" class="btn btn-default" onClick="selectNone()" >Select None</button>
-	</div>
-	<div class="form-group" style="float: right;">
+<a role="button" class="btn btn-light my-2" href="/download/speakers.csv"><i class="fas fa-file-download"></i> Download all Speaker metadata as CSV</a>
+<form action="/handleparts" method="POST" role="form">
+	<div class="d-flex flex-row my-2">
+		<button type="button" class="btn btn-light p-2 mx-2" onClick="selectAll()"  >Select All Speakers</button>
+		<button type="button" class="btn btn-light p-2 mx-2 mr-auto" onClick="selectNone()" >Select None</button>
 		%if undo:
-		<button type="submit" class="btn btn-default" name="submit"
-			value="undo">Undo</button>
+		<button type="submit" class="btn btn-light p-2 mx-2" name="submit" value="undo">Undo</button>
 		%end
-		<button type="submit" class="btn btn-default" name="submit"
-			value="remove">Remove Selected Speakers</button>
-		<button type="submit" class="btn btn-default" name="submit"
-			value="search">Search Items From Selected Speakers</button>
+		<button type="submit" class="btn btn-light p-2 mx-2" name="submit" value="remove">Remove Selected Speakers</button>
+		<button type="submit" class="btn btn-light p-2 mx-2" name="submit" value="search">Search Items From Selected Speakers</button>
 	</div>
 
-
-	<table class="table table-bordered table-hover">
-		<thead>
+	<table class="table table-bordered table-hover table-responsive-md">
+		<thead class="thead-light">
 			<tr>
 				<th>Speaker</th>
 				<th>Gender</th>
@@ -54,15 +48,14 @@ If you wish to select all speakers minus a few, select the speakers you wish to 
 		</tbody>
 	</table>
 	
-	<div class="form-group" style="float: right;">
+	<div class="d-flex flex-row my-2">
+		<button type="button" class="btn btn-light p-2 mx-2" onClick="selectAll()"  >Select All Speakers</button>
+		<button type="button" class="btn btn-light p-2 mx-2 mr-auto" onClick="selectNone()" >Select None</button>
 		%if undo:
-		<button type="submit" class="btn btn-default" name="submit"
-			value="undo">Undo</button>
+		<button type="submit" class="btn btn-light p-2 mx-2" name="submit" value="undo">Undo</button>
 		%end
-		<button type="submit" class="btn btn-default" name="submit"
-			value="remove">Remove Selected Speakers</button>
-		<button type="submit" class="btn btn-default" name="submit"
-			value="search">Search Items From Selected Speakers</button>
+		<button type="submit" class="btn btn-light p-2 mx-2" name="submit" value="remove">Remove Selected Speakers</button>
+		<button type="submit" class="btn btn-light p-2 mx-2" name="submit" value="search">Search Items From Selected Speakers</button>
 	</div>
 
 
@@ -71,22 +64,21 @@ If you wish to select all speakers minus a few, select the speakers you wish to 
 
 	$('#resultsTable').on('click', '.clickable-row', function(event) {
 		var item = $("#" + $(this).attr('id').substring(4));
-		console.log(item);
-		if ($(this).hasClass("active")) {
-			$(this).removeClass('active');
+		if ($(this).hasClass("table-secondary")) {
+			$(this).removeClass('table-secondary');
 			item.prop('checked', false);
 		} else {
-			$(this).addClass('active');
+			$(this).addClass('table-secondary');
 			item.prop('checked', true);
 		}
 	});
 
 	function selectAll() {
 		$("[name='clickable']").prop("checked", true);
-		$(".clickable-row").addClass("active");
+		$(".clickable-row").addClass("table-secondary");
 	}
 	function selectNone() {
 		$("[name='clickable']").prop("checked", false);
-		$(".clickable-row").removeClass("active");
+		$(".clickable-row").removeClass("table-secondary");
 	}
 </script>

@@ -1,78 +1,21 @@
 %rebase("base-page")
-<form action="/itemresults" method="POST" style="width:98%;margin:auto;">
-	<br><p style="font: 15px arial, sans-serif;">Here you can search for your desired speakers. Click on each of the headings to expand all the available criteria.<br>When you are done click submit and you'll be provided with a list of speakers fulfilling your criteria.</p>
-	<button type="submit" style="float:right;" class="btn btn-default">Submit</button><br><br>
-	<div class="panel-group" id="accordion" >
-		<div class="panel panel-default">
-			<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#gitem">
-				<h4 class="panel-title">Search by Prompt</h4>
-			</div>
-			<div id="gitem" class="panel-collapse collapse in">
-				<div class="panel-body">
-					<table>
-						<tr>
-							<td class="left">
-								<label for="prompt"><b>Prompt:</b></label>
-							</td>
-							<td class="mid">
-								<div class="form-group">
-									<input type="text" class="form-control" name="prompt" id="prompt" placeholder="animal">
-								</div>
-							</td>
-							<td class="right">
-								<p>You can search for individual words by entering them in this search box. You can also use SPARQL's regular expression syntax. Some examples, '.' is a wildcard character, '*' matches 0-many of the previous expression. Partial searches can also work using "^" and/or "$" at the beginning and the end respectively. Searches are not case-sensitive. More information is below.</p>
-							</td>
-						</tr>
-						<tr>
-							<td class="left">
-								<label for="anno"><b>Annotated Items Only:</b></label>
-							</td>
-							<td class="mid">
-								<div class="form-group">
-									<div class="btn-group" data-toggle="buttons" id="anno" name="anno">
-										<label class="btn btn-custom">
-											<input type="radio" value = "required" id="anno" name="anno" autocomplete="off">True
-										</label>
-										<label class="btn btn-custom active">
-											<input type="radio" value = "" id="anno" name="anno" autocomplete="off" checked>False
-										</label>
-									</div>
-								</div>
-							</td>
-							<td class="right">
-								<p>Select true to show only items with annotations</p>
-							</td>
-						</tr>
-						<tr>
-							<td class="left">
-								<label for="wlist"><b>Predefined Word List:</b></label>
-							</td>
-							<td class="mid">
-								<div class="form-group">
-									<select class="form-control" name="wlist">
-										<option value="">None</option>
-										<option value="hvdwords">hVd Words</option>
-										<option value="hvdmono">hVd Monophthongs</option>
-										<option value="hvddip">hVd Diphthongs</option>
-									</select>
-								</div>
-							</td>
-							<td class="right">
-								<p>You can choose one of the pre-defined Word Lists, where all the items match a specific pattern. <br>
-								<a href="https://austalk.edu.au/sites/default/files/IS11-AusTalk.pdf" target="_blank">Click here for more information.</a></td>
-								</p>
-							</td>
-						</tr>
-					</table>
-				</div>
-			</div>
-		</div>
-		<div class="panel panel-default">
-			<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#gcomp">
-				<h4 class="panel-title">Search by Component</h4>
+
+<p>Here you can search for any relevant items. Click on each of the headings to expand all the available criteria.</p>
+<p>When you are done click submit and you'll be provided with a list of speakers fulfilling your search criteria.</p>
+
+<form action="/itemresults" method="POST">
+	
+	<div class="d-flex flex-row-reverse">
+		<button type="submit"class="btn btn-light py-2 px-4 m-3">Submit</button>
+	</div>
+
+	<div class="accordion" id="accordion" >
+		<div class="card">
+			<div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#gcomp">
+				<h5 class="mb-0">Search by Component</h5>
 			</div>
 			<div id="gcomp" class="panel-collapse collapse">
-				<div class="panel-body">
+				<div class="card-body">
 					<table>
 						<tr>
 							<td class="left">
@@ -160,14 +103,80 @@
 				</div>
 			</div>
 		</div>
+		<div class="card">
+			<div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#gitem">
+				<h5 class="mb-0">Search by Prompt</h5>
+			</div>
+			<div id="gitem" class="panel-collapse collapse in">
+				<div class="card-body">
+					<table>
+						<tr>
+							<td class="left">
+								<label for="prompt"><b>Prompt:</b></label>
+							</td>
+							<td class="mid">
+								<div class="form-group">
+									<input type="text" class="form-control" name="prompt" id="prompt" placeholder="animal">
+								</div>
+							</td>
+							<td class="right">
+								<p>You can search for individual words by entering them in this search box. You can also use SPARQL's regular expression syntax. Some examples, '.' is a wildcard character, '*' matches 0-many of the previous expression. Partial searches can also work using "^" and/or "$" at the beginning and the end respectively. Searches are not case-sensitive. More information is below.</p>
+							</td>
+						</tr>
+						<tr>
+							<td class="left">
+								<label for="anno"><b>Annotated Items Only:</b></label>
+							</td>
+							<td class="mid">
+								<div class="form-group">
+									<div class="btn-group btn-group-toggle" data-toggle="buttons" id="anno" name="anno">
+										<label class="btn btn-light">
+											<input type="radio" value = "required" id="anno" name="anno" autocomplete="off">True
+										</label>
+										<label class="btn btn-light active">
+											<input type="radio" value = "" id="anno" name="anno" autocomplete="off" checked>False
+										</label>
+									</div>
+								</div>
+							</td>
+							<td class="right">
+								<p>Select true to show only items with annotations</p>
+							</td>
+						</tr>
+						<tr>
+							<td class="left">
+								<label for="wlist"><b>Predefined Word List:</b></label>
+							</td>
+							<td class="mid">
+								<div class="form-group">
+									<select class="form-control" name="wlist">
+										<option value="">None</option>
+										<option value="hvdwords">hVd Words</option>
+										<option value="hvdmono">hVd Monophthongs</option>
+										<option value="hvddip">hVd Diphthongs</option>
+									</select>
+								</div>
+							</td>
+							<td class="right">
+								<p>You can choose one of the pre-defined Word Lists, where all the items match a specific pattern. <br>
+								<a href="https://austalk.edu.au/sites/default/files/IS11-AusTalk.pdf" target="_blank">Click here for more information.</a></td>
+								</p>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
 	</div> 
-	<button type="submit" style="float:right;" class="btn btn-default">Submit</button>
+	
+	<div class="d-flex flex-row-reverse">
+		<button type="submit"class="btn btn-light py-2 px-4 m-3">Submit</button>
+	</div>
 </form>
 
+<br><br>
 
-<h2>Notes:</h2>
-
-<p>Any fields left blank will not be used to filter results.</p>
+<h5>Notes:</h5>
 
 <table>
 	<tr>

@@ -5,35 +5,22 @@
 <p>You can now browse all the items found by your search. Click on
 	the Speakers to expand a list of all their recordings.</p>
 
-<a type="button" class="btn btn-default" href="/download/items.csv">Download
-	item metadata as CSV</a>
-<a type="button" class="btn btn-default"
-	href="/download/itemswithpartdata.csv">Download item metadata as
-	CSV with speaker data</a>
-<br>
-<br>
+<a role="button" class="btn btn-light my-2" href="/download/items.csv"><i class="fas fa-file-download"></i> Download item metadata as CSV</a>
+<a role="button" class="btn btn-light my-2" href="/download/itemswithpartdata.csv"><i class="fas fa-file-download"></i> Download item metadata as CSV with speaker data</a>
+
 <form action="/handleitems" method="POST">
-
-	<div class="form-group" style="float: left;">
-		<button type="button" class="btn btn-default" onClick="selectAll()">Select
-			All</button>
-		<button type="button" class="btn btn-default" onClick="selectNone()">Select
-			None</button>
-		<button type="button" class="btn btn-default" onClick="toggleExpand()">Toggle
-			Collapse</button>
-	</div>
-	<div class="form-group" style="float: right;">
+	<div class="d-flex flex-row my-2">
+		<button type="button" class="btn btn-light p-2 mx-2" onClick="selectAll()">Select All</button>
+		<button type="button" class="btn btn-light p-2 mx-2" onClick="selectNone()">Select None</button>
+		<button type="button" class="btn btn-light p-2 mx-2 mr-auto" onClick="toggleExpand()">Toggle Collapse</button>
 		%if undo:
-		<button type="submit" class="btn btn-default" name="submit"
-			value="undo">Undo</button>
+		<button type="submit" class="btn btn-light p-2 mx-2" name="submit" value="undo">Undo</button>
 		%end
-		<button type="submit" class="btn btn-default" name="submit"
-			value="remove">Remove Selected</button>
-		<button type="submit" class="btn btn-default" name="submit"
-			value="export">Export Selected</button>
+		<button type="submit" class="btn btn-light p-2 mx-2" name="submit" value="remove">Remove Selected</button>
+		<button type="submit" class="btn btn-light p-2 mx-2" name="submit" value="export">Export Selected</button>
 	</div>
 
-	<div class="panel-group" id="accordion">
+	<div class=accordion" id="accordion">
 
 		<div class="rTable">
 			<div class="rTableBody">
@@ -102,6 +89,16 @@
 
 	</div>
 
+	<div class="d-flex flex-row my-2">
+		<button type="button" class="btn btn-light p-2 mx-2" onClick="selectAll()">Select All</button>
+		<button type="button" class="btn btn-light p-2 mx-2" onClick="selectNone()">Select None</button>
+		<button type="button" class="btn btn-light p-2 mx-2 mr-auto" onClick="toggleExpand()">Toggle Collapse</button>
+		%if undo:
+		<button type="submit" class="btn btn-light p-2 mx-2" name="submit" value="undo">Undo</button>
+		%end
+		<button type="submit" class="btn btn-light p-2 mx-2" name="submit" value="remove">Remove Selected</button>
+		<button type="submit" class="btn btn-light p-2 mx-2" name="submit" value="export">Export Selected</button>
+	</div>
 
 </form>
 

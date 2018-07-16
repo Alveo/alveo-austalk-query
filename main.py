@@ -53,13 +53,18 @@ app = SessionMiddleware(bottle.app(), session_opts)
 
 @bottle.route('/styles/<filename>')
 def serve_style(filename):
-    '''Loads static files from views/styles. Store all .css files there.'''
+    '''Loads static files from /styles. Store all .css files there.'''
     return bottle.static_file(filename, root='./styles')
 
 @bottle.route('/js/<filename>')
-def send_static(filename):
-    '''Loads static files from views/js. Store all .js files there.'''
+def send_js(filename):
+    '''Loads static files from /js. Store all .js files there.'''
     return bottle.static_file(filename, root='./js/')
+
+@bottle.route('/media/<filename>')
+def send_media(filename):
+    '''Loads static files from /media. Store all misc (images,pdf) files there.'''
+    return bottle.static_file(filename, root='./media/')
 
 @bottle.route('/')
 def home():
