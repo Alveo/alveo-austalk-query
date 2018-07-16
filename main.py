@@ -428,7 +428,7 @@ def handle_parts():
         bottle.redirect('/')
 
     partList = session.get('partlist',[])
-    selectedParts = bottle.request.forms.getall('selected')
+    selectedParts = bottle.request.forms.getall('clickable')
 
     function = bottle.request.forms.get('submit')
 

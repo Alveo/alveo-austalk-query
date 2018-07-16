@@ -64,7 +64,7 @@
 					<div class="rTableCell" style="width: 12%;">{{row['gender']}}</div>
 					<div class="rTableCell" style="width: 12%;">{{row['age']}}</div>
 					<div class="rTableCell">{{row['first_language']}}</div>
-					<div class="rTableCell">{{row['city']}}</div>
+					<div class="rTableCell">{{row['institution']}}</div>
 					<div class="rTableCell">{{row['pob_town']}}</div>
 					<div class="rTableCell">{{row['pob_country']}}</div>
 					<div class="rTableCellRight">{{len(row['item_results'])}}</div>
