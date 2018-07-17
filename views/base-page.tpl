@@ -76,7 +76,7 @@
 				        </ul>
 					</li>
 				%else:
-					<li><a href="/login">Log in</a></li>
+					<li><a class="nav-link" href="/login">Log in</a></li>
 				%end
 			</ul>
 		</div>
