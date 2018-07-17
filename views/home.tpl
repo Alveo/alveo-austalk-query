@@ -19,11 +19,8 @@
 				Please Log In with Alveo by clicking the button below. Read about or
 				sign up at the <a href="https://app.alveo.edu.au/" target="_blank">Alveo website</a>.
 			</p>
-			<div class="input-group" style="width: 25%;">
-				<span class="input-group-btn">
-					<button type="submit" value="Log in" class="btn btn-light my-3 px-4 py-2">Login With Alveo</button>
-				</span>
-			</div>
+			<button type="submit" value="Log in" class="btn btn-light my-3 px-4 py-2"><h5>Login With Alveo</h5></button>
+
 		</form>
 	%end
 </div>
