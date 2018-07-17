@@ -25,6 +25,10 @@ label{
 	color: rgba(255,255,255,.8);
 }
 
+.tooltip-inner {
+  max-width: 500px !important;
+}
+
 
 /* Div table code to make nice looking lists of checkable results. */
 .rTable {
