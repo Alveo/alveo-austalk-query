@@ -1,7 +1,7 @@
 %rebase("base-page")
 
 <div class="progress mb-0 border bg-light" style="height: 20px;">
-  <div class="progress-bar bg-warning" role="progressbar" style="width: 40%;" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">Now Narrow your Selection of Speakers</div>
+  <div class="progress-bar bg-warning" role="progressbar" style="width: 20%;" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">Now Narrow your Selection of Speakers</div>
 </div>
 
 <nav aria-label="breadcrumb mb-4 mt-0">
@@ -92,4 +92,10 @@ If you wish to select all speakers minus a few, select the speakers you wish to 
 		$("[name='clickable']").prop("checked", false);
 		$(".clickable-row").removeClass("table-secondary");
 	}
+	
+	$(document).ready(function() {
+		$('.progress .progress-bar').css("width",function() {
+			return $(this).attr("aria-valuenow")+"%";
+		});
+	});
 </script>

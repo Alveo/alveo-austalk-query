@@ -1,7 +1,7 @@
 %rebase("base-page")
 
 <div class="progress mb-0 border bg-light" style="height: 20px;">
-  <div class="progress-bar bg-warning" role="progressbar" style="width: 20%;" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">Start by Searching for Speakers</div>
+  <div class="progress-bar bg-warning" role="progressbar" style="width: 0%;" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">Start by Searching for Speakers</div>
 </div>
 
 <nav aria-label="breadcrumb mb-4 mt-0">
@@ -973,19 +973,25 @@ Below explains the different ways you can utilize this along with examples.</p>
 
 <br><br><br>
 <script type="text/javascript">
-$(function () {
-	  $('[data-toggle="tooltip"]').tooltip();
-});
-
-$('.card').on('click', '.card-header', function(event) {
-	var arrow = $(this).find('[name="accordion-arrow"]')
-	if (arrow.hasClass("fa-angle-down")){
-		arrow.removeClass("fa-angle-down");
-		arrow.addClass("fa-angle-up");
-	} else {
-		arrow.removeClass("fa-angle-up");
-		arrow.addClass("fa-angle-down");
-	}
-});
+	$(function () {
+		  $('[data-toggle="tooltip"]').tooltip();
+	});
+	
+	$('.card').on('click', '.card-header', function(event) {
+		var arrow = $(this).find('[name="accordion-arrow"]')
+		if (arrow.hasClass("fa-angle-down")){
+			arrow.removeClass("fa-angle-down");
+			arrow.addClass("fa-angle-up");
+		} else {
+			arrow.removeClass("fa-angle-up");
+			arrow.addClass("fa-angle-down");
+		}
+	});
+	
+	$(document).ready(function() {
+		$('.progress .progress-bar').css("width",function() {
+			return $(this).attr("aria-valuenow") + "%";
+		});
+	});
 </script>
 

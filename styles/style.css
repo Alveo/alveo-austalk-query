@@ -29,6 +29,10 @@ label{
   max-width: 500px !important;
 }
 
+.progress-bar {
+  transition-duration: 3s;
+}
+
 
 /* Div table code to make nice looking lists of checkable results. */
 .rTable {

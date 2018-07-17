@@ -2,7 +2,7 @@
 <div name="OAF"></div>
 
 <div class="progress mb-0 border bg-light" style="height: 20px;">
-  <div class="progress-bar bg-warning" role="progressbar" style="width: 80%;" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100">Now Further Narrow your Selection</div>
+  <div class="progress-bar bg-warning" role="progressbar" style="width: 60%;" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100">Now Further Narrow your Selection</div>
 </div>
 
 <nav aria-label="breadcrumb mb-4 mt-0">
@@ -14,7 +14,7 @@
   </ol>
 </nav>
 
-<h4>Number of Items found: {{resultsCount}}</h4>
+<h4>Found {{resultsCount}} Items</h4>
 <p>You can now browse all the items found by your search. Click on
 	the Speakers to expand a list of all their recordings.</p>
 
@@ -114,4 +114,10 @@
 	</div>
 
 </form>
-
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('.progress .progress-bar').css("width",function() {
+			return $(this).attr("aria-valuenow")+"%";
+		});
+	});
+</script>

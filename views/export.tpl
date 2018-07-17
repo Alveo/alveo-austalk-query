@@ -1,7 +1,7 @@
 %rebase("base-page")
 
 <div class="progress mb-0 border bg-light" style="height: 20px;">
-  <div class="progress-bar bg-warning" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">Finally export your data as an Alveo Item List.</div>
+  <div class="progress-bar bg-warning" role="progressbar" style="width: 80%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">Finally export your data as an Alveo Item List.</div>
 </div>
 
 <nav aria-label="breadcrumb mb-4 mt-0">
@@ -71,3 +71,10 @@
 <!-- 
 <a role="button" class="btn btn-light" href="https://app.alveo.edu.au/item_lists" target="_blank">Click here to go to the Alveo Website</a> 
  -->
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('.progress .progress-bar').css("width",function() {
+			return $(this).attr("aria-valuenow")+"%";
+		});
+	});
+</script>
