@@ -1,5 +1,9 @@
 %rebase("base-page")
 
+<div class="progress mb-4" style="height: 20px;">
+  <div class="progress-bar bg-warning" role="progressbar" style="width: 20%;" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">Start by Searching for Speakers</div>
+</div>
+
 <p>Here you can search for your desired speakers. Click on each of the headings to expand all the available criteria.</p>
 <p>When you are done click submit and you'll be provided with a list of speakers fulfilling your search criteria.</p>
 
@@ -16,16 +20,16 @@
 			</div>
 			<div id="gspeaker" class="panel-collapse collapse">
 				<div class="card-body">
-					<div class="row">
-						<div class="col-lg-2 col-md-6 col-xs-12">
+					<div class="row mb-3">
+						<div class="col-lg-3 col-md-6 col-xs-12">
 							<label for="id"><b>Speaker Id:</b></label>
 						</div>
-						<div class="col-lg-3 col-md-6 col-xs-12">
+						<div class="col-lg-4 col-md-6 col-xs-12">
 							<div class="form-group">
 								<input type="text" class="form-control" name="id" id="id" placeholder="1_114">
 							</div>
 						</div>
-						<div class="col-lg-7 col-md-12 col-xs-12">
+						<div class="col-lg-5 col-md-12 col-xs-12">
 							<p>This filter supports Regular Expressions. 
 							<i class="far fa-question-circle" data-toggle="tooltip" data-html="true" 
 							title="<p>You can search for individual speakers by entering their speaker id's. You can also use 
@@ -36,15 +40,15 @@
 						</div>
 					</div>
 				
-						<div class="row">
-							<div class="col-lg-2 col-md-6 col-xs-12">
+						<div class="row mb-3">
+							<div class="col-lg-3 col-md-6 col-xs-12">
 								<label for="gender"><b>Gender:</b></label>
 							</div>
-							<div class="col-lg-3 col-md-6 col-xs-12">
+							<div class="col-lg-4 col-md-6 col-xs-12">
 								<div class="form-group">
 									<div class="btn-group btn-group-toggle btn-group btn-group-toggle-toggle" data-toggle="buttons" id="gender" name="gender">
 										<label class="btn btn-light active">
-											<input type="radio" value = "" id="gender" name="gender" autocomplete="off" checked>Any
+											<input type="radio" value = "" id="gender" name="gender" autocomplete="off" checked>Either
 										</label>
 										<label class="btn btn-light">
 											<input type="radio" value = "male" id="gender" name="gender" autocomplete="off">Male
@@ -55,28 +59,28 @@
 									</div>
 								</div>
 							</div>
-							<div class="col-lg-7 col-md-12 col-xs-12">
+							<div class="col-lg-5 col-md-12 col-xs-12">
 								<p>You can search by the gender of the speakers.</p>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-lg-2 col-md-6 col-xs-12">
+						<div class="row mb-3">
+							<div class="col-lg-3 col-md-6 col-xs-12">
 								<label for="age"><b>Age:</b></label>
 							</div>
-							<div class="col-lg-3 col-md-6 col-xs-12">
+							<div class="col-lg-4 col-md-6 col-xs-12">
 								<div class="form-group">
 									<input type="text" class="form-control" name="age" id="age" placeholder="-25">
 								</div>
 							</div>
-							<div class="col-lg-7 col-md-12 col-xs-12">
+							<div class="col-lg-5 col-md-12 col-xs-12">
 								<p>Enter a single number to search for a specific age. Enter two numbers separated by a hyphen (e.g, "18-50") to search for a range of ages.<br>Enter a negative number (e.g, "-50") to search for people at or under a specific age.<br>Enter a number followed by a + (e.g, "50+") to search for people at or over a specific age.</p>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-lg-2 col-md-6 col-xs-12">
+						<div class="row mb-3">
+							<div class="col-lg-3 col-md-6 col-xs-12">
 								<label for="city"><b>Recording Site:</b></label>
 							</div>
-							<div class="col-lg-3 col-md-6 col-xs-12">
+							<div class="col-lg-4 col-md-6 col-xs-12">
 								<div class="form-group">
 									<select class="form-control" name="institution" id="institution">
 									    <option value = "">Any</option>
@@ -86,7 +90,7 @@
 									</select>
 								</div>
 							</div>
-							<div class="col-lg-7 col-md-12 col-xs-12">
+							<div class="col-lg-5 col-md-12 col-xs-12">
 								<p>This is the location where the speaker was recorded and is a good way to select a group of speakers known to you.</p>
 							</div>
 						</div>
@@ -101,37 +105,37 @@
 			<div id="glocation" class="panel-collapse collapse">
 				<div class="card-body">
 					
-						<div class="row">
-							<div class="col-lg-2 col-md-6 col-xs-12">
+						<div class="row mb-3">
+							<div class="col-lg-3 col-md-6 col-xs-12">
 								<label for="pob_town"><b>Birth Town:</b></label>
 							</div>
-							<div class="col-lg-3 col-md-6 col-xs-12">
+							<div class="col-lg-4 col-md-6 col-xs-12">
 								<div class="form-group">
 									<input type="text" class="form-control" name="pob_town" id="pob_town" placeholder="Sydney">
 								</div>
 							</div>
-							<div class="col-lg-7 col-md-12 col-xs-12">
+							<div class="col-lg-5 col-md-12 col-xs-12">
 								<p>You can search by the town of which the speaker was born in. It currently doesn't support multiple towns.</p>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-lg-2 col-md-6 col-xs-12">
+						<div class="row mb-3">
+							<div class="col-lg-3 col-md-6 col-xs-12">
 								<label for="pob_state"><b>Birth State:</b></label>
 							</div>
-							<div class="col-lg-3 col-md-6 col-xs-12">
+							<div class="col-lg-4 col-md-6 col-xs-12">
 								<div class="form-group">
 									<input type="text" class="form-control" name="pob_state" id="pob_state" placeholder="NSW">
 								</div>
 							</div>
-							<div class="col-lg-7 col-md-12 col-xs-12">
+							<div class="col-lg-5 col-md-12 col-xs-12">
 								<p>Here you can select the State or Territory the speakers were born in. You must enter the abbreviated names of the states such as "VIC" or "WA". This works for international states however very few are given and may not represent an accurate abbreviation for that state.</p>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-lg-2 col-md-6 col-xs-12">
+						<div class="row mb-3">
+							<div class="col-lg-3 col-md-6 col-xs-12">
 								<label for="pob_country"><b>Birth Country:</b></label>
 							</div>
-							<div class="col-lg-3 col-md-6 col-xs-12">
+							<div class="col-lg-4 col-md-6 col-xs-12">
 								<div class="form-group">
 									<select multiple size=4 class="form-control" name="pob_country" id="pob_country">
 										<option value = "">Any</option>
@@ -141,7 +145,7 @@
 									</select>
 								</div>
 							</div>
-							<div class="col-lg-7 col-md-12 col-xs-12">
+							<div class="col-lg-5 col-md-12 col-xs-12">
 								<p>You're able to select the country the speakers was born in. You are able to select multiple countries by holding down the Ctrl button (Command button on Mac) and selecting the countries you wish. You can also Select a range of countries by holding down SHIFT. Please note that if you wish for everyone born in Australia, you'll need to select both "AU" and "Australia" due to inconsistencies in the data.</p>
 							</div>
 						</div>
@@ -155,11 +159,11 @@
 			</div>
 			<div id="ghistory" class="panel-collapse collapse">
 				<div class="card-body">
-						<div class="row">
-							<div class="col-lg-2 col-md-6 col-xs-12">
+						<div class="row mb-3">
+							<div class="col-lg-3 col-md-6 col-xs-12">
 								<label for="town"><b>Town:</b></label>
 							</div>
-							<div class="col-lg-3 col-md-6 col-xs-12">
+							<div class="col-lg-4 col-md-6 col-xs-12">
 								<div class="form-group">
 									<select multiple size=4 class="form-control" name="hist_town" id="hist_town">
 										<option value = "">Any</option>
@@ -169,15 +173,15 @@
 									</select>
 								</div>
 							</div>
-							<div class="col-lg-7 col-md-12 col-xs-12">
+							<div class="col-lg-5 col-md-12 col-xs-12">
 								<p>You can search by the town of which the speaker have lived in.</p>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-lg-2 col-md-6 col-xs-12">
+						<div class="row mb-3">
+							<div class="col-lg-3 col-md-6 col-xs-12">
 								<label for="state"><b>State:</b></label>
 							</div>
-							<div class="col-lg-3 col-md-6 col-xs-12">
+							<div class="col-lg-4 col-md-6 col-xs-12">
 								<div class="form-group">
 									<select multiple size=4 class="form-control" name="hist_state" id="hist_state">
 										<option value = "">Any</option>
@@ -187,15 +191,15 @@
 									</select>
 								</div>
 							</div>
-							<div class="col-lg-7 col-md-12 col-xs-12">
+							<div class="col-lg-5 col-md-12 col-xs-12">
 								<p>Here you can select the State or Territory the speakers have lived in. You must enter the abbreviated names of the states such as "VIC" or "WA". This works for international states however very few are given and may not represent an accurate abbreviation for that state.</p>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-lg-2 col-md-6 col-xs-12">
+						<div class="row mb-3">
+							<div class="col-lg-3 col-md-6 col-xs-12">
 								<label for="country"><b>Country:</b></label>
 							</div>
-							<div class="col-lg-3 col-md-6 col-xs-12">
+							<div class="col-lg-4 col-md-6 col-xs-12">
 								<div class="form-group">
 									<select multiple size=4 class="form-control" name="hist_country" id="hist_country">
 										<option value = "">Any</option>
@@ -205,33 +209,33 @@
 									</select>
 								</div>
 							</div>
-							<div class="col-lg-7 col-md-12 col-xs-12">
+							<div class="col-lg-5 col-md-12 col-xs-12">
 								<p>You're able to select the country the speakers have lived in. You are able to select multiple countries by holding down the Ctrl button (Command button on Mac) and selecting the countries you wish. You can also Select a range of countries by holding down SHIFT. Please note that if you wish for everyone born in Australia, you'll need to select both "AU" and "Australia" due to inconsistencies in the data.</p>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-lg-2 col-md-6 col-xs-12">
+						<div class="row mb-3">
+							<div class="col-lg-3 col-md-6 col-xs-12">
 								<label for="hist_age"><b>Age From:</b></label>
 							</div>
-							<div class="col-lg-3 col-md-6 col-xs-12">
+							<div class="col-lg-4 col-md-6 col-xs-12">
 								<div class="form-group">
 									<input type="text" class="form-control" name="age_from" id="age_from" placeholder="5+">
 								</div>
 							</div>
-							<div class="col-lg-7 col-md-12 col-xs-12">
+							<div class="col-lg-5 col-md-12 col-xs-12">
 								<p>Here you can specify what age the speakers were when they moved to the provided historical address. Enter a single number to search for a specific age. Enter two numbers separated by a hyphen (e.g, "18-50") to search for a range of ages.<br>Enter a negative number (e.g, "-50") to search for people at or under a specific age.<br>Enter a number followed by a + (e.g, "50+") to search for people at or over a specific age.</p>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-lg-2 col-md-6 col-xs-12">
+						<div class="row mb-3">
+							<div class="col-lg-3 col-md-6 col-xs-12">
 								<label for="hist_length"><b>Age To:</b></label>
 							</div>
-							<div class="col-lg-3 col-md-6 col-xs-12">
+							<div class="col-lg-4 col-md-6 col-xs-12">
 								<div class="form-group">
 									<input type="text" class="form-control" name="age_to" id="age_to" placeholder="-25">
 								</div>
 							</div>
-							<div class="col-lg-7 col-md-12 col-xs-12">
+							<div class="col-lg-5 col-md-12 col-xs-12">
 								<p>Here you can specify what age the speakers were when they moved out of the provided historical address. The same format can be used as the 'Age From' Field.<br>If you set this field to be the same value as the age field when using a specific age and leaving Age From empty, you can find their latest address.</p>
 							</div>
 						</div>
@@ -246,11 +250,11 @@
 			<div id="geduprof" class="panel-collapse collapse">
 				<div class="card-body">
 					
-						<div class="row">
-							<div class="col-lg-2 col-md-6 col-xs-12">
+						<div class="row mb-3">
+							<div class="col-lg-3 col-md-6 col-xs-12">
 								<label for="profcat"><b>Professional Category:</b></label>
 							</div>
-							<div class="col-lg-3 col-md-6 col-xs-12">
+							<div class="col-lg-4 col-md-6 col-xs-12">
 								<div class="form-group">
 									<select class="form-control" name="professional_category" id="professional_category">
 								  		<option value="">Any</option>
@@ -263,15 +267,15 @@
 									</select>
 								</div>
 							</div>
-							<div class="col-lg-7 col-md-12 col-xs-12">
+							<div class="col-lg-5 col-md-12 col-xs-12">
 								<p>Select your desired Professional Category or if it's not relevant then keep it on Any.<br> Note that 'None' is different to 'Unemployed' as None refers to the lack of this entry in the metadata.</p>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-lg-2 col-md-6 col-xs-12">
+						<div class="row mb-3">
+							<div class="col-lg-3 col-md-6 col-xs-12">
 								<label for="highqual"><b>Highest Qualification:</b></label>
 							</div>
-							<div class="col-lg-3 col-md-6 col-xs-12">
+							<div class="col-lg-4 col-md-6 col-xs-12">
 								<div class="form-group">
 									<select class="form-control" name="education_level" id="education_level">
 										<option value="">Any</option>
@@ -281,15 +285,15 @@
 									</select>
 								</div>
 							</div>
-							<div class="col-lg-7 col-md-12 col-xs-12">
+							<div class="col-lg-5 col-md-12 col-xs-12">
 								<p>You can select the desired level of qualification of the speakers. It is currently not supported if you wish to select speakers with 'at least' some level of qualification.</p>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-lg-2 col-md-6 col-xs-12">
+						<div class="row mb-3">
+							<div class="col-lg-3 col-md-6 col-xs-12">
 								<label for="ses"><b>Socio-economic Status:</b></label>
 							</div>
-							<div class="col-lg-3 col-md-6 col-xs-12">
+							<div class="col-lg-4 col-md-6 col-xs-12">
 								<div class="form-group">
 									<select class="form-control" name="ses" id="ses">
 										<option value="">Any</option>
@@ -298,7 +302,7 @@
 									</select>
 								</div>
 							</div>
-							<div class="col-lg-7 col-md-12 col-xs-12">
+							<div class="col-lg-5 col-md-12 col-xs-12">
 								<p>Only about half of the speakers have data for this field. If a choice is specified, speakers with unknown socio-economic status will be omitted from results.</p>
 							</div>
 						</div>
@@ -313,11 +317,11 @@
 			<div id="glanguages" class="panel-collapse collapse">
 				<div class="card-body">
 					
-						<div class="row">
-							<div class="col-lg-2 col-md-6 col-xs-12">
+						<div class="row mb-3">
+							<div class="col-lg-3 col-md-6 col-xs-12">
 								<label for="first_language"><b>First Language:</b></label>
 							</div>
-							<div class="col-lg-3 col-md-6 col-xs-12">
+							<div class="col-lg-4 col-md-6 col-xs-12">
 								<div class="form-group">
 									<select type="text" class="form-control" name="first_language" id="first_language">
 										<option value = "">Any</option>
@@ -327,28 +331,28 @@
 									</select>
 								</div>
 							</div>
-							<div class="col-lg-7 col-md-12 col-xs-12">
+							<div class="col-lg-5 col-md-12 col-xs-12">
 								<p>Here you can select the desired first language of the speakers.</p>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-lg-2 col-md-6 col-xs-12">
+						<div class="row mb-3">
+							<div class="col-lg-3 col-md-6 col-xs-12">
 								<label for="other_languages"><b>Other Languages:</b></label>
 							</div>
-							<div class="col-lg-3 col-md-6 col-xs-12">
+							<div class="col-lg-4 col-md-6 col-xs-12">
 								<div class="form-group">
 									<input type="text" class="form-control" name="other_languages" id="other_languages" placeholder="German">
 								</div>
 							</div>
-							<div class="col-lg-7 col-md-12 col-xs-12">
+							<div class="col-lg-5 col-md-12 col-xs-12">
 								<p>You can also use SPARQL's regular expression syntax. Some examples, '.' is a wildcard character, '*' matches 0-many of the previous expression. Partial searches can also work using "^" and/or "$" at the beginning and the end respectively. For example "^Eng" will result in all languages starting in "Eng" and "man$" will result in all languages ending in "man". Searches are not case-sensitive. More information on it's special usage is below.</p>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-lg-2 col-md-6 col-xs-12">
+						<div class="row mb-3">
+							<div class="col-lg-3 col-md-6 col-xs-12">
 								<label for="cultural_heritage"><b>Cultural Heritage:</b></label>
 							</div>
-							<div class="col-lg-3 col-md-6 col-xs-12">
+							<div class="col-lg-4 col-md-6 col-xs-12">
 								<div class="form-group">
 									<select class="form-control" name="cultural_heritage" id="cultural_heritage">
 										<option value = "">Any</option>
@@ -358,7 +362,7 @@
 									</select>
 								</div>
 							</div>
-							<div class="col-lg-7 col-md-12 col-xs-12">
+							<div class="col-lg-5 col-md-12 col-xs-12">
 								<p>You can select the desired cultural heritage of the speakers. Keep in mind that there is a lot of overlap with the provided heritages. At the moment only selecting one is supported. </p>
 							</div>
 						</div>
@@ -373,226 +377,226 @@
 			<div id="gdpi" class="panel-collapse collapse">
 				<div class="card-body">
 					
-						<div class="row">
-							<div class="col-lg-2 col-md-6 col-xs-12">
+						<div class="row mb-3">
+							<div class="col-lg-3 col-md-6 col-xs-12">
 								<label for="is_student"><b>Is Student:</b></label>
 							</div>
-							<div class="col-lg-3 col-md-6 col-xs-12">
+							<div class="col-lg-4 col-md-6 col-xs-12">
 									<div class="btn-group btn-group-toggle" data-toggle="buttons" id="gender" name="gender">
 										<label class="btn btn-light active">
-											<input type="radio" id="is_student" name="is_student" value = "" autocomplete="off" checked>Any
+											<input type="radio" id="is_student" name="is_student" value = "" autocomplete="off" checked>Either
 										</label>
 										<label class="btn btn-light">
-											<input type="radio" id="is_student" name="is_student" value = "true" autocomplete="off">True
+											<input type="radio" id="is_student" name="is_student" value = "true" autocomplete="off">Yes
 										</label>
 										<label class="btn btn-light">
-											<input type="radio" id="is_student" name="is_student" value = "false" autocomplete="off">False
+											<input type="radio" id="is_student" name="is_student" value = "false" autocomplete="off">No
 										</label>
 									</div>
 							</div>
-							<div class="col-lg-7 col-md-12 col-xs-12">
+							<div class="col-lg-5 col-md-12 col-xs-12">
 								<p></p>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-lg-2 col-md-6 col-xs-12">
+						<div class="row mb-3">
+							<div class="col-lg-3 col-md-6 col-xs-12">
 								<label for="is_smoker"><b>Is Smoker:</b></label>
 							</div>
-							<div class="col-lg-3 col-md-6 col-xs-12">
+							<div class="col-lg-4 col-md-6 col-xs-12">
 									<div class="btn-group btn-group-toggle" data-toggle="buttons" id="gender" name="gender">
 										<label class="btn btn-light active">
-											<input type="radio" id="is_smoker" name="is_smoker" value = "" autocomplete="off" checked>Any
+											<input type="radio" id="is_smoker" name="is_smoker" value = "" autocomplete="off" checked>Either
 										</label>
 										<label class="btn btn-light">
-											<input type="radio" id="is_smoker" name="is_smoker" value = "true" autocomplete="off">True
+											<input type="radio" id="is_smoker" name="is_smoker" value = "true" autocomplete="off">Yes
 										</label>
 										<label class="btn btn-light">
-											<input type="radio" id="is_smoker" name="is_smoker" value = "false" autocomplete="off">False
+											<input type="radio" id="is_smoker" name="is_smoker" value = "false" autocomplete="off">No
 										</label>
 									</div>
 							</div>
-							<div class="col-lg-7 col-md-12 col-xs-12">
+							<div class="col-lg-5 col-md-12 col-xs-12">
 								<p></p>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-lg-2 col-md-6 col-xs-12">
+						<div class="row mb-3">
+							<div class="col-lg-3 col-md-6 col-xs-12">
 								<label for="has_speech_problems"><b>Has Speech Problems:</b></label>
 							</div>
-							<div class="col-lg-3 col-md-6 col-xs-12">
+							<div class="col-lg-4 col-md-6 col-xs-12">
 									<div class="btn-group btn-group-toggle" data-toggle="buttons" id="gender" name="gender">
 										<label class="btn btn-light active">
-											<input type="radio" id="has_speech_problems" name="has_speech_problems" value = "" autocomplete="off" checked>Any
+											<input type="radio" id="has_speech_problems" name="has_speech_problems" value = "" autocomplete="off" checked>Either
 										</label>
 										<label class="btn btn-light">
-											<input type="radio" id="has_speech_problems" name="has_speech_problems" value = "true" autocomplete="off">True
+											<input type="radio" id="has_speech_problems" name="has_speech_problems" value = "true" autocomplete="off">Yes
 										</label>
 										<label class="btn btn-light">
-											<input type="radio" id="has_speech_problems" name="has_speech_problems" value = "false" autocomplete="off">False
+											<input type="radio" id="has_speech_problems" name="has_speech_problems" value = "false" autocomplete="off">No
 										</label>
 									</div>
 							</div>
-							<div class="col-lg-7 col-md-12 col-xs-12">
+							<div class="col-lg-5 col-md-12 col-xs-12">
 								<p></p>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-lg-2 col-md-6 col-xs-12">
+						<div class="row mb-3">
+							<div class="col-lg-3 col-md-6 col-xs-12">
 								<label for="has_hearing_problems"><b>Has Hearing Problems:</b></label>
 							</div>
-							<div class="col-lg-3 col-md-6 col-xs-12">
+							<div class="col-lg-4 col-md-6 col-xs-12">
 									<div class="btn-group btn-group-toggle" data-toggle="buttons" id="gender" name="gender">
 										<label class="btn btn-light active">
-											<input type="radio" id="has_hearing_problems" name="has_hearing_problems" value = "" autocomplete="off" checked>Any
+											<input type="radio" id="has_hearing_problems" name="has_hearing_problems" value = "" autocomplete="off" checked>Either
 										</label>
 										<label class="btn btn-light">
-											<input type="radio" id="has_hearing_problems" name="has_hearing_problems" value = "true" autocomplete="off">True
+											<input type="radio" id="has_hearing_problems" name="has_hearing_problems" value = "true" autocomplete="off">Yes
 										</label>
 										<label class="btn btn-light">
-											<input type="radio" id="has_hearing_problems" name="has_hearing_problems" value = "false" autocomplete="off">False
+											<input type="radio" id="has_hearing_problems" name="has_hearing_problems" value = "false" autocomplete="off">No
 										</label>
 									</div>
 							</div>
-							<div class="col-lg-7 col-md-12 col-xs-12">
+							<div class="col-lg-5 col-md-12 col-xs-12">
 								<p></p>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-lg-2 col-md-6 col-xs-12">
+						<div class="row mb-3">
+							<div class="col-lg-3 col-md-6 col-xs-12">
 								<label for="has_reading_problems"><b>Has Reading Problems:</b></label>
 							</div>
-							<div class="col-lg-3 col-md-6 col-xs-12">
+							<div class="col-lg-4 col-md-6 col-xs-12">
 									<div class="btn-group btn-group-toggle" data-toggle="buttons" id="gender" name="gender">
 										<label class="btn btn-light active">
-											<input type="radio" id="has_reading_problems" name="has_reading_problems" value = "" autocomplete="off" checked>Any
+											<input type="radio" id="has_reading_problems" name="has_reading_problems" value = "" autocomplete="off" checked>Either
 										</label>
 										<label class="btn btn-light">
-											<input type="radio" id="has_reading_problems" name="has_reading_problems" value = "true" autocomplete="off">True
+											<input type="radio" id="has_reading_problems" name="has_reading_problems" value = "true" autocomplete="off">Yes
 										</label>
 										<label class="btn btn-light">
-											<input type="radio" id="has_reading_problems" name="has_reading_problems" value = "false" autocomplete="off">False
+											<input type="radio" id="has_reading_problems" name="has_reading_problems" value = "false" autocomplete="off">No
 										</label>
 									</div>
 							</div>
-							<div class="col-lg-7 col-md-12 col-xs-12">
+							<div class="col-lg-5 col-md-12 col-xs-12">
 								<p></p>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-lg-2 col-md-6 col-xs-12">
+						<div class="row mb-3">
+							<div class="col-lg-3 col-md-6 col-xs-12">
 								<label for="has_vocal_training"><b>Has Vocal Training:</b></label>
 							</div>
-							<div class="col-lg-3 col-md-6 col-xs-12">
+							<div class="col-lg-4 col-md-6 col-xs-12">
 									<div class="btn-group btn-group-toggle" data-toggle="buttons" id="gender" name="gender">
 										<label class="btn btn-light active">
-											<input type="radio" id="has_vocal_training" name="has_vocal_training" value = "" autocomplete="off" checked>Any
+											<input type="radio" id="has_vocal_training" name="has_vocal_training" value = "" autocomplete="off" checked>Either
 										</label>
 										<label class="btn btn-light">
-											<input type="radio" id="has_vocal_training" name="has_vocal_training" value = "true" autocomplete="off">True
+											<input type="radio" id="has_vocal_training" name="has_vocal_training" value = "true" autocomplete="off">Yes
 										</label>
 										<label class="btn btn-light">
-											<input type="radio" id="has_vocal_training" name="has_vocal_training" value = "false" autocomplete="off">False
+											<input type="radio" id="has_vocal_training" name="has_vocal_training" value = "false" autocomplete="off">No
 										</label>
 									</div>
 							</div>
-							<div class="col-lg-7 col-md-12 col-xs-12">
+							<div class="col-lg-5 col-md-12 col-xs-12">
 								<p></p>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-lg-2 col-md-6 col-xs-12">
+						<div class="row mb-3">
+							<div class="col-lg-3 col-md-6 col-xs-12">
 								<label for="has_dentures"><b>Has Dentures:</b></label>
 							</div>
-							<div class="col-lg-3 col-md-6 col-xs-12">
+							<div class="col-lg-4 col-md-6 col-xs-12">
 									<div class="btn-group btn-group-toggle" data-toggle="buttons" id="gender" name="gender">
 										<label class="btn btn-light active">
-											<input type="radio" id="has_dentures" name="has_dentures" value = "" autocomplete="off" checked>Any
+											<input type="radio" id="has_dentures" name="has_dentures" value = "" autocomplete="off" checked>Either
 										</label>
 										<label class="btn btn-light">
-											<input type="radio" id="has_dentures" name="has_dentures" value = "true" autocomplete="off">True
+											<input type="radio" id="has_dentures" name="has_dentures" value = "true" autocomplete="off">Yes
 										</label>
 										<label class="btn btn-light">
-											<input type="radio" id="has_dentures" name="has_dentures" value = "false" autocomplete="off">False
+											<input type="radio" id="has_dentures" name="has_dentures" value = "false" autocomplete="off">No
 										</label>
 									</div>
 							</div>
-							<div class="col-lg-7 col-md-12 col-xs-12">
+							<div class="col-lg-5 col-md-12 col-xs-12">
 								<p></p>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-lg-2 col-md-6 col-xs-12">
+						<div class="row mb-3">
+							<div class="col-lg-3 col-md-6 col-xs-12">
 								<label for="has_health_problems"><b>Has Health Problems:</b></label>
 							</div>
-							<div class="col-lg-3 col-md-6 col-xs-12">
+							<div class="col-lg-4 col-md-6 col-xs-12">
 									<div class="btn-group btn-group-toggle" data-toggle="buttons" id="gender" name="gender">
 										<label class="btn btn-light active">
-											<input type="radio" id="has_health_problems" name="has_health_problems" value = "" autocomplete="off" checked>Any
+											<input type="radio" id="has_health_problems" name="has_health_problems" value = "" autocomplete="off" checked>Either
 										</label>
 										<label class="btn btn-light">
-											<input type="radio" id="has_health_problems" name="has_health_problems" value = "true" autocomplete="off">True
+											<input type="radio" id="has_health_problems" name="has_health_problems" value = "true" autocomplete="off">Yes
 										</label>
 										<label class="btn btn-light">
-											<input type="radio" id="has_health_problems" name="has_health_problems" value = "false" autocomplete="off">False
+											<input type="radio" id="has_health_problems" name="has_health_problems" value = "false" autocomplete="off">No
 										</label>
 									</div>
 							</div>
-							<div class="col-lg-7 col-md-12 col-xs-12">
+							<div class="col-lg-5 col-md-12 col-xs-12">
 								<p></p>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-lg-2 col-md-6 col-xs-12">
+						<div class="row mb-3">
+							<div class="col-lg-3 col-md-6 col-xs-12">
 								<label for="is_left_handed"><b>Is Left Handed:</b></label>
 							</div>
-							<div class="col-lg-3 col-md-6 col-xs-12">
+							<div class="col-lg-4 col-md-6 col-xs-12">
 									<div class="btn-group btn-group-toggle" data-toggle="buttons" id="gender" name="gender">
 										<label class="btn btn-light active">
-											<input type="radio" id="is_left_handed" name="is_left_handed" value = "" autocomplete="off" checked>Any
+											<input type="radio" id="is_left_handed" name="is_left_handed" value = "" autocomplete="off" checked>Either
 										</label>
 										<label class="btn btn-light">
-											<input type="radio" id="is_left_handed" name="is_left_handed" value = "true" autocomplete="off">True
+											<input type="radio" id="is_left_handed" name="is_left_handed" value = "true" autocomplete="off">Yes
 										</label>
 										<label class="btn btn-light">
-											<input type="radio" id="is_left_handed" name="is_left_handed" value = "false" autocomplete="off">False
+											<input type="radio" id="is_left_handed" name="is_left_handed" value = "false" autocomplete="off">No
 										</label>
 									</div>
 							</div>
-							<div class="col-lg-7 col-md-12 col-xs-12">
+							<div class="col-lg-5 col-md-12 col-xs-12">
 								<p></p>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-lg-2 col-md-6 col-xs-12">
+						<div class="row mb-3">
+							<div class="col-lg-3 col-md-6 col-xs-12">
 								<label for="has_piercings"><b>Has Piercings:</b></label>
 							</div>
-							<div class="col-lg-3 col-md-6 col-xs-12">
+							<div class="col-lg-4 col-md-6 col-xs-12">
 									<div class="btn-group btn-group-toggle" data-toggle="buttons" id="gender" name="gender">
 										<label class="btn btn-light active">
-											<input type="radio" id="has_piercings" name="has_piercings" value = "" autocomplete="off" checked>Any
+											<input type="radio" id="has_piercings" name="has_piercings" value = "" autocomplete="off" checked>Either
 										</label>
 										<label class="btn btn-light">
-											<input type="radio" id="has_piercings" name="has_piercings" value = "true" autocomplete="off">True
+											<input type="radio" id="has_piercings" name="has_piercings" value = "true" autocomplete="off">Yes
 										</label>
 										<label class="btn btn-light">
-											<input type="radio" id="has_piercings" name="has_piercings" value = "false" autocomplete="off">False
+											<input type="radio" id="has_piercings" name="has_piercings" value = "false" autocomplete="off">No
 										</label>
 									</div>
 							</div>
-							<div class="col-lg-7 col-md-12 col-xs-12">
+							<div class="col-lg-5 col-md-12 col-xs-12">
 								<p>Looking at the available data there are only 38 results, 24 have nose piercings, only 4 have lip piecings, 4 eyebrows, 4 None and 4 other.</p>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-lg-2 col-md-6 col-xs-12">
+						<div class="row mb-3">
+							<div class="col-lg-3 col-md-6 col-xs-12">
 								<label for="hobbies_details"><b>Hobbies:</b></label>
 							</div>
-							<div class="col-lg-3 col-md-6 col-xs-12">
+							<div class="col-lg-4 col-md-6 col-xs-12">
 								<div class="form-group">
 									<input type="text" class="form-control" name="hobbies_details" id="hobbies_details" placeholder="Photography">
 								</div>
 							</div>
-							<div class="col-lg-7 col-md-12 col-xs-12">
+							<div class="col-lg-5 col-md-12 col-xs-12">
 								<p>You can also use SPARQL's regular expression syntax. Some examples, '.' is a wildcard character, '*' matches 0-many of the previous expression. Partial searches can also work using "^" and/or "$" at the beginning and the end respectively. For example "^S" will result in all hobbies starting in "S" and "ing$" will result in all hobbies ending in "ing", Another example: "^S...ing$" will result in both Surfing and Singing. Searches are not case-sensitive. More information on it's special usage is below.</p>
 							</div>
 						</div>
@@ -607,11 +611,11 @@
 			<div id="gmother" class="panel-collapse collapse">
 				<div class="card-body">
 					
-						<div class="row">
-							<div class="col-lg-2 col-md-6 col-xs-12">
+						<div class="row mb-3">
+							<div class="col-lg-3 col-md-6 col-xs-12">
 								<label for="mother_cultural_heritage"><b>Cultural Heritage:</b></label>
 							</div>
-							<div class="col-lg-3 col-md-6 col-xs-12">
+							<div class="col-lg-4 col-md-6 col-xs-12">
 								<div class="form-group">
 									<select class="form-control" name="mother_cultural_heritage" id="mother_cultural_heritage">
 										<option value = "">Any</option>
@@ -621,15 +625,15 @@
 									</select>
 								</div>
 							</div>
-							<div class="col-lg-7 col-md-12 col-xs-12">
+							<div class="col-lg-5 col-md-12 col-xs-12">
 								<p></p>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-lg-2 col-md-6 col-xs-12">
+						<div class="row mb-3">
+							<div class="col-lg-3 col-md-6 col-xs-12">
 								<label for="mother_professional_category"><b>Professional Category:</b></label>
 							</div>
-							<div class="col-lg-3 col-md-6 col-xs-12">
+							<div class="col-lg-4 col-md-6 col-xs-12">
 								<div class="form-group">
 									<select class="form-control" name="mother_professional_category" id="mother_professional_category">
 								  		<option value="">Any</option>
@@ -642,15 +646,15 @@
 									</select>
 								</div>
 							</div>
-							<div class="col-lg-7 col-md-12 col-xs-12">
+							<div class="col-lg-5 col-md-12 col-xs-12">
 								<p></p>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-lg-2 col-md-6 col-xs-12">
+						<div class="row mb-3">
+							<div class="col-lg-3 col-md-6 col-xs-12">
 								<label for="mother_first_language"><b>First Language:</b></label>
 							</div>
-							<div class="col-lg-3 col-md-6 col-xs-12">
+							<div class="col-lg-4 col-md-6 col-xs-12">
 								<div class="form-group">
 									<select type="text" class="form-control" name="mother_first_language" id="mother_first_language">
 										<option value = "">Any</option>
@@ -660,15 +664,15 @@
 									</select>
 								</div>
 							</div>
-							<div class="col-lg-7 col-md-12 col-xs-12">
+							<div class="col-lg-5 col-md-12 col-xs-12">
 								<p></p>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-lg-2 col-md-6 col-xs-12">
+						<div class="row mb-3">
+							<div class="col-lg-3 col-md-6 col-xs-12">
 								<label for="mother_education_level"><b>Highest Qualification:</b></label>
 							</div>
-							<div class="col-lg-3 col-md-6 col-xs-12">
+							<div class="col-lg-4 col-md-6 col-xs-12">
 								<div class="form-group">
 									<select class="form-control" name="mother_education_level" id="mother_education_level">
 										<option value="">Any</option>
@@ -678,41 +682,41 @@
 									</select>
 								</div>
 							</div>
-							<div class="col-lg-7 col-md-12 col-xs-12">
+							<div class="col-lg-5 col-md-12 col-xs-12">
 								<p></p>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-lg-2 col-md-6 col-xs-12">
+						<div class="row mb-3">
+							<div class="col-lg-3 col-md-6 col-xs-12">
 								<label for="mother_pob_town"><b>Birth Town:</b></label>
 							</div>
-							<div class="col-lg-3 col-md-6 col-xs-12">
+							<div class="col-lg-4 col-md-6 col-xs-12">
 								<div class="form-group">
 									<input type="text" class="form-control" name="mother_pob_town" id="mother_pob_town" placeholder="Sydney">
 								</div>
 							</div>
-							<div class="col-lg-7 col-md-12 col-xs-12">
+							<div class="col-lg-5 col-md-12 col-xs-12">
 								<p></p>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-lg-2 col-md-6 col-xs-12">
+						<div class="row mb-3">
+							<div class="col-lg-3 col-md-6 col-xs-12">
 								<label for="mother_pob_state"><b>Birth State:</b></label>
 							</div>
-							<div class="col-lg-3 col-md-6 col-xs-12">
+							<div class="col-lg-4 col-md-6 col-xs-12">
 								<div class="form-group">
 									<input type="text" class="form-control" name="mother_pob_state" id="mother_pob_state" placeholder="NSW">
 								</div>
 							</div>
-							<div class="col-lg-7 col-md-12 col-xs-12">
+							<div class="col-lg-5 col-md-12 col-xs-12">
 								<p></p>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-lg-2 col-md-6 col-xs-12">
+						<div class="row mb-3">
+							<div class="col-lg-3 col-md-6 col-xs-12">
 								<label for="mother_pob_country"><b>Birth Country:</b></label>
 							</div>
-							<div class="col-lg-3 col-md-6 col-xs-12">
+							<div class="col-lg-4 col-md-6 col-xs-12">
 								<div class="form-group">
 									<select multiple size=4 class="form-control" name="mother_pob_country" id="mother_pob_country">
 										<option value = "">Any</option>
@@ -722,7 +726,7 @@
 									</select>
 								</div>
 							</div>
-							<div class="col-lg-7 col-md-12 col-xs-12">
+							<div class="col-lg-5 col-md-12 col-xs-12">
 								<p></p>
 							</div>
 						</div>
@@ -737,11 +741,11 @@
 			<div id="gfather" class="panel-collapse collapse">
 				<div class="card-body">
 					
-						<div class="row">
-							<div class="col-lg-2 col-md-6 col-xs-12">
+						<div class="row mb-3">
+							<div class="col-lg-3 col-md-6 col-xs-12">
 								<label for="father_cultural_heritage"><b>Cultural Heritage:</b></label>
 							</div>
-							<div class="col-lg-3 col-md-6 col-xs-12">
+							<div class="col-lg-4 col-md-6 col-xs-12">
 								<div class="form-group">
 									<select class="form-control" name="father_cultural_heritage" id="father_cultural_heritage">
 										<option value = "">Any</option>
@@ -751,15 +755,15 @@
 									</select>
 								</div>
 							</div>
-							<div class="col-lg-7 col-md-12 col-xs-12">
+							<div class="col-lg-5 col-md-12 col-xs-12">
 								<p></p>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-lg-2 col-md-6 col-xs-12">
+						<div class="row mb-3">
+							<div class="col-lg-3 col-md-6 col-xs-12">
 								<label for="father_professional_category"><b>Professional Category:</b></label>
 							</div>
-							<div class="col-lg-3 col-md-6 col-xs-12">
+							<div class="col-lg-4 col-md-6 col-xs-12">
 								<div class="form-group">
 									<select class="form-control" name="father_professional_category" id="father_professional_category">
 								  		<option value="">Any</option>
@@ -772,15 +776,15 @@
 									</select>
 								</div>
 							</div>
-							<div class="col-lg-7 col-md-12 col-xs-12">
+							<div class="col-lg-5 col-md-12 col-xs-12">
 								<p></p>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-lg-2 col-md-6 col-xs-12">
+						<div class="row mb-3">
+							<div class="col-lg-3 col-md-6 col-xs-12">
 								<label for="father_first_language"><b>First Language:</b></label>
 							</div>
-							<div class="col-lg-3 col-md-6 col-xs-12">
+							<div class="col-lg-4 col-md-6 col-xs-12">
 								<div class="form-group">
 									<select type="text" class="form-control" name="father_first_language" id="father_first_language">
 										<option value = "">Any</option>
@@ -790,15 +794,15 @@
 									</select>
 								</div>
 							</div>
-							<div class="col-lg-7 col-md-12 col-xs-12">
+							<div class="col-lg-5 col-md-12 col-xs-12">
 								<p></p>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-lg-2 col-md-6 col-xs-12">
+						<div class="row mb-3">
+							<div class="col-lg-3 col-md-6 col-xs-12">
 								<label for="father_education_level"><b>Highest Qualification:</b></label>
 							</div>
-							<div class="col-lg-3 col-md-6 col-xs-12">
+							<div class="col-lg-4 col-md-6 col-xs-12">
 								<div class="form-group">
 									<select class="form-control" name="father_education_level" id="father_education_level">
 										<option value="">Any</option>
@@ -808,41 +812,41 @@
 									</select>
 								</div>
 							</div>
-							<div class="col-lg-7 col-md-12 col-xs-12">
+							<div class="col-lg-5 col-md-12 col-xs-12">
 								<p></p>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-lg-2 col-md-6 col-xs-12">
+						<div class="row mb-3">
+							<div class="col-lg-3 col-md-6 col-xs-12">
 								<label for="father_pob_town"><b>Birth Town:</b></label>
 							</div>
-							<div class="col-lg-3 col-md-6 col-xs-12">
+							<div class="col-lg-4 col-md-6 col-xs-12">
 								<div class="form-group">
 									<input type="text" class="form-control" name="father_pob_town" id="father_pob_town" placeholder="Sydney">
 								</div>
 							</div>
-							<div class="col-lg-7 col-md-12 col-xs-12">
+							<div class="col-lg-5 col-md-12 col-xs-12">
 								<p></p>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-lg-2 col-md-6 col-xs-12">
+						<div class="row mb-3">
+							<div class="col-lg-3 col-md-6 col-xs-12">
 								<label for="father_pob_state"><b>Birth State:</b></label>
 							</div>
-							<div class="col-lg-3 col-md-6 col-xs-12">
+							<div class="col-lg-4 col-md-6 col-xs-12">
 								<div class="form-group">
 									<input type="text" class="form-control" name="father_pob_state" id="father_pob_state" placeholder="NSW">
 								</div>
 							</div>
-							<div class="col-lg-7 col-md-12 col-xs-12">
+							<div class="col-lg-5 col-md-12 col-xs-12">
 								<p></p>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-lg-2 col-md-6 col-xs-12">
+						<div class="row mb-3">
+							<div class="col-lg-3 col-md-6 col-xs-12">
 								<label for="father_pob_country"><b>Birth Country:</b></label>
 							</div>
-							<div class="col-lg-3 col-md-6 col-xs-12">
+							<div class="col-lg-4 col-md-6 col-xs-12">
 								<div class="form-group">
 									<select multiple size=4 class="form-control" name="father_pob_country" id="father_pob_country">
 										<option value = "">Any</option>
@@ -852,7 +856,7 @@
 									</select>
 								</div>
 							</div>
-							<div class="col-lg-7 col-md-12 col-xs-12">
+							<div class="col-lg-5 col-md-12 col-xs-12">
 								<p></p>
 							</div>
 						</div>

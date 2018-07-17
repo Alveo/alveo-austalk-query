@@ -1,5 +1,9 @@
 %rebase("base-page")
-<br>
+
+<div class="progress mb-4" style="height: 20px;">
+  <div class="progress-bar bg-warning" role="progressbar" style="width: 40%;" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">Now Narrow your Selection of Speakers</div>
+</div>
+
 <h4>Found {{resultCount}} Speakers.</h4>
 
 <p>Click on the speakers you wish to select, then click "Search Items From Selected Speakers". 

@@ -1,6 +1,10 @@
 %rebase("base-page")
 <div name="OAF"></div>
 
+<div class="progress mb-4" style="height: 20px;">
+  <div class="progress-bar bg-warning" role="progressbar" style="width: 80%;" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100">Now Further Narrow your Selection</div>
+</div>
+
 <h4>Number of Items found: {{resultsCount}}</h4>
 <p>You can now browse all the items found by your search. Click on
 	the Speakers to expand a list of all their recordings.</p>
