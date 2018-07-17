@@ -10,19 +10,25 @@
   </ol>
 </nav>
 
+<!-- 
 <p>Here you can search for your desired speakers. Click on each of the headings to expand all the available criteria.</p>
 <p>When you are done click submit and you'll be provided with a list of speakers fulfilling your search criteria.</p>
-
+ -->
+ 
 <form action="/presults" method="POST">
 
 	<div class="d-flex flex-row-reverse">
-		<button type="submit"class="btn btn-light py-2 px-4 m-3">Submit</button>
+		<button type="submit"class="btn btn-light py-2 px-4 m-3">Search</button>
+		<a role="button" href="/psearch" class="btn btn-light py-2 px-4 m-3 mr-auto">Clear Search</a>
 	</div>
 	
 	<div class="accordion" id="accordion" >
 		<div class="card">
 			<div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#gspeaker">
-				<h5 class="mb-0">Speaker Details</h5>
+				<div class="d-flex align-items-center">
+					<h5 class="mb-0">Speaker Details</h5>
+					<i name="accordion-arrow" class="fas fa-angle-down ml-auto"></i>
+				</div>
 			</div>
 			<div id="gspeaker" class="panel-collapse collapse">
 				<div class="card-body">
@@ -112,7 +118,10 @@
 		</div>
 		<div class="card">
 			<div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#glocation">
-				<h5 class="mb-0">Birth Location and Details</h5>
+				<div class="d-flex align-items-center">
+					<h5 class="mb-0">Birth Location and Details</h5>
+					<i name="accordion-arrow" class="fas fa-angle-down ml-auto"></i>
+				</div>
 			</div>
 			<div id="glocation" class="panel-collapse collapse">
 				<div class="card-body">
@@ -177,7 +186,10 @@
 		</div>
 		<div class="card">
 			<div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#ghistory">
-				<h5 class="mb-0">Residential History</h5>
+				<div class="d-flex align-items-center">
+					<h5 class="mb-0">Residential History</h5>
+					<i name="accordion-arrow" class="fas fa-angle-down ml-auto"></i>
+				</div>
 			</div>
 			<div id="ghistory" class="panel-collapse collapse">
 				<div class="card-body">
@@ -267,7 +279,10 @@
 		</div>
 		<div class="card">
 			<div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#geduprof">
-				<h5 class="mb-0">Education and Professional Status</h5>
+				<div class="d-flex align-items-center">
+					<h5 class="mb-0">Education and Professional Status</h5>
+					<i name="accordion-arrow" class="fas fa-angle-down ml-auto"></i>
+				</div>
 			</div>
 			<div id="geduprof" class="panel-collapse collapse">
 				<div class="card-body">
@@ -334,7 +349,10 @@
 		</div>
 		<div class="card">
 			<div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#glanguages">
-				<h5 class="mb-0">Language and Culture</h5>
+				<div class="d-flex align-items-center">
+					<h5 class="mb-0">Language and Culture</h5>
+					<i name="accordion-arrow" class="fas fa-angle-down ml-auto"></i>
+				</div>
 			</div>
 			<div id="glanguages" class="panel-collapse collapse">
 				<div class="card-body">
@@ -394,7 +412,10 @@
 		</div>
 		<div class="card">
 			<div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#gdpi">
-				<h5 class="mb-0">Detailed Speaker Information</h5>
+				<div class="d-flex align-items-center">
+					<h5 class="mb-0">Detailed Speaker Information </h5>
+					<i name="accordion-arrow" class="fas fa-angle-down ml-auto"></i>
+				</div>
 			</div>
 			<div id="gdpi" class="panel-collapse collapse">
 				<div class="card-body">
@@ -628,7 +649,10 @@
 		</div>
 		<div class="card">
 			<div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#gmother">
-				<h5 class="mb-0">Mothers Details</h5>
+				<div class="d-flex align-items-center">
+					<h5 class="mb-0">Mothers Details </h5>
+					<i name="accordion-arrow" class="fas fa-angle-down ml-auto"></i>
+				</div>
 			</div>
 			<div id="gmother" class="panel-collapse collapse">
 				<div class="card-body">
@@ -758,7 +782,10 @@
 		</div>
 		<div class="card">
 			<div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#gfather">
-				<h5 class="mb-0">Fathers Details</h5>
+				<div class="d-flex align-items-center">
+					<h5 class="mb-0">Fathers Details </h5>
+					<i name="accordion-arrow" class="fas fa-angle-down ml-auto"></i>
+				</div>
 			</div>
 			<div id="gfather" class="panel-collapse collapse">
 				<div class="card-body">
@@ -889,7 +916,8 @@
 	</div> 
 	
 	<div class="d-flex flex-row-reverse">
-		<button type="submit"class="btn btn-light py-2 px-4 m-3">Submit</button>
+		<button type="submit"class="btn btn-light py-2 px-4 m-3">Search</button>
+		<a role="button" href="/psearch" class="btn btn-light py-2 px-4 m-3 mr-auto">Clear Search</a>
 	</div>
 </form>
 
@@ -947,6 +975,17 @@ Below explains the different ways you can utilize this along with examples.</p>
 <script type="text/javascript">
 $(function () {
 	  $('[data-toggle="tooltip"]').tooltip();
+});
+
+$('.card').on('click', '.card-header', function(event) {
+	var arrow = $(this).find('[name="accordion-arrow"]')
+	if (arrow.hasClass("fa-angle-down")){
+		arrow.removeClass("fa-angle-down");
+		arrow.addClass("fa-angle-up");
+	} else {
+		arrow.removeClass("fa-angle-up");
+		arrow.addClass("fa-angle-down");
+	}
 });
 </script>
 

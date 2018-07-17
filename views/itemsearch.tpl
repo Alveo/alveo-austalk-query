@@ -11,20 +11,25 @@
     <li class="breadcrumb-item active" aria-current="page">Search Items</li>
   </ol>
 </nav>
-
+<!-- 
 <p>Here you can search for any relevant items. Click on each of the headings to expand all the available criteria.</p>
 <p>When you are done click submit and you'll be provided with a list of speakers fulfilling your search criteria.</p>
-
+ -->
+ 
 <form action="/itemresults" method="POST">
 	
 	<div class="d-flex flex-row-reverse">
-		<button type="submit"class="btn btn-light py-2 px-4 m-3">Submit</button>
+		<button type="submit"class="btn btn-light py-2 px-4 m-3">Search</button>
+		<a role="button" href="/itemsearch" class="btn btn-light py-2 px-4 m-3 mr-auto">Clear Search</a>
 	</div>
 
 	<div class="accordion" id="accordion" >
 		<div class="card">
 			<div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#gcomp">
-				<h5 class="mb-0">Search by Component</h5>
+				<div class="d-flex align-items-center">
+					<h5 class="mb-0">Search by Component</h5>
+					<i name="accordion-arrow" class="fas fa-angle-down ml-auto"></i>
+				</div>
 			</div>
 			<div id="gcomp" class="panel-collapse collapse">
 				<div class="card-body">
@@ -119,7 +124,10 @@
 		</div>
 		<div class="card">
 			<div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#gitem">
-				<h5 class="mb-0">Search by Prompt</h5>
+				<div class="d-flex align-items-center">
+					<h5 class="mb-0">Search by Prompt</h5>
+					<i name="accordion-arrow" class="fas fa-angle-down ml-auto"></i>
+				</div>
 			</div>
 			<div id="gitem" class="panel-collapse collapse in">
 				<div class="card-body">
@@ -193,7 +201,8 @@
 	</div> 
 	
 	<div class="d-flex flex-row-reverse">
-		<button type="submit"class="btn btn-light py-2 px-4 m-3">Submit</button>
+		<button type="submit"class="btn btn-light py-2 px-4 m-3">Search</button>
+		<a role="button" href="/itemsearch" class="btn btn-light py-2 px-4 m-3 mr-auto">Clear Search</a>
 	</div>
 </form>
 
@@ -221,5 +230,16 @@
 <script type="text/javascript">
 $(function () {
 	  $('[data-toggle="tooltip"]').tooltip();
+});
+
+$('.card').on('click', '.card-header', function(event) {
+	var arrow = $(this).find('[name="accordion-arrow"]')
+	if (arrow.hasClass("fa-angle-down")){
+		arrow.removeClass("fa-angle-down");
+		arrow.addClass("fa-angle-up");
+	} else {
+		arrow.removeClass("fa-angle-up");
+		arrow.addClass("fa-angle-down");
+	}
 });
 </script>
