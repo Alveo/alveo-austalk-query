@@ -1,8 +1,16 @@
 %rebase("base-page")
 
-<div class="progress mb-4" style="height: 20px;">
+<div class="progress mb-0 border bg-light" style="height: 20px;">
   <div class="progress-bar bg-warning" role="progressbar" style="width: 60%;" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100">Now you can Search for Items, Prompts or Components</div>
 </div>
+
+<nav aria-label="breadcrumb mb-4 mt-0">
+  <ol class="breadcrumb bg-light">
+    <li class="breadcrumb-item"><a href="/psearch">Search Speakers</a></li>
+    <li class="breadcrumb-item"><a href="/presults">Select Speakers</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Search Items</li>
+  </ol>
+</nav>
 
 <p>Here you can search for any relevant items. Click on each of the headings to expand all the available criteria.</p>
 <p>When you are done click submit and you'll be provided with a list of speakers fulfilling your search criteria.</p>

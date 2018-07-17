@@ -1,8 +1,14 @@
 %rebase("base-page")
 
-<div class="progress mb-4" style="height: 20px;">
+<div class="progress mb-0 border bg-light" style="height: 20px;">
   <div class="progress-bar bg-warning" role="progressbar" style="width: 20%;" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">Start by Searching for Speakers</div>
 </div>
+
+<nav aria-label="breadcrumb mb-4 mt-0">
+  <ol class="breadcrumb bg-light">
+    <li class="breadcrumb-item active" aria-current="page">Search Speakers</li>
+  </ol>
+</nav>
 
 <p>Here you can search for your desired speakers. Click on each of the headings to expand all the available criteria.</p>
 <p>When you are done click submit and you'll be provided with a list of speakers fulfilling your search criteria.</p>

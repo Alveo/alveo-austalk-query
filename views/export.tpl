@@ -1,8 +1,18 @@
 %rebase("base-page")
 
-<div class="progress mb-4" style="height: 20px;">
+<div class="progress mb-0 border bg-light" style="height: 20px;">
   <div class="progress-bar bg-warning" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">Finally export your data as an Alveo Item List.</div>
 </div>
+
+<nav aria-label="breadcrumb mb-4 mt-0">
+  <ol class="breadcrumb bg-light">
+    <li class="breadcrumb-item"><a href="/psearch">Search Speakers</a></li>
+    <li class="breadcrumb-item"><a href="/presults">Select Speakers</a></li>
+    <li class="breadcrumb-item"><a href="/itemsearch">Search Items</a></li>
+    <li class="breadcrumb-item"><a href="/itemresults">Select Items</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Export Selection</li>
+  </ol>
+</nav>
 
 <h5>Selected {{itemCount}} Items</h5>
 <p>To export to a New List, enter the new list name in the box and click 'Export to New List'. Or choose an existing Item List and click 'Add to Existing List'</p>
