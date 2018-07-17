@@ -66,7 +66,7 @@
 								</div>
 							</div>
 							<div class="col-lg-5 col-md-12 col-xs-12">
-								<p>You can search by the gender of the speakers.</p>
+								<p>Search by the gender of the speakers.</p>
 							</div>
 						</div>
 						<div class="row mb-3">
@@ -79,7 +79,13 @@
 								</div>
 							</div>
 							<div class="col-lg-5 col-md-12 col-xs-12">
-								<p>Enter a single number to search for a specific age. Enter two numbers separated by a hyphen (e.g, "18-50") to search for a range of ages.<br>Enter a negative number (e.g, "-50") to search for people at or under a specific age.<br>Enter a number followed by a + (e.g, "50+") to search for people at or over a specific age.</p>
+								<p>Search by Age or a Range of Ages
+								<i class="far fa-question-circle" data-toggle="tooltip" data-html="true" 
+								title="<p>Enter a single number to search for a specific age. Enter two numbers separated by a hyphen 
+								(e.g, '18-50') to search for a range of ages.Enter a negative number (e.g, '-50') to search for people 
+								at or under a specific age.Enter a number followed by a + (e.g, '50+') to search for people at or over 
+								a specific age.</p>"></i>
+								</p>
 							</div>
 						</div>
 						<div class="row mb-3">
@@ -97,7 +103,7 @@
 								</div>
 							</div>
 							<div class="col-lg-5 col-md-12 col-xs-12">
-								<p>This is the location where the speaker was recorded and is a good way to select a group of speakers known to you.</p>
+								<p>Search by the Site the Speakers were recorded at.</p>
 							</div>
 						</div>
 					
@@ -130,7 +136,17 @@
 							</div>
 							<div class="col-lg-4 col-md-6 col-xs-12">
 								<div class="form-group">
-									<input type="text" class="form-control" name="pob_state" id="pob_state" placeholder="NSW">
+									<select multiple size=4 class="form-control" name="pob_state" id="pob_state">
+										<option value = "">Any</option>
+										<option value = "NSW">NSW</option>
+										<option value = "VIC">VIC</option>
+										<option value = "QLD">QLD</option>
+										<option value = "WA">WA</option>
+										<option value = "SA">SA</option>
+										<option value = "NT">NT</option>
+										<option value = "TAS">TAS</option>
+										<option value = "ACT">ACT</option>
+									</select>
 								</div>
 							</div>
 							<div class="col-lg-5 col-md-12 col-xs-12">

@@ -260,7 +260,7 @@ def results():
     """
     #special args is anything all the form arguments that need something more than a simple filter.
     filterTable = {
-                   'simple':['gender','institution','pob_state','cultural_heritage','ses','professional_category',
+                   'simple':['gender','institution','cultural_heritage','ses','professional_category',
                              'education_level','mother_cultural_heritage','father_cultural_heritage','pob_town',
                              'mother_professional_category','father_professional_category','mother_education_level',
                              'father_education_level','mother_pob_state','mother_pob_town','father_pob_state',
@@ -268,7 +268,7 @@ def results():
                    'regex':['id','other_languages','hobbies_details'],
                    'boolean':['has_vocal_training','is_smoker','has_speech_problems','has_piercings','has_health_problems',
                              'has_hearing_problems','has_dentures','is_student','is_left_handed','has_reading_problems',],
-                   'multiselect':['pob_country','father_pob_country','mother_pob_country','hist_town','hist_state','hist_country'],
+                   'multiselect':['pob_country','pob_state','father_pob_country','mother_pob_country','hist_town','hist_state','hist_country'],
                    'to_str':['first_language','mother_first_language','father_first_language'],
                    'num_range':['age','age_from','age_to'],
                    'recording_site':['institution'],
