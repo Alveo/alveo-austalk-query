@@ -136,7 +136,7 @@
 								</div>
 							</div>
 							<div class="col-lg-5 col-md-12 col-xs-12">
-								<p>You can search by the town of which the speaker was born in. It currently doesn't support multiple towns.</p>
+								<p>Search by the birth town or city. It currently doesn't support multiple towns.</p>
 							</div>
 						</div>
 						<div class="row mb-3">
@@ -159,7 +159,11 @@
 								</div>
 							</div>
 							<div class="col-lg-5 col-md-12 col-xs-12">
-								<p>Here you can select the State or Territory the speakers were born in. You must enter the abbreviated names of the states such as "VIC" or "WA". This works for international states however very few are given and may not represent an accurate abbreviation for that state.</p>
+								<p>Here you can select the Australian State or Territory the speakers were born in.
+								<i class="far fa-question-circle" data-toggle="tooltip" data-html="true" 
+								title="<p>You are able to select multiple options by holding down the Ctrl button (Command button on Mac) 
+								and selecting the options you wish. You can also Select a range of options by holding down SHIFT.</p>"></i>
+								</p>
 							</div>
 						</div>
 						<div class="row mb-3">
@@ -177,7 +181,11 @@
 								</div>
 							</div>
 							<div class="col-lg-5 col-md-12 col-xs-12">
-								<p>You're able to select the country the speakers was born in. You are able to select multiple countries by holding down the Ctrl button (Command button on Mac) and selecting the countries you wish. You can also Select a range of countries by holding down SHIFT. Please note that if you wish for everyone born in Australia, you'll need to select both "AU" and "Australia" due to inconsistencies in the data.</p>
+								<p>You're able to select the country the speakers were born in.
+								<i class="far fa-question-circle" data-toggle="tooltip" data-html="true" 
+								title="<p>You are able to select multiple options by holding down the Ctrl button (Command button on Mac) 
+								and selecting the options you wish. You can also Select a range of options by holding down SHIFT.</p>"></i>
+								</p>
 							</div>
 						</div>
 					
@@ -208,7 +216,11 @@
 								</div>
 							</div>
 							<div class="col-lg-5 col-md-12 col-xs-12">
-								<p>You can search by the town of which the speaker have lived in.</p>
+								<p>Search by the town of which the speaker has once lived in.
+								<i class="far fa-question-circle" data-toggle="tooltip" data-html="true" 
+								title="<p>You are able to select multiple options by holding down the Ctrl button (Command button on Mac) 
+								and selecting the options you wish. You can also Select a range of options by holding down SHIFT.</p>"></i>
+								</p>
 							</div>
 						</div>
 						<div class="row mb-3">
@@ -226,7 +238,11 @@
 								</div>
 							</div>
 							<div class="col-lg-5 col-md-12 col-xs-12">
-								<p>Here you can select the State or Territory the speakers have lived in. You must enter the abbreviated names of the states such as "VIC" or "WA". This works for international states however very few are given and may not represent an accurate abbreviation for that state.</p>
+								<p>Here you can select the State or Territory the speakers have lived in. International states are available in this search.
+								<i class="far fa-question-circle" data-toggle="tooltip" data-html="true" 
+								title="<p>You are able to select multiple options by holding down the Ctrl button (Command button on Mac) 
+								and selecting the options you wish. You can also Select a range of options by holding down SHIFT.</p>"></i>
+								</p>
 							</div>
 						</div>
 						<div class="row mb-3">
@@ -244,7 +260,11 @@
 								</div>
 							</div>
 							<div class="col-lg-5 col-md-12 col-xs-12">
-								<p>You're able to select the country the speakers have lived in. You are able to select multiple countries by holding down the Ctrl button (Command button on Mac) and selecting the countries you wish. You can also Select a range of countries by holding down SHIFT. Please note that if you wish for everyone born in Australia, you'll need to select both "AU" and "Australia" due to inconsistencies in the data.</p>
+								<p>Select the country the speakers have lived in.
+								<i class="far fa-question-circle" data-toggle="tooltip" data-html="true" 
+								title="<p>You are able to select multiple options by holding down the Ctrl button (Command button on Mac) 
+								and selecting the options you wish. You can also Select a range of options by holding down SHIFT.</p>"></i>
+								</p>
 							</div>
 						</div>
 						<div class="row mb-3">
@@ -257,7 +277,13 @@
 								</div>
 							</div>
 							<div class="col-lg-5 col-md-12 col-xs-12">
-								<p>Here you can specify what age the speakers were when they moved to the provided historical address. Enter a single number to search for a specific age. Enter two numbers separated by a hyphen (e.g, "18-50") to search for a range of ages.<br>Enter a negative number (e.g, "-50") to search for people at or under a specific age.<br>Enter a number followed by a + (e.g, "50+") to search for people at or over a specific age.</p>
+								<p>Specify what age the speakers were when they moved to the provided historical address.
+								<i class="far fa-question-circle" data-toggle="tooltip" data-html="true" 
+								title="<p>Enter a single number to search for a specific age. Enter two numbers separated by a hyphen 
+								(e.g, '18-50') to search for a range of ages.Enter a negative number (e.g, '-50') to search for people 
+								at or under a specific age.Enter a number followed by a + (e.g, '50+') to search for people at or over 
+								a specific age.</p>"></i>
+								</p>
 							</div>
 						</div>
 						<div class="row mb-3">
@@ -270,7 +296,13 @@
 								</div>
 							</div>
 							<div class="col-lg-5 col-md-12 col-xs-12">
-								<p>Here you can specify what age the speakers were when they moved out of the provided historical address. The same format can be used as the 'Age From' Field.<br>If you set this field to be the same value as the age field when using a specific age and leaving Age From empty, you can find their latest address.</p>
+								<p>Specify what age the speakers were when they moved out of the provided historical address. If you set this field to be the same value as the age field when using a specific age and leaving Age From empty, you can find their latest address.
+								<i class="far fa-question-circle" data-toggle="tooltip" data-html="true" 
+								title="<p>Enter a single number to search for a specific age. Enter two numbers separated by a hyphen 
+								(e.g, '18-50') to search for a range of ages.Enter a negative number (e.g, '-50') to search for people 
+								at or under a specific age.Enter a number followed by a + (e.g, '50+') to search for people at or over 
+								a specific age.</p>"></i>
+								</p>
 							</div>
 						</div>
 					
@@ -305,7 +337,7 @@
 								</div>
 							</div>
 							<div class="col-lg-5 col-md-12 col-xs-12">
-								<p>Select your desired Professional Category or if it's not relevant then keep it on Any.<br> Note that 'None' is different to 'Unemployed' as None refers to the lack of this entry in the metadata.</p>
+								<p>Select your desired Professional Category or if it's not relevant then keep it on Any. Note that 'None' is different to 'Unemployed' as None refers to the lack of this entry in the metadata.</p>
 							</div>
 						</div>
 						<div class="row mb-3">
@@ -372,7 +404,7 @@
 								</div>
 							</div>
 							<div class="col-lg-5 col-md-12 col-xs-12">
-								<p>Here you can select the desired first language of the speakers.</p>
+								<p>Select the first language of the speaker.</p>
 							</div>
 						</div>
 						<div class="row mb-3">
@@ -385,7 +417,14 @@
 								</div>
 							</div>
 							<div class="col-lg-5 col-md-12 col-xs-12">
-								<p>You can also use SPARQL's regular expression syntax. Some examples, '.' is a wildcard character, '*' matches 0-many of the previous expression. Partial searches can also work using "^" and/or "$" at the beginning and the end respectively. For example "^Eng" will result in all languages starting in "Eng" and "man$" will result in all languages ending in "man". Searches are not case-sensitive. More information on it's special usage is below.</p>
+								<p>Search by other languages spoken by the speaker. This field was a general text field and so using regular expressions 
+								is supported.
+								<i class="far fa-question-circle" data-toggle="tooltip" data-html="true" 
+								title="<p>You can search for individual speakers by entering their speaker id's. You can also use 
+								SPARQL's regular expression syntax. Some examples, '.' is a wildcard character, '*' matches 0-many 
+								of the previous expression. Partial searches can also work using '^' and/or '$' at the beginning and the 
+								end respectively. Searches are not case-sensitive. More information on it's special usage is below.</p>"></i>
+								</p>
 							</div>
 						</div>
 						<div class="row mb-3">
@@ -627,7 +666,7 @@
 									</div>
 							</div>
 							<div class="col-lg-5 col-md-12 col-xs-12">
-								<p>Looking at the available data there are only 38 results, 24 have nose piercings, only 4 have lip piecings, 4 eyebrows, 4 None and 4 other.</p>
+								<p>A quick analysis of the data shows that there are only 38 results, 24 have nose piercings, only 4 have lip piecings, 4 eyebrows, 4 None and 4 other.</p>
 							</div>
 						</div>
 						<div class="row mb-3">
@@ -640,7 +679,13 @@
 								</div>
 							</div>
 							<div class="col-lg-5 col-md-12 col-xs-12">
-								<p>You can also use SPARQL's regular expression syntax. Some examples, '.' is a wildcard character, '*' matches 0-many of the previous expression. Partial searches can also work using "^" and/or "$" at the beginning and the end respectively. For example "^S" will result in all hobbies starting in "S" and "ing$" will result in all hobbies ending in "ing", Another example: "^S...ing$" will result in both Surfing and Singing. Searches are not case-sensitive. More information on it's special usage is below.</p>
+								<p>This filter supports Regular Expressions. 
+								<i class="far fa-question-circle" data-toggle="tooltip" data-html="true" 
+								title="<p>You can search for individual speakers by entering their speaker id's. You can also use 
+								SPARQL's regular expression syntax. Some examples, '.' is a wildcard character, '*' matches 0-many 
+								of the previous expression. Partial searches can also work using '^' and/or '$' at the beginning and the 
+								end respectively. Searches are not case-sensitive. More information on it's special usage is below.</p>"></i>
+								</p>
 							</div>
 						</div>
 					
@@ -672,7 +717,25 @@
 								</div>
 							</div>
 							<div class="col-lg-5 col-md-12 col-xs-12">
-								<p></p>
+								<p>You can select the desired cultural heritage of the speakers mother. Keep in mind that there is a lot of overlap with the provided heritages. At the moment only selecting one is supported. </p>
+							</div>
+						</div>
+						<div class="row mb-3">
+							<div class="col-lg-3 col-md-6 col-xs-12">
+								<label for="mother_first_language"><b>First Language:</b></label>
+							</div>
+							<div class="col-lg-4 col-md-6 col-xs-12">
+								<div class="form-group">
+									<select type="text" class="form-control" name="mother_first_language" id="mother_first_language">
+										<option value = "">Any</option>
+										%for i in range(0, len(results['mother_first_language_int'])):
+											<option value="{{results['mother_first_language_int'][i]}}">{{results['mother_first_language'][i]}}</option>
+										% end
+									</select>
+								</div>
+							</div>
+							<div class="col-lg-5 col-md-12 col-xs-12">
+								<p>Select the first language of the speakers mother.</p>
 							</div>
 						</div>
 						<div class="row mb-3">
@@ -693,25 +756,7 @@
 								</div>
 							</div>
 							<div class="col-lg-5 col-md-12 col-xs-12">
-								<p></p>
-							</div>
-						</div>
-						<div class="row mb-3">
-							<div class="col-lg-3 col-md-6 col-xs-12">
-								<label for="mother_first_language"><b>First Language:</b></label>
-							</div>
-							<div class="col-lg-4 col-md-6 col-xs-12">
-								<div class="form-group">
-									<select type="text" class="form-control" name="mother_first_language" id="mother_first_language">
-										<option value = "">Any</option>
-										%for i in range(0, len(results['mother_first_language_int'])):
-											<option value="{{results['mother_first_language_int'][i]}}">{{results['mother_first_language'][i]}}</option>
-										% end
-									</select>
-								</div>
-							</div>
-							<div class="col-lg-5 col-md-12 col-xs-12">
-								<p></p>
+								<p>Select your desired Professional Category or if it's not relevant then keep it on Any. Note that 'None' is different to 'Unemployed' as None refers to the lack of this entry in the metadata.</p>
 							</div>
 						</div>
 						<div class="row mb-3">
@@ -729,7 +774,7 @@
 								</div>
 							</div>
 							<div class="col-lg-5 col-md-12 col-xs-12">
-								<p></p>
+								<p>You can select the desired level of qualification of the speakers mother. It is currently not supported if you wish to select speakers with 'at least' some level of qualification.</p>
 							</div>
 						</div>
 						<div class="row mb-3">
@@ -742,7 +787,7 @@
 								</div>
 							</div>
 							<div class="col-lg-5 col-md-12 col-xs-12">
-								<p></p>
+								<p>Search by the birth town or city. It currently doesn't support multiple towns.</p>
 							</div>
 						</div>
 						<div class="row mb-3">
@@ -751,11 +796,25 @@
 							</div>
 							<div class="col-lg-4 col-md-6 col-xs-12">
 								<div class="form-group">
-									<input type="text" class="form-control" name="mother_pob_state" id="mother_pob_state" placeholder="NSW">
+									<select multiple size=4 class="form-control" name="mother_pob_state" id="mother_pob_state">
+										<option value = "">Any</option>
+										<option value = "NSW">NSW</option>
+										<option value = "VIC">VIC</option>
+										<option value = "QLD">QLD</option>
+										<option value = "WA">WA</option>
+										<option value = "SA">SA</option>
+										<option value = "NT">NT</option>
+										<option value = "TAS">TAS</option>
+										<option value = "ACT">ACT</option>
+									</select>
 								</div>
 							</div>
 							<div class="col-lg-5 col-md-12 col-xs-12">
-								<p></p>
+								<p>Here you can select the Australian State or Territory the speakers mother was born in.
+								<i class="far fa-question-circle" data-toggle="tooltip" data-html="true" 
+								title="<p>You are able to select multiple options by holding down the Ctrl button (Command button on Mac) 
+								and selecting the options you wish. You can also Select a range of options by holding down SHIFT.</p>"></i>
+								</p>
 							</div>
 						</div>
 						<div class="row mb-3">
@@ -773,7 +832,11 @@
 								</div>
 							</div>
 							<div class="col-lg-5 col-md-12 col-xs-12">
-								<p></p>
+								<p>You're able to select the country the speakers mother was born in.
+								<i class="far fa-question-circle" data-toggle="tooltip" data-html="true" 
+								title="<p>You are able to select multiple options by holding down the Ctrl button (Command button on Mac) 
+								and selecting the options you wish. You can also Select a range of options by holding down SHIFT.</p>"></i>
+								</p>
 							</div>
 						</div>
 					
@@ -805,7 +868,25 @@
 								</div>
 							</div>
 							<div class="col-lg-5 col-md-12 col-xs-12">
-								<p></p>
+								<p>You can select the desired cultural heritage of the speakers father. Keep in mind that there is a lot of overlap with the provided heritages. At the moment only selecting one is supported. </p>
+							</div>
+						</div>
+						<div class="row mb-3">
+							<div class="col-lg-3 col-md-6 col-xs-12">
+								<label for="father_first_language"><b>First Language:</b></label>
+							</div>
+							<div class="col-lg-4 col-md-6 col-xs-12">
+								<div class="form-group">
+									<select type="text" class="form-control" name="father_first_language" id="father_first_language">
+										<option value = "">Any</option>
+										% for i in range(0, len(results['father_first_language_int'])):
+											<option value="{{results['father_first_language_int'][i]}}">{{results['father_first_language'][i]}}</option>
+										% end
+									</select>
+								</div>
+							</div>
+							<div class="col-lg-5 col-md-12 col-xs-12">
+								<p>Select the first language of the speakers father.</p>
 							</div>
 						</div>
 						<div class="row mb-3">
@@ -826,25 +907,7 @@
 								</div>
 							</div>
 							<div class="col-lg-5 col-md-12 col-xs-12">
-								<p></p>
-							</div>
-						</div>
-						<div class="row mb-3">
-							<div class="col-lg-3 col-md-6 col-xs-12">
-								<label for="father_first_language"><b>First Language:</b></label>
-							</div>
-							<div class="col-lg-4 col-md-6 col-xs-12">
-								<div class="form-group">
-									<select type="text" class="form-control" name="father_first_language" id="father_first_language">
-										<option value = "">Any</option>
-										% for i in range(0, len(results['father_first_language_int'])):
-											<option value="{{results['father_first_language_int'][i]}}">{{results['father_first_language'][i]}}</option>
-										% end
-									</select>
-								</div>
-							</div>
-							<div class="col-lg-5 col-md-12 col-xs-12">
-								<p></p>
+								<p>Select your desired Professional Category or if it's not relevant then keep it on Any. Note that 'None' is different to 'Unemployed' as None refers to the lack of this entry in the metadata.</p>
 							</div>
 						</div>
 						<div class="row mb-3">
@@ -862,7 +925,7 @@
 								</div>
 							</div>
 							<div class="col-lg-5 col-md-12 col-xs-12">
-								<p></p>
+								<p>You can select the desired level of qualification of the speakers father. It is currently not supported if you wish to select speakers with 'at least' some level of qualification.</p>
 							</div>
 						</div>
 						<div class="row mb-3">
@@ -875,7 +938,7 @@
 								</div>
 							</div>
 							<div class="col-lg-5 col-md-12 col-xs-12">
-								<p></p>
+								<p>Search by the birth town or city. It currently doesn't support multiple towns.</p>
 							</div>
 						</div>
 						<div class="row mb-3">
@@ -884,11 +947,25 @@
 							</div>
 							<div class="col-lg-4 col-md-6 col-xs-12">
 								<div class="form-group">
-									<input type="text" class="form-control" name="father_pob_state" id="father_pob_state" placeholder="NSW">
+									<select multiple size=4 class="form-control" name="father_pob_state" id="father_pob_state">
+										<option value = "">Any</option>
+										<option value = "NSW">NSW</option>
+										<option value = "VIC">VIC</option>
+										<option value = "QLD">QLD</option>
+										<option value = "WA">WA</option>
+										<option value = "SA">SA</option>
+										<option value = "NT">NT</option>
+										<option value = "TAS">TAS</option>
+										<option value = "ACT">ACT</option>
+									</select>
 								</div>
 							</div>
 							<div class="col-lg-5 col-md-12 col-xs-12">
-								<p></p>
+								<p>Here you can select the Australian State or Territory the speakers father was born in.
+								<i class="far fa-question-circle" data-toggle="tooltip" data-html="true" 
+								title="<p>You are able to select multiple options by holding down the Ctrl button (Command button on Mac) 
+								and selecting the options you wish. You can also Select a range of options by holding down SHIFT.</p>"></i>
+								</p>
 							</div>
 						</div>
 						<div class="row mb-3">
@@ -906,7 +983,11 @@
 								</div>
 							</div>
 							<div class="col-lg-5 col-md-12 col-xs-12">
-								<p></p>
+								<p>You're able to select the country the speakers father was born in.
+								<i class="far fa-question-circle" data-toggle="tooltip" data-html="true" 
+								title="<p>You are able to select multiple options by holding down the Ctrl button (Command button on Mac) 
+								and selecting the options you wish. You can also Select a range of options by holding down SHIFT.</p>"></i>
+								</p>
 							</div>
 						</div>
 					
