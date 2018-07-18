@@ -177,9 +177,16 @@
 		$("#itemList").empty();
 		var card = "";
 		var item;
+		var checked;
+		var checkedText="";
 		for(i=0;i<items.length;i++){
 			item = items[i];
-			card = `<div class="card mb-2 itemCard" name="`+item["itemEnd"]+`"><div class="card-header p-1"><div class="d-flex flex-row align-items-center">
+			checked = $("#"+item["itemEnd"]).prop("checked");
+			checkedText="";
+			if(checked){
+				checkedText="bg-secondary";
+			}
+			card = `<div class="card mb-2 itemCard" name="`+item["itemEnd"]+`"><div class="card-header p-1 `+checkedText+`"><div class="d-flex flex-row align-items-center">
 			<h5 class="m-2">`+item["itemEnd"]+`</h5><h5 class="m-2 ml-auto">`+item["componentName"]+`</h5></div></div><div class="card-body py-1">
 			<p>`+item["prompt"]+`</p><audio style="width: 100%;" controls><source src="`+item["media"]+`" type="audio/wav"></audio></div></div>`;
 			
