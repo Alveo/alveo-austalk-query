@@ -39,65 +39,65 @@
 				<div class="card mb-2" id="s-{{speaker['id'].split('/')[-1]}}">
 					<div class="card-header p-2">
 						<div class="d-flex flex-row align-items-center">
-							<h4 class="m-2">{{speaker['id'].split('/')[-1]}}</h4>
-							<button type="button" {{'disabled' if itemCount==0 else ''}} class="btn btn-secondary p-2 my-0 px-4 ml-auto" onClick="viewSpeaker('{{speaker['id'].split('/')[-1]}}')">View &nbsp; <i class="fas fa-caret-right"></i></button>
+							<h5 class="m-1">{{speaker['id'].split('/')[-1]}}</h5>
+							<button type="button" {{'disabled' if itemCount==0 else ''}} class="btn btn-secondary px-2 py-1 my-0 px-4 ml-auto" onClick="viewSpeaker('{{speaker['id'].split('/')[-1]}}')">View &nbsp; <i class="fas fa-caret-right"></i></button>
 						</div>
 						
 					</div>
-					<div class="card-body">
+					<div class="card-body py-1">
 						<div class="row">
-							<div class="col-sm-4">
-								Gender:
+							<div class="col-sm-5">
+								<b>Gender:</b>
 							</div>
-							<div class="col-sm-8">
+							<div class="col-sm-7">
 								{{speaker['gender']}}
 							</div>
 						</div>
 						<div class="row">
-							<div class="col-sm-4">
-								Age:
+							<div class="col-sm-5">
+								<b>Age:</b>
 							</div>
-							<div class="col-sm-8">
+							<div class="col-sm-7">
 								{{speaker['age']}}
 							</div>
 						</div>
 						<div class="row">
-							<div class="col-sm-4">
-								First Language:
+							<div class="col-sm-5">
+								<b>First Language:</b>
 							</div>
-							<div class="col-sm-8">
+							<div class="col-sm-7">
 								{{speaker['first_language']}}
 							</div>
 						</div>
 						<div class="row">
-							<div class="col-sm-4">
-								Recorded In:
+							<div class="col-sm-5">
+								<b>Institution:</b>
 							</div>
-							<div class="col-sm-8">
+							<div class="col-sm-7">
 								{{speaker['institution']}}
 							</div>
 						</div>
 						<div class="row">
-							<div class="col-sm-4">
-								Birth City:
+							<div class="col-sm-5">
+								<b>Birth City:</b>
 							</div>
-							<div class="col-sm-8">
+							<div class="col-sm-7">
 								{{speaker['pob_town']}}
 							</div>
 						</div>
 						<div class="row">
-							<div class="col-sm-4">
-								Birth Country:
+							<div class="col-sm-5">
+								<b>Birth Country:</b>
 							</div>
-							<div class="col-sm-8">
+							<div class="col-sm-7">
 								{{speaker['pob_country']}}
 							</div>
 						</div>
 						<div class="row">
-							<div class="col-sm-4">
-								No. Results:
+							<div class="col-sm-5">
+								<b>No. Results:</b>
 							</div>
-							<div class="col-sm-8">
+							<div class="col-sm-7">
 								{{itemCount}}
 							</div>
 						</div>
@@ -187,8 +187,8 @@
 				checkedText="bg-secondary";
 			}
 			card = `<div class="card mb-2 itemCard" name="`+item["itemEnd"]+`"><div class="card-header p-1 `+checkedText+`"><div class="d-flex flex-row align-items-center">
-			<h5 class="m-2">`+item["itemEnd"]+`</h5><h5 class="m-2 ml-auto">`+item["componentName"]+`</h5></div></div><div class="card-body py-1">
-			<p>`+item["prompt"]+`</p><audio style="width: 100%;" controls><source src="`+item["media"]+`" type="audio/wav"></audio></div></div>`;
+			<h6 class="m-0">`+item["itemEnd"]+`</h6><h6 class="m-0 ml-auto">`+item["componentName"]+`</h6></div></div><div class="card-body py-1">
+			<p class="mb-0">`+item["prompt"]+`</p></div></div>`;
 			
 			$("#itemList").append(card);
 		}
