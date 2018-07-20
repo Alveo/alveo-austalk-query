@@ -51,7 +51,7 @@ If you wish to select all speakers minus a few, select the speakers you wish to 
 				<td><b>{{id}}</b></td>
 				<td>{{row['gender']}}</td>
 				<td>{{row['age']}}</td>
-				<td>{{row['first_language']}}</td>
+				<td>{{row['first_language_name']}}</td>
 				<td>{{row['institution']}}</td>
 				<td>{{row['pob_town']}}</td>
 				%try:

@@ -67,7 +67,7 @@
 								<b>First Language:</b>
 							</div>
 							<div class="col-sm-7">
-								{{speaker['first_language']}}
+								{{speaker['first_language_name']}}
 							</div>
 						</div>
 						<div class="row">
