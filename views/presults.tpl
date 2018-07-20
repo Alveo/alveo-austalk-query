@@ -1,50 +1,101 @@
 %rebase("base-page")
-<h4>Number of Speakers Found: {{resultCount}}</h4>
-<p>You can now search for items related to the selected Speakers, or select all items for this list of
-Speakers.</p>
-<p><b>Selecting items for large numbers of speakers can take a long time (up to 15 minutes if selecting for
-all speakers). Please be patient.</b></p>
-<a type="button" class="btn btn-default" href="/download/speakers.csv">Download all metadata as CSV</a>
-<form action="/handleparts" method="POST" class="form-inline" role="form"><br>
-	<div class="form-group" style="float:left;">
-		<button type="button" class="btn btn-default" onClick="selectAll()"  >Select All</button>
-		<button type="button" class="btn btn-default" onClick="selectNone()" >Select None</button>
-	</div>
-	<div class="form-group" style="float:right;">
+
+<div class="progress mb-0 border bg-light" style="height: 20px;">
+  <div class="progress-bar bg-warning" role="progressbar" style="width: 20%;" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">Now Narrow your Selection of Speakers</div>
+</div>
+
+<nav aria-label="breadcrumb mb-4 mt-0">
+  <ol class="breadcrumb bg-light">
+    <li class="breadcrumb-item"><a href="/psearch">Search Speakers</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Select Speakers</li>
+  </ol>
+</nav>
+
+<h4>Found {{resultCount}} Speakers.</h4>
+
+<p>Click on the speakers you wish to select, then click "Search Items From Selected Speakers". 
+If you wish to select all speakers minus a few, select the speakers you wish to remove, then click 
+"Remove Selected Speakers". When you have your desired list, click "Select All Speakers" and then 
+"Search Items from Selected Speakers"</p>
+
+<a role="button" class="btn btn-light my-2" href="/download/speakers.csv"><i class="fas fa-file-download"></i> Download all Speaker metadata as CSV</a>
+<form action="/handleparts" method="POST" role="form">
+	<div class="d-flex flex-row my-2">
+		<button type="button" class="btn btn-light p-2 mx-2" onClick="selectAll()"  >Select All Speakers</button>
+		<button type="button" class="btn btn-light p-2 mx-2 mr-auto" onClick="selectNone()" >Select None</button>
 		%if undo:
-		<button type="submit" class="btn btn-default" name="submit" value="undo">Undo</button>
+		<button type="submit" class="btn btn-light p-2 mx-2" name="submit" value="undo">Undo</button>
 		%end
-		<button type="submit" class="btn btn-default" name="submit" value="remove">Remove Selected</button>
-		<button type="submit" class="btn btn-default" name="submit" value="search">Search Items From Selected</button>
+		<button type="submit" class="btn btn-light p-2 mx-2" name="submit" value="remove">Remove Selected Speakers</button>
+		<button type="submit" class="btn btn-light p-2 mx-2" name="submit" value="search">Search Items From Selected Speakers</button>
 	</div>
-	
-	<div class="rTable">
-	
-		<div class="rTableBody">
-		
-			<div class="rTableRow">
-				<div class="rTableHead">Speaker</div>
-				<div class="rTableHead">Gender</div>
-				<div class="rTableHead">Age</div>
-				<div class="rTableHead">First Language</div>
-				<div class="rTableHead">Recorded In</div>
-				<div class="rTableHead">Birth City</div>
-				<div class="rTableHead">Birth Country</div>
-			</div>
-		
+
+	<table class="table table-bordered table-hover table-responsive-md">
+		<thead class="thead-light">
+			<tr>
+				<th>Speaker</th>
+				<th>Gender</th>
+				<th>Age</th>
+				<th>First Language</th>
+				<th>Recording Site</th>
+				<th>Birth City</th>
+				<th>Birth Country</th>
+			</tr>
+		</thead>
+		<tbody id="resultsTable">
 			% for row in resultsList:
-			<input name="selected" class="hideme" type="checkbox" id="{{row['id']}}" value="{{row['id']}}" />
-				<label class="rTableRow" for="{{row['id']}}">
-					<div class="rTableCellLeft"><b>{{row['id'].split('/')[-1]}}</b></div>
-					<div class="rTableCell">{{row['gender']}}</div>
-					<div class="rTableCell">{{row['age']}}</div>
-					<div class="rTableCell">{{row['first_language']}}</div>
-					<div class="rTableCell">{{row['city']}}</div>
-					<div class="rTableCell">{{row['pob_town']}}</div>
-					<div class="rTableCellRight">{{row['pob_country']}}</div>
-				</label>
+			%id = row['id'].split('/')[-1]
+			<input name="clickable"  class="hideme" type="checkbox" id="{{id}}" value="{{row['id']}}" />
+			<tr class="clickable-row" id="row-{{id}}">
+				<td><b>{{id}}</b></td>
+				<td>{{row['gender']}}</td>
+				<td>{{row['age']}}</td>
+				<td>{{row['first_language']}}</td>
+				<td>{{row['institution']}}</td>
+				<td>{{row['pob_town']}}</td>
+				<td>{{row['pob_country']}}</td>
+			</tr>
 			% end
-		</div>
-	</div>
+		</tbody>
+	</table>
 	
+	<div class="d-flex flex-row my-2">
+		<button type="button" class="btn btn-light p-2 mx-2" onClick="selectAll()"  >Select All Speakers</button>
+		<button type="button" class="btn btn-light p-2 mx-2 mr-auto" onClick="selectNone()" >Select None</button>
+		%if undo:
+		<button type="submit" class="btn btn-light p-2 mx-2" name="submit" value="undo">Undo</button>
+		%end
+		<button type="submit" class="btn btn-light p-2 mx-2" name="submit" value="remove">Remove Selected Speakers</button>
+		<button type="submit" class="btn btn-light p-2 mx-2" name="submit" value="search">Search Items From Selected Speakers</button>
+	</div>
+
+
 </form>
+<script type="text/javascript">
+
+	$('#resultsTable').on('click', '.clickable-row', function(event) {
+		var item = $("#" + $(this).attr('id').substring(4));
+		if ($(this).hasClass("table-secondary")) {
+			$(this).removeClass('table-secondary');
+			item.prop('checked', false);
+		} else {
+			$(this).addClass('table-secondary');
+			item.prop('checked', true);
+		}
+	});
+
+	function selectAll() {
+		$("[name='clickable']").prop("checked", true);
+		$(".clickable-row").addClass("table-secondary");
+	}
+	function selectNone() {
+		$("[name='clickable']").prop("checked", false);
+		$(".clickable-row").removeClass("table-secondary");
+	}
+	
+	$(document).ready(function() {
+		$('.progress .progress-bar').css("width",function() {
+			return $(this).attr("aria-valuenow")+"%";
+		});
+	});
+</script>
