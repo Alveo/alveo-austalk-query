@@ -53,7 +53,8 @@
 						<div class="col-lg-6 col-md-12 mb-3">
 							<select class="form-control" name="listname">
 								% for list in itemLists['own']: 
-									<option value="{{name}}">{{list.get('name','List Name Not Valid!')}}</option> 
+									%lname = list.get('name','List Name Not Valid!')
+									<option value="{{lname}}">{{lname}}</option> 
 								% end 
 							</select>
 						</div>
