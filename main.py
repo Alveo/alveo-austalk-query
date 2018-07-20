@@ -291,7 +291,10 @@ def results():
     regexList = [arg for arg in searchArgs if arg[0] in filterTable['regex']]
     for item in regexList:
         if item[0]=='id':
-            qfilter = qfilter + qbuilder.regex_filter('id',toString=True,prepend="https://app.alveo.edu.au/speakers/%s/"%session.get('corpus','austalk'))
+            id = item[1].strip()
+            if not ((id[0]=='"' and id[-1]=='"') or (id[0]=="'" and id[-1]=="'")):
+                id = '"'+id+'"'
+            qfilter = qfilter + qbuilder.regex_filter('id',custom=id,toString=True,prepend="https://app.alveo.edu.au/speakers/%s/"%session.get('corpus','austalk'))
         else:
             qfilter = qfilter + qbuilder.regex_filter(item[0])
 

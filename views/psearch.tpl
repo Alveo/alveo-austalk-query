@@ -43,13 +43,7 @@
 							</div>
 						</div>
 						<div class="col-lg-5 col-md-12 col-xs-12">
-							<p>This filter supports Regular Expressions. 
-							<i class="far fa-question-circle" data-toggle="tooltip" data-html="true" 
-							title="<p>You can search for individual speakers by entering their speaker id's. You can also use 
-							SPARQL's regular expression syntax. Some examples, '.' is a wildcard character, '*' matches 0-many 
-							of the previous expression. Partial searches can also work using '^' and/or '$' at the beginning and the 
-							end respectively. Searches are not case-sensitive. More information on it's special usage is below.</p>"></i>
-							</p>
+							<p>Only Exact Id's supported.</p>
 						</div>
 					</div>
 				
