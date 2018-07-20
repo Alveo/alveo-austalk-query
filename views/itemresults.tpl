@@ -1,4 +1,5 @@
 %rebase("base-page")
+%import pycountry
 <div name="OAF"></div>
 
 <div class="progress mb-0 border bg-light" style="height: 20px;">
@@ -90,7 +91,11 @@
 								<b>Birth Country:</b>
 							</div>
 							<div class="col-sm-7">
-								{{speaker['pob_country']}}
+							%try:
+							{{pycountry.countries.get(alpha_2=speaker['pob_country']).name}}
+							%except KeyError:
+							{{speaker['pob_country']}}
+							%end
 							</div>
 						</div>
 						<div class="row">
@@ -98,7 +103,7 @@
 								<b>No. Results:</b>
 							</div>
 							<div class="col-sm-7">
-								{{itemCount}}
+								<b>{{itemCount}}</b>
 							</div>
 						</div>
 						%for item in speaker['item_results']:

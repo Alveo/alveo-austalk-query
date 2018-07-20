@@ -1,4 +1,5 @@
 %rebase("base-page")
+%import pycountry
 
 <div class="progress mb-0 border bg-light" style="height: 20px;">
   <div class="progress-bar bg-warning" role="progressbar" style="width: 20%;" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">Now Narrow your Selection of Speakers</div>
@@ -53,7 +54,11 @@ If you wish to select all speakers minus a few, select the speakers you wish to 
 				<td>{{row['first_language']}}</td>
 				<td>{{row['institution']}}</td>
 				<td>{{row['pob_town']}}</td>
+				%try:
+				<td>{{pycountry.countries.get(alpha_2=row['pob_country']).name}}</td>
+				%except KeyError:
 				<td>{{row['pob_country']}}</td>
+				%end
 			</tr>
 			% end
 		</tbody>

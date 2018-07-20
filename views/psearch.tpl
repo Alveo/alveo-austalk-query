@@ -1,4 +1,5 @@
 %rebase("base-page")
+%import pycountry
 
 <div class="progress mb-0 border bg-light" style="height: 20px;">
   <div class="progress-bar bg-warning" role="progressbar" style="width: 0%;" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">Start by Searching for Speakers</div>
@@ -175,7 +176,11 @@
 									<select multiple size=4 class="form-control" name="pob_country" id="pob_country">
 										<option value = "">Any</option>
 										%for country in results['pob_country']:
+											%try:
+											<option value="{{country}}">{{pycountry.countries.get(alpha_2=country).name}}</option>
+											%except KeyError:
 											<option value="{{country}}">{{country}}</option>
+											%end
 										%end
 									</select>
 								</div>
@@ -254,7 +259,11 @@
 									<select multiple size=4 class="form-control" name="hist_country" id="hist_country">
 										<option value = "">Any</option>
 										%for country in results['country_hist']:
+											%try:
+											<option value="{{country}}">{{pycountry.countries.get(alpha_2=country).name}}</option>
+											%except KeyError:
 											<option value="{{country}}">{{country}}</option>
+											%end
 										%end
 									</select>
 								</div>
@@ -826,7 +835,11 @@
 									<select multiple size=4 class="form-control" name="mother_pob_country" id="mother_pob_country">
 										<option value = "">Any</option>
 										%for country in results['mother_pob_country']:
+											%try:
+											<option value="{{country}}">{{pycountry.countries.get(alpha_2=country).name}}</option>
+											%except KeyError:
 											<option value="{{country}}">{{country}}</option>
+											%end
 										%end
 									</select>
 								</div>
@@ -977,7 +990,11 @@
 									<select multiple size=4 class="form-control" name="father_pob_country" id="father_pob_country">
 										<option value = "">Any</option>
 										%for country in results['father_pob_country']:
+											%try:
+											<option value="{{country}}">{{pycountry.countries.get(alpha_2=country).name}}</option>
+											%except KeyError:
 											<option value="{{country}}">{{country}}</option>
+											%end
 										%end
 									</select>
 								</div>
