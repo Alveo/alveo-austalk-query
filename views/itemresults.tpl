@@ -193,7 +193,7 @@
 			}
 			card = `<div class="card mb-2 itemCard" style="cursor: pointer;" name="`+item["itemEnd"]+`"><div class="card-header p-1 `+checkedText+`"><div class="d-flex flex-row align-items-center">
 			<h6 class="m-0">`+item["itemEnd"]+`</h6><h6 class="m-0 ml-auto">`+item["componentName"]+`</h6></div></div><div class="card-body py-1">
-			<p class="mb-0">`+item["prompt"]+`</p></div></div>`;
+			<p class="mb-0">`+item["prompt"]+`</p><audio style="width: 100%;" controls><source src="`+item["media"]+`" type="audio/wav"></audio></div></div>`;
 			
 			$("#itemList").append(card);
 		}

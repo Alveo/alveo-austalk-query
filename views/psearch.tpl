@@ -35,7 +35,7 @@
 				<div class="card-body">
 					<div class="row mb-3">
 						<div class="col-lg-3 col-md-6 col-xs-12">
-							<label for="id"><b>Speaker Id:</b></label>
+							<label for="id"><b>Speaker ID:</b></label>
 						</div>
 						<div class="col-lg-4 col-md-6 col-xs-12">
 							<div class="form-group">
@@ -43,7 +43,7 @@
 							</div>
 						</div>
 						<div class="col-lg-5 col-md-12 col-xs-12">
-							<p>Only Exact Id's supported.</p>
+							<p>Only Exact ID's supported.</p>
 						</div>
 					</div>
 				
@@ -218,7 +218,8 @@
 								<p>Search by the town of which the speaker has once lived in.
 								<i class="far fa-question-circle" data-toggle="tooltip" data-html="true" 
 								title="<p>You are able to select multiple options by holding down the Ctrl button (Command button on Mac) 
-								and selecting the options you wish. You can also Select a range of options by holding down SHIFT.</p>"></i>
+								and selecting the options you wish. You can also Select a range of options by holding down SHIFT. This 
+								field was completed by the speaker and may be messy. Please select all that apply.</p>"></i>
 								</p>
 							</div>
 						</div>
@@ -240,7 +241,8 @@
 								<p>Here you can select the State or Territory the speakers have lived in. International states are available in this search.
 								<i class="far fa-question-circle" data-toggle="tooltip" data-html="true" 
 								title="<p>You are able to select multiple options by holding down the Ctrl button (Command button on Mac) 
-								and selecting the options you wish. You can also Select a range of options by holding down SHIFT.</p>"></i>
+								and selecting the options you wish. You can also Select a range of options by holding down SHIFT. This 
+								field was completed by the speaker and may be messy. Please select all that apply.</p>"></i>
 								</p>
 							</div>
 						</div>
@@ -266,7 +268,8 @@
 								<p>Select the country the speakers have lived in.
 								<i class="far fa-question-circle" data-toggle="tooltip" data-html="true" 
 								title="<p>You are able to select multiple options by holding down the Ctrl button (Command button on Mac) 
-								and selecting the options you wish. You can also Select a range of options by holding down SHIFT.</p>"></i>
+								and selecting the options you wish. You can also Select a range of options by holding down SHIFT. This 
+								field was completed by the speaker and may be messy. Please select all that apply.</p>"></i>
 								</p>
 							</div>
 						</div>
@@ -333,7 +336,7 @@
 								  		%for prof in results['professional_category']:
 								  			%#This is due to a weird api error when searching for these values
 								  			%if prof!="clerical and service" and prof!="intermediate clerical and service":
-								  				<option value="{{prof}}">{{prof}}</option>
+								  				<option value="{{prof}}">{{prof.capitalize()}}</option>
 								  			%end
 								  		%end
 									</select>

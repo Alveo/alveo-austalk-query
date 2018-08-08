@@ -54,12 +54,15 @@
 								</div>
 							</div>
 							<div class="col-lg-7 col-md-12 col-xs-12">
-								<p>Here you can easily select groups of components that work well together</p>
+								<p>Here you can easily select groups of components that work well together.
+								<i class="far fa-question-circle" data-toggle="tooltip" data-html="true" 
+								title="<p>The specific components in the groups can be found and selected in the dropdown below.</p>"></i>
+								</p>
 							</div>
 						</div>
 						<div class="row mb-3">
 							<div class="col-lg-2 col-md-6 col-xs-12">
-								<label for="componentName"><b>Component Number:</b></label>
+								<label for="componentName"><b>Specific Component:</b></label>
 							</div>
 							<div class="col-lg-3 col-md-6 col-xs-12">
 								<div class="form-group">
@@ -84,10 +87,16 @@
 								</div>
 							</div>
 							<div class="col-lg-7 col-md-12 col-xs-12">
-								<p>Here you can select a component to search by or you can select the component which contains your desired item, then select the item from below.</p>
+								<p>Here you can select a specific component to search by or you can select the component which contains your desired item, 
+								then select the item from below.
+								<i class="far fa-question-circle" data-toggle="tooltip" data-html="true" 
+								title="<p>This allows you to search specific word groups or sessions within some of the components. 
+								You can select all the 'words' components by selecting words in the dropdown above.</p>"></i>
+								</p>
 							</div>
 						</div>
-						<div class="row mb-3">
+						<div class="row mb-3 d-none">
+							<!-- Not displaying this until it's properly implemented -->
 							<div class="col-lg-2 col-md-6 col-xs-12">
 								<label for="prototype"><b>Prototype:</b></label>
 							</div>
@@ -100,7 +109,8 @@
 								<p>Here you can specify any specific item by it's prototype code. It is the last 2 segments of the items id.</p>
 							</div>
 						</div>
-						<div class="row mb-3">
+						<div class="row mb-3 d-none">
+							<!-- Not displaying this until it's properly implemented -->
 							<div class="col-lg-2 col-md-6 col-xs-12">
 								<label for="fullprompt"><b>Prompt within Component:</b></label>
 							</div>
