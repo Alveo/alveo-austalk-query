@@ -16,3 +16,6 @@ keys/*
 #settings.py
 #Log Files
 log*
+
+#virtualenv
+austalk-query/*
