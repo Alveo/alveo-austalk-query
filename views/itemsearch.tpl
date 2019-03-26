@@ -24,7 +24,7 @@
 	</div>
 
 	<div class="accordion" id="accordion" >
-		<div id="componentCard" class="card">
+		<div id="componentCard" class="card" style="border-bottom:1px solid rgba(0,0,0,.125); border-bottom-left-radius:4px; border-bottom-right-radius:4px;">
 			<div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#gcomp">
 				<div class="d-flex align-items-center">
 					<h5 class="mb-0">Search by Component</h5>
@@ -260,11 +260,13 @@
 		if (matches.length === 0) {
 			//hide the card and reset the values
 			$('#promptCard').hide();
+			$('#componentCard').css({"border-bottom": "1px solid rgba(0,0,0,.125)", "border-bottom-left-radius": "4px", "border-bottom-right-radius": "4px"});
 			$('#prompt').val("");
 			$('input#annoEither').trigger("click");
 			$('[name="wlist"]').val("");
 		} else {
 			$('#promptCard').show();
+			$('#componentCard').removeAttr("style");
 		}
 
 		if (val != 'words') {
