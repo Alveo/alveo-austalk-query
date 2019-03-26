@@ -174,6 +174,8 @@
 											<option value="{{country}}">{{pycountry.countries.get(alpha_2=country).name}}</option>
 											%except KeyError:
 											<option value="{{country}}">{{country}}</option>
+											%except AttributeError:
+											<option value="{{country}}">{{country}}</option>
 											%end
 										%end
 									</select>
@@ -258,6 +260,8 @@
 											%try:
 											<option value="{{country}}">{{pycountry.countries.get(alpha_2=country).name}}</option>
 											%except KeyError:
+											<option value="{{country}}">{{country}}</option>
+											%except AttributeError:
 											<option value="{{country}}">{{country}}</option>
 											%end
 										%end
@@ -836,6 +840,8 @@
 											<option value="{{country}}">{{pycountry.countries.get(alpha_2=country).name}}</option>
 											%except KeyError:
 											<option value="{{country}}">{{country}}</option>
+											%except AttributeError:
+											<option value="{{country}}">{{country}}</option>
 											%end
 										%end
 									</select>
@@ -990,6 +996,8 @@
 											%try:
 											<option value="{{country}}">{{pycountry.countries.get(alpha_2=country).name}}</option>
 											%except KeyError:
+											<option value="{{country}}">{{country}}</option>
+											%except AttributeError:
 											<option value="{{country}}">{{country}}</option>
 											%end
 										%end
