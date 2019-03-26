@@ -139,11 +139,11 @@
 							</div>
 							<div class="col-lg-3 col-md-6 col-xs-12">
 								<div class="form-group">
-									<input type="text" class="form-control" name="prompt" id="prompt" placeholder="animal">
+									<input type="text" class="form-control" name="prompt" id="prompt">
 								</div>
 							</div>
 							<div class="col-lg-7 col-md-12 col-xs-12">
-								<p>Search in words, digits or sentences. This filter supports Regular Expressions. 
+								<p>Search in words, digits or sentences. E.g. "animal" (without quotes). This filter supports Regular Expressions. 
 								<i class="far fa-question-circle" data-toggle="tooltip" data-html="true" 
 								title="<p>You can search for individual speakers by entering their speaker id's. You can also use 
 								SPARQL's regular expression syntax. Some examples, '.' is a wildcard character, '*' matches 0-many 

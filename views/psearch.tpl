@@ -39,11 +39,11 @@
 						</div>
 						<div class="col-lg-4 col-md-6 col-xs-12">
 							<div class="form-group">
-								<input type="text" class="form-control" name="id" id="id" placeholder="1_114">
+								<input type="text" class="form-control" name="id" id="id">
 							</div>
 						</div>
 						<div class="col-lg-5 col-md-12 col-xs-12">
-							<p>Only Exact ID's supported.</p>
+							<p>Only Exact ID's supported. E.g. "1_114" (without quotes).</p>
 						</div>
 					</div>
 				
@@ -76,7 +76,7 @@
 							</div>
 							<div class="col-lg-4 col-md-6 col-xs-12">
 								<div class="form-group">
-									<input type="text" class="form-control" name="age" id="age" placeholder="-25">
+									<input type="text" class="form-control" name="age" id="age">
 								</div>
 							</div>
 							<div class="col-lg-5 col-md-12 col-xs-12">
@@ -127,11 +127,11 @@
 							</div>
 							<div class="col-lg-4 col-md-6 col-xs-12">
 								<div class="form-group">
-									<input type="text" class="form-control" name="pob_town" id="pob_town" placeholder="Sydney">
+									<input type="text" class="form-control" name="pob_town" id="pob_town">
 								</div>
 							</div>
 							<div class="col-lg-5 col-md-12 col-xs-12">
-								<p>Search by the birth town or city. It currently doesn't support multiple towns.</p>
+								<p>Search by the birth town or city. E.g. "Sydney" (wihtout quotes). It currently doesn't support multiple towns.</p>
 							</div>
 						</div>
 						<div class="row mb-3">
@@ -283,7 +283,7 @@
 							</div>
 							<div class="col-lg-4 col-md-6 col-xs-12">
 								<div class="form-group">
-									<input type="text" class="form-control" name="age_from" id="age_from" placeholder="5+">
+									<input type="text" class="form-control" name="age_from" id="age_from">
 								</div>
 							</div>
 							<div class="col-lg-5 col-md-12 col-xs-12">
@@ -302,7 +302,7 @@
 							</div>
 							<div class="col-lg-4 col-md-6 col-xs-12">
 								<div class="form-group">
-									<input type="text" class="form-control" name="age_to" id="age_to" placeholder="-25">
+									<input type="text" class="form-control" name="age_to" id="age_to">
 								</div>
 							</div>
 							<div class="col-lg-5 col-md-12 col-xs-12">
@@ -423,11 +423,11 @@
 							</div>
 							<div class="col-lg-4 col-md-6 col-xs-12">
 								<div class="form-group">
-									<input type="text" class="form-control" name="other_languages" id="other_languages" placeholder="German">
+									<input type="text" class="form-control" name="other_languages" id="other_languages">
 								</div>
 							</div>
 							<div class="col-lg-5 col-md-12 col-xs-12">
-								<p>Search by other languages spoken by the speaker. This field was a general text field and so using regular expressions 
+								<p>Search by other languages spoken by the speaker. E.g. "German" (without quotes). This field was a general text field and so using regular expressions 
 								is supported.
 								<i class="far fa-question-circle" data-toggle="tooltip" data-html="true" 
 								title="<p>You can search for individual speakers by entering their speaker id's. You can also use 
@@ -685,11 +685,11 @@
 							</div>
 							<div class="col-lg-4 col-md-6 col-xs-12">
 								<div class="form-group">
-									<input type="text" class="form-control" name="hobbies_details" id="hobbies_details" placeholder="Photography">
+									<input type="text" class="form-control" name="hobbies_details" id="hobbies_details">
 								</div>
 							</div>
 							<div class="col-lg-5 col-md-12 col-xs-12">
-								<p>This filter supports Regular Expressions. 
+								<p>E.g. "Photography" (without quotes). This filter supports Regular Expressions. 
 								<i class="far fa-question-circle" data-toggle="tooltip" data-html="true" 
 								title="<p>You can search for individual speakers by entering their speaker id's. You can also use 
 								SPARQL's regular expression syntax. Some examples, '.' is a wildcard character, '*' matches 0-many 
@@ -793,11 +793,11 @@
 							</div>
 							<div class="col-lg-4 col-md-6 col-xs-12">
 								<div class="form-group">
-									<input type="text" class="form-control" name="mother_pob_town" id="mother_pob_town" placeholder="Sydney">
+									<input type="text" class="form-control" name="mother_pob_town" id="mother_pob_town">
 								</div>
 							</div>
 							<div class="col-lg-5 col-md-12 col-xs-12">
-								<p>Search by the birth town or city. It currently doesn't support multiple towns.</p>
+								<p>Search by the birth town or city. E.g. "Sydney" (wihtout quotes). It currently doesn't support multiple towns.</p>
 							</div>
 						</div>
 						<div class="row mb-3">
@@ -950,11 +950,11 @@
 							</div>
 							<div class="col-lg-4 col-md-6 col-xs-12">
 								<div class="form-group">
-									<input type="text" class="form-control" name="father_pob_town" id="father_pob_town" placeholder="Sydney">
+									<input type="text" class="form-control" name="father_pob_town" id="father_pob_town">
 								</div>
 							</div>
 							<div class="col-lg-5 col-md-12 col-xs-12">
-								<p>Search by the birth town or city. It currently doesn't support multiple towns.</p>
+								<p>Search by the birth town or city. E.g. "Sydney" (without quotes). It currently doesn't support multiple towns.</p>
 							</div>
 						</div>
 						<div class="row mb-3">
