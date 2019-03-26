@@ -82,8 +82,8 @@
 								then select the item from below.
 								<i class="far fa-question-circle" data-toggle="tooltip" data-html="true" 
 								title="<p>This allows you to search specific word groups or sessions within some of the components. 
-								You can select all the 'words' components by selecting words in the dropdown above.</p>"></i>
-								</p>
+								You can select all the 'words' components by selecting words in the dropdown above.</p>"></i><br>
+								<a href="austalk.edu.au/about/corpus">Click here for the list of words used.</a></p>
 							</div>
 						</div>
 						<div class="row mb-3 d-none">
@@ -143,7 +143,7 @@
 								</div>
 							</div>
 							<div class="col-lg-7 col-md-12 col-xs-12">
-								<p>This filter supports Regular Expressions. 
+								<p>Search in words, digits or sentences. This filter supports Regular Expressions. 
 								<i class="far fa-question-circle" data-toggle="tooltip" data-html="true" 
 								title="<p>You can search for individual speakers by entering their speaker id's. You can also use 
 								SPARQL's regular expression syntax. Some examples, '.' is a wildcard character, '*' matches 0-many 
@@ -177,12 +177,12 @@
 						</div>
 						<div class="row mb-3">
 							<div class="col-lg-2 col-md-6 col-xs-12">
-								<label for="wlist"><b>Predefined Word List:</b></label>
+								<label for="wlist"><b>Filter by Word List:</b></label>
 							</div>
 							<div class="col-lg-3 col-md-6 col-xs-12">
 								<div class="form-group">
 									<select class="form-control" name="wlist">
-										<option value="">None</option>
+										<option value="">Any</option>
 										<option value="hvdwords">hVd Words</option>
 										<option value="hvdmono">hVd Monophthongs</option>
 										<option value="hvddip">hVd Diphthongs</option>
@@ -191,7 +191,7 @@
 							</div>
 							<div class="col-lg-7 col-md-12 col-xs-12">
 								<p>You can choose one of the pre-defined Word Lists, where all the items match a specific pattern. <br>
-								<a href="https://austalk.edu.au/sites/default/files/IS11-AusTalk.pdf" target="_blank">Click here for more information.</a></div>
+								<a href="https://austalk.edu.au/media/attachments/IS11-AusTalk.pdf" target="_blank">Click here for more information.</a></div>
 								</p>
 							</div>
 						</div>
@@ -221,7 +221,7 @@
 <div class="row mb-3">
 	<div class="col-md-3 col-sm-12"><b>Predefined Word Lists:</b></div>
 	<div class="col-md-9 col-sm-12">You can choose one of the pre-defined Word Lists, where all the items match a specific pattern (see Burnham et al. (2011) "Building an Audio-Visual Corpus of Australian English: Large Corpus Collection with an Economical Portable and Replicable Black Box". Interspeech 2011.<br>
-		<a href="https://austalk.edu.au/sites/default/files/IS11-AusTalk.pdf" target="_blank">Click here for more information.</a></div>
+		<a href="https://austalk.edu.au/media/attachments/IS11-AusTalk.pdf" target="_blank">Click here for more information.</a></div>
 </div>
 <div class="row mb-3">
 	<div class="col-md-3 col-sm-12"><b>Component/Component Type:</b></div>
