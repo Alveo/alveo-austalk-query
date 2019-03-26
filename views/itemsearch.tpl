@@ -60,7 +60,7 @@
 								</p>
 							</div>
 						</div>
-						<div class="row mb-3">
+						<div id="specificComponentRow" class="row mb-3" style="display:none;">
 							<div class="col-lg-2 col-md-6 col-xs-12">
 								<label for="componentName"><b>Specific Component:</b></label>
 							</div>
@@ -68,21 +68,12 @@
 								<div class="form-group">
 									<select class="form-control" name="componentName">
 										<option value="">Any</option>
-										<option value="calibration">calibration</option>
-										<option value="digits">digits</option>
-										<option value="sentences">sentences</option>
-										<option value="sentences-e">sentences-e</option>
-										<option value="story">story</option>
-										<option value="words-1">words-1</option>
-										<option value="words-1-2">words-1-2</option>
-										<option value="words-2">words-2</option>
-										<option value="words-2-2">words-2-2</option>
-										<option value="words-3">words-3</option>
-										<option value="words-3-2">words-3-2</option>
-										<option value="yes-no-closing">yes-no-closing</option>
-										<option value="yes-no-opening-1">yes-no-opening-1</option>
-										<option value="yes-no-opening-2">yes-no-opening-2</option>
-										<option value="yes-no-opening-3">yes-no-opening-3</option>
+										<option value="words-1">Words session 1</option>
+										<option value="words-1-2">Words session 1-2</option>
+										<option value="words-2">Words session 2</option>
+										<option value="words-2-2">Words session 2-2</option>
+										<option value="words-3">Words session 3</option>
+										<option value="words-3-2">Words session 3-2</option>
 									</select>
 								</div>
 							</div>
@@ -273,7 +264,14 @@
 			$('input#annoEither').trigger("click");
 			$('[name="wlist"]').val("");
 		} else {
-			$('#promptCard').show();			
+			$('#promptCard').show();
+		}
+
+		if (val != 'words') {
+			$('#specificComponentRow').hide();
+			$('[name="componentName"]').val("");
+		} else {
+			$('#specificComponentRow').show();
 		}
 	});
 </script>
