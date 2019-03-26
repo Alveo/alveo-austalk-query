@@ -24,7 +24,7 @@
 	</div>
 
 	<div class="accordion" id="accordion" >
-		<div class="card">
+		<div id="componentCard" class="card">
 			<div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#gcomp">
 				<div class="d-flex align-items-center">
 					<h5 class="mb-0">Search by Component</h5>
@@ -132,7 +132,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="card">
+		<div id="promptCard" class="card" style="display:none;">
 			<div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#gitem">
 				<div class="d-flex align-items-center">
 					<h5 class="mb-0">Search by Prompt</h5>
@@ -169,13 +169,13 @@
 								<div class="form-group">
 									<div class="btn-group btn-group-toggle" data-toggle="buttons" id="anno" name="anno">
 										<label class="btn btn-light active">
-											<input type="radio" value = "" id="anno" name="anno" autocomplete="off" checked>Either
+											<input type="radio" value = "" id="annoEither" name="anno" autocomplete="off" checked>Either
 										</label>
 										<label class="btn btn-light">
-											<input type="radio" value = "required" id="anno" name="anno" autocomplete="off">Yes
+											<input type="radio" value = "required" id="annoYes" name="anno" autocomplete="off">Yes
 										</label>
 										<label class="btn btn-light">
-											<input type="radio" value = "" id="anno" name="anno" autocomplete="off">No
+											<input type="radio" value = "" id="annoNo" name="anno" autocomplete="off">No
 										</label>
 									</div>
 								</div>
@@ -257,5 +257,23 @@
 		$('.progress .progress-bar').css("width",function() {
 			return $(this).attr("aria-valuenow")+"%";
 		});
+	});
+
+	$('[name="comptype"]').on('change', function(event) {
+		//show or hide the "Search by prompt" card based on the component type selected
+		var val = $(this).val();
+		var showPromptOptions = ["sentences", "words", "digits"];
+		var matches = showPromptOptions.filter(function(opt) {
+			return opt == val;
+		});
+		if (matches.length === 0) {
+			//hide the card and reset the values
+			$('#promptCard').hide();
+			$('#prompt').val("");
+			$('input#annoEither').trigger("click");
+			$('[name="wlist"]').val("");
+		} else {
+			$('#promptCard').show();			
+		}
 	});
 </script>
