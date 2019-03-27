@@ -83,7 +83,7 @@
 								<i class="far fa-question-circle" data-toggle="tooltip" data-html="true" 
 								title="<p>This allows you to search specific word groups or sessions within some of the components. 
 								You can select all the 'words' components by selecting words in the dropdown above.</p>"></i><br>
-								<a href="austalk.edu.au/about/corpus">Click here for the list of words used.</a></p>
+								<a href="https://austalk.edu.au/about/corpus/#wordlist" target="_new">Click here for the list of words used.</a></p>
 							</div>
 						</div>
 						<div class="row mb-3 d-none">
