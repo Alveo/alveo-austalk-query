@@ -535,7 +535,7 @@ def item_results():
         query = query + qbuilder.regex_filter('prompt',custom='^'+bottle.request.forms.get('fullprompt')+'$')
     else:
         query = query + qbuilder.regex_filter('prompt')
-    query = query + qbuilder.simple_filter('componentName')
+    query = query + qbuilder.simple_filter('componentName', endWith=False) #set endwith=False so that eg "words-1" matches "words-1" and "words-1-2"
     query = query + qbuilder.to_str_filter('prototype',prepend="https://app.alveo.edu.au/protocol/item/")
 
     if bottle.request.forms.get('comptype') != "":
