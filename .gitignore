@@ -20,3 +20,7 @@ log*
 
 #virtualenv
 austalk-query/*
+env/*
+
+#local dev environment
+runlocal.sh

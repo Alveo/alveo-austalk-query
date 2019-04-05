@@ -69,11 +69,8 @@
 									<select class="form-control" name="componentName">
 										<option value="">Any</option>
 										<option value="words-1">Words session 1</option>
-										<option value="words-1-2">Words session 1-2</option>
 										<option value="words-2">Words session 2</option>
-										<option value="words-2-2">Words session 2-2</option>
 										<option value="words-3">Words session 3</option>
-										<option value="words-3-2">Words session 3-2</option>
 									</select>
 								</div>
 							</div>
@@ -83,7 +80,7 @@
 								<i class="far fa-question-circle" data-toggle="tooltip" data-html="true" 
 								title="<p>This allows you to search specific word groups or sessions within some of the components. 
 								You can select all the 'words' components by selecting words in the dropdown above.</p>"></i><br>
-								<a href="https://austalk.edu.au/about/corpus/#wordlist" target="_new">Click here for the list of words used.</a></p>
+								<a href="/media/wordList.csv">Click here for the list of words used.</a></p>
 							</div>
 						</div>
 						<div class="row mb-3 d-none">
@@ -143,7 +140,7 @@
 								</div>
 							</div>
 							<div class="col-lg-7 col-md-12 col-xs-12">
-								<p>Search in words, digits or sentences. E.g. "animal" (without quotes). This filter supports Regular Expressions. 
+								<p>Search in words, digits or sentences. E.g. "helicopter" (without quotes). This filter supports Regular Expressions. 
 								<i class="far fa-question-circle" data-toggle="tooltip" data-html="true" 
 								title="<p>You can search for individual speakers by entering their speaker id's. You can also use 
 								SPARQL's regular expression syntax. Some examples, '.' is a wildcard character, '*' matches 0-many 
@@ -248,12 +245,17 @@
 		$('.progress .progress-bar').css("width",function() {
 			return $(this).attr("aria-valuenow")+"%";
 		});
+		chooseCards($('[name="comptype"]').val());
 	});
 
 	$('[name="comptype"]').on('change', function(event) {
 		//show or hide the "Search by prompt" card based on the component type selected
 		var val = $(this).val();
-		var showPromptOptions = ["sentences", "words", "digits"];
+		chooseCards(val);
+	});
+
+	var chooseCards = function(val) {
+		var showPromptOptions = ["sentences", "words", "digits", "yes-no"];
 		var matches = showPromptOptions.filter(function(opt) {
 			return opt == val;
 		});
@@ -275,5 +277,5 @@
 		} else {
 			$('#specificComponentRow').show();
 		}
-	});
+	}
 </script>

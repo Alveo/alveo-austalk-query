@@ -58,6 +58,8 @@ If you wish to select all speakers minus a few, select the speakers you wish to 
 				<td>{{pycountry.countries.get(alpha_2=row['pob_country']).name}}</td>
 				%except KeyError:
 				<td>{{row['pob_country']}}</td>
+				%except AttributeError:
+				<td>{{row['pob_country']}}</td>
 				%end
 			</tr>
 			% end
