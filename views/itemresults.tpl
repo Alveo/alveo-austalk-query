@@ -95,6 +95,8 @@
 							{{pycountry.countries.get(alpha_2=speaker['pob_country']).name}}
 							%except KeyError:
 							{{speaker['pob_country']}}
+							%except AttributeError:
+							{{speaker['pob_country']}}
 							%end
 							</div>
 						</div>
