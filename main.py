@@ -53,13 +53,18 @@ app = SessionMiddleware(bottle.app(), session_opts)
 
 @bottle.route('/styles/<filename>')
 def serve_style(filename):
-    '''Loads static files from views/styles. Store all .css files there.'''
+    '''Loads static files from /styles. Store all .css files there.'''
     return bottle.static_file(filename, root='./styles')
 
 @bottle.route('/js/<filename>')
-def send_static(filename):
-    '''Loads static files from views/js. Store all .js files there.'''
+def send_js(filename):
+    '''Loads static files from /js. Store all .js files there.'''
     return bottle.static_file(filename, root='./js/')
+
+@bottle.route('/media/<filename>')
+def send_media(filename):
+    '''Loads static files from /media. Store all misc (images,pdf) files there.'''
+    return bottle.static_file(filename, root='./media/')
 
 @bottle.route('/')
 def home():
@@ -83,7 +88,7 @@ def start():
 
 @bottle.route('/psearch')
 def search():
-    '''The home page and participant search page. Drop-down lists are populated from the SPARQL database and the template returned.
+    '''The home page and speaker search page. Drop-down lists are populated from the SPARQL database and the template returned.
     Displays the contents of session['message'] if one is set.'''
     
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
@@ -107,13 +112,14 @@ def search():
 
         results = quer.simple_values_search(session.get('corpus','austalk'),simple_relations,sortAlphabetically=True)
 
-        results['city'] = quer.results_list(session.get('corpus','austalk'), PREFIXES+
+        results['inst'] = quer.results_list(session.get('corpus','austalk'), PREFIXES+
         """
             SELECT distinct ?val
             where {
               ?part a foaf:Person .
               ?part austalk:recording_site ?site .
-              ?site austalk:city ?val .}
+              ?site austalk:institution ?val .
+              }
               order by asc(ucase(str(?val)))""")
 
         results['first_language'] = quer.results_list(session.get('corpus','austalk'), PREFIXES+
@@ -219,7 +225,7 @@ def search():
 
 @bottle.post('/presults')
 def results():
-    '''Perfoms a search of participants and display the results as a table. Saves the results in the session so they can be retrieved later'''
+    '''Perfoms a search of speakers and display the results as a table. Saves the results in the session so they can be retrieved later'''
 
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
     
@@ -232,13 +238,13 @@ def results():
 
     query = PREFIXES+ """
 
-    SELECT distinct ?id ?gender ?age ?city ?first_language ?pob_country ?pob_town"""
+    SELECT distinct ?id ?gender ?age ?institution ?first_language_name ?pob_country ?pob_town"""
 
     query = query + """
     WHERE {
         ?id a foaf:Person .
         ?id austalk:recording_site ?recording_site .
-        ?recording_site austalk:city ?city .
+        ?recording_site austalk:institution ?institution .
         ?id foaf:age ?age .
         ?id foaf:gender ?gender .
         OPTIONAL { ?id austalk:residential_history ?rh . 
@@ -247,25 +253,26 @@ def results():
         OPTIONAL { ?rh austalk:town ?hist_town . }
         OPTIONAL { ?rh austalk:age_from ?age_from . }
         OPTIONAL { ?rh austalk:age_to ?age_to . } }
-        OPTIONAL { ?id austalk:first_language ?fl . 
-                   ?fl iso639schema:name ?first_language . }
+        OPTIONAL { ?id austalk:first_language ?first_language . 
+                   ?first_language iso639schema:name ?first_language_name . }
         OPTIONAL { ?id austalk:pob_country ?pob_country . }
         OPTIONAL { ?id austalk:pob_town ?pob_town . }
     """
     #special args is anything all the form arguments that need something more than a simple filter.
     filterTable = {
-                   'simple':['gender','city','pob_state','cultural_heritage','ses','professional_category',
+                   'simple':['gender','institution','cultural_heritage','ses','professional_category',
                              'education_level','mother_cultural_heritage','father_cultural_heritage','pob_town',
                              'mother_professional_category','father_professional_category','mother_education_level',
-                             'father_education_level','mother_pob_state','mother_pob_town','father_pob_state',
-                             'father_pob_town'],
+                             'father_education_level','mother_pob_town','father_pob_town'],
                    'regex':['id','other_languages','hobbies_details'],
                    'boolean':['has_vocal_training','is_smoker','has_speech_problems','has_piercings','has_health_problems',
                              'has_hearing_problems','has_dentures','is_student','is_left_handed','has_reading_problems',],
-                   'multiselect':['pob_country','father_pob_country','mother_pob_country','hist_town','hist_state','hist_country'],
+                   'multiselect':['pob_country','pob_state','father_pob_country','mother_pob_country','hist_town','hist_state',
+                                  'hist_country','mother_pob_state','father_pob_state',],
                    'to_str':['first_language','mother_first_language','father_first_language'],
                    'num_range':['age','age_from','age_to'],
-                   'original_where':['id','city','age','gender','first_language','pob_country','pob_town','age_from','age_to',
+                   'recording_site':['institution'],
+                   'original_where':['id','institution','age','gender','first_language','pob_country','pob_town','age_from','age_to',
                                      'hist_town','hist_state','hist_country']
                 }
 
@@ -284,7 +291,10 @@ def results():
     regexList = [arg for arg in searchArgs if arg[0] in filterTable['regex']]
     for item in regexList:
         if item[0]=='id':
-            qfilter = qfilter + qbuilder.regex_filter('id',toString=True,prepend="https://app.alveo.edu.au/speakers/%s/"%session.get('corpus','austalk'))
+            id = item[1].strip()
+            if not ((id[0]=='"' and id[-1]=='"') or (id[0]=="'" and id[-1]=="'")):
+                id = '"'+id+'"'
+            qfilter = qfilter + qbuilder.regex_filter('id',custom=id,toString=True,prepend="https://app.alveo.edu.au/speakers/%s/"%session.get('corpus','austalk'))
         else:
             qfilter = qfilter + qbuilder.regex_filter(item[0])
 
@@ -315,6 +325,8 @@ def results():
     simpleList = [arg for arg in searchArgs if arg[0] in filterTable['simple']]
     for item in simpleList:
         qfilter = qfilter + qbuilder.simple_filter(item[0])
+        
+    
 
     query = query + qfilter + "} \nORDER BY ?id"
     
@@ -336,7 +348,7 @@ def results():
 
 @bottle.get('/presults')
 def part_list():
-    '''Displays the results of the last participant search, or redirects home if no such search has been performed yet.'''
+    '''Displays the results of the last speaker search, or redirects home if no such search has been performed yet.'''
 
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
 
@@ -351,7 +363,7 @@ def part_list():
         if len(resultsList)==0:
             raise KeyError
     except KeyError:
-        session['message'] = "Perform a participant search first."
+        session['message'] = "Perform a speaker search first."
         
         bottle.redirect('/psearch')
 
@@ -365,9 +377,9 @@ def part_list():
                            undo=undoExists, 
                            name=session.get('name',None))
 
-@bottle.get('/download/participants.csv')
-def download_participants_csv():
-    '''Returns a csv file download of the participants and all their meta data.'''
+@bottle.get('/download/speakers.csv')
+def download_speakers_csv():
+    '''Returns a csv file download of the speakers and all their meta data.'''
 
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
     
@@ -384,11 +396,11 @@ def download_participants_csv():
         if len(resultsList)==0:
             raise KeyError
     except KeyError:
-        session['message'] = "Perform a participant search first."
+        session['message'] = "Perform a speaker search first."
         
         bottle.redirect('/psearch')
 
-    query = qbuilder.get_everything_from_participants(filters=session['partfilters'])
+    query = qbuilder.get_everything_from_speakers(filters=session['partfilters'])
 
     resultsList = quer.results_dict_list(session.get('corpus','austalk'), query)
     
@@ -401,7 +413,7 @@ def download_participants_csv():
             row[key] = row[key].encode('ascii','backslashreplace')
 
     #make response header so that file will be downloaded.
-    bottle.response.headers["Content-Disposition"] = "attachment; filename=participants.csv"
+    bottle.response.headers["Content-Disposition"] = "attachment; filename=speakers.csv"
     bottle.response.headers["Content-type"] = "text/csv"
 
     csvfile = BytesIO()
@@ -414,7 +426,7 @@ def download_participants_csv():
 
 @bottle.post('/handleparts')
 def handle_parts():
-    '''Removes selected participants or remove all non-selected and continue to search items or get all items.'''
+    '''Removes selected speakers or remove all non-selected and continue to search items or get all items.'''
 
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
 
@@ -424,7 +436,7 @@ def handle_parts():
         bottle.redirect('/')
 
     partList = session.get('partlist',[])
-    selectedParts = bottle.request.forms.getall('selected')
+    selectedParts = bottle.request.forms.getall('clickable')
 
     function = bottle.request.forms.get('submit')
 
@@ -452,7 +464,7 @@ def handle_parts():
     elif function=='search':
         #if nothing selected, tell them to select something first
         if len(selectedParts)==0:
-            session['message'] = 'Please select some participants before continuing'
+            session['message'] = 'Please select some speakers before continuing'
             bottle.redirect('/presults')
         #goto /itemsearch with selected items
         newPartList = [p for p in partList if p['id'] in selectedParts]
@@ -479,7 +491,7 @@ def handle_parts():
 
 @bottle.post('/itemresults')
 def item_results():
-    '''Like results(), but for items not participants. Functionally similar.'''
+    '''Like results(), but for items not speakers. Functionally similar.'''
 
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
 
@@ -489,7 +501,7 @@ def item_results():
         bottle.redirect('/')
     
     if len(session.get('partlist',[]))==0 or session.get('partcount',0)==0:
-        session['message'] = "Please first select some Participants."
+        session['message'] = "Please first select some speakers."
         bottle.redirect('/psearch')
         
     quer = alquery.AlQuery(client)
@@ -551,9 +563,9 @@ def item_results():
     #This 65 should be a decent compromise between keeping
     #a short and potentially more efficient search query
     #and over querying for what the user wants.
-    #When querying for more than 65 participant we will
+    #When querying for more than 65 speaker we will
     #search using the search filters, any further modifications
-    #to the participant list after are ignored and items from
+    #to the speaker list after are ignored and items from
     #those who are unselected will also be returned.
     #later on those extra results will be dumped.
     if session['partcount']>65 or session['partcount']==session['searchedcount']:
@@ -569,7 +581,7 @@ def item_results():
     
     resultsCount = 0
     
-    #Converting participant list into a dict so it's O(1) to add an item to this participant
+    #Converting speaker list into a dict so it's O(1) to add an item to this participant
     #Without this, worst case complexity will be O(num_parts*num_items)
     partDict = {}
     for part in partList:
@@ -581,9 +593,9 @@ def item_results():
             partDict[row['id']]['item_results'].append(row)
             resultsCount = resultsCount + 1
         except KeyError:
-            #Incase we get a result from a participant we haven't selected
-            #This will only happen if the participant filters are applied 
-            #instead of selecting each of the participants.
+            #Incase we get a result from a speaker we haven't selected
+            #This will only happen if the speaker filters are applied 
+            #instead of selecting each of the speakers.
             pass
         
     partList = partDict.values()
@@ -633,7 +645,7 @@ def item_list():
 @bottle.get('/download/items.csv')
 @bottle.get('/download/itemswithpartdata.csv')
 def download_items_csv():
-    '''Returns a csv file download of the participants and all their meta data.'''
+    '''Returns a csv file download of the speakers and all their meta data.'''
 
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
 
@@ -655,26 +667,26 @@ def download_items_csv():
 
     resultsList = []
     if str(bottle.request.path).split('/')[-1]=='itemswithpartdata.csv':
-        #add more participant meta data
+        #add more speaker meta data
         for part in session['partlist']:
             for x in part['item_results']:
-                #now get all participant info
-                query = qbuilder.get_everything_from_participants(id=part['id'])
+                #now get all speaker info
+                query = qbuilder.get_everything_from_speakers(id=part['id'])
                 new = x.copy()
                 results = quer.results_dict_list(session.get('corpus','austalk'), query)
                 new.update(results[0])
                 resultsList.append(new)
     else:
-        #add only participant id
+        #add only speaker id
         for part in session['partlist']:
             for x in part['item_results']:
                 new = x.copy()
-                new['participant'] = part['id']
+                new['speaker'] = part['id']
                 resultsList.append(new)
     
     #modify the output so it is more human readable
     for row in resultsList:
-        row['participant'] = row['id'].split('/')[-1]
+        row['speaker'] = row['id'].split('/')[-1]
         row.pop('id',None)
         row['media'] = row['media'].split('/')[-1]
         row['item'] = row['item'].split('/')[-1]
@@ -686,7 +698,9 @@ def download_items_csv():
     csvfile = BytesIO()
     dict_writer = csv.DictWriter(csvfile,resultsList[0].keys())
     dict_writer.writeheader()
-    dict_writer.writerows(resultsList)
+    #
+    for row in resultsList:
+        dict_writer.writerow({k:v.encode('utf8') for k,v in row.items()})
 
     csvfile.seek(0)
     return csvfile.read()
@@ -712,10 +726,10 @@ def handle_items():
         if len(selectedItems)==0:
             session['message'] = 'Select something to remove'
         #setup the undo portion which is the opposite list of above
-        #I'm making this a dict as I'll need to remember which participant the items
+        #I'm making this a dict as I'll need to remember which speaker the items
         #belong to as well. Also it means I can easily store the count with it.
         session['backupItemList'] = {}
-        #get new item list for each participant
+        #get new item list for each speaker
         for p in partList:
             newItemList = []
             removeItemList = []
@@ -737,7 +751,7 @@ def handle_items():
         
     elif function=='undo':
         #undo most recent remove if there was one.
-        #loop participants and extend each of their item lists
+        #loop speakers and extend each of their item lists
         backupItemList = session.get('backupItemList',[])
         if len(backupItemList)>0:
             for p in partList:
@@ -766,7 +780,7 @@ def handle_items():
 @bottle.route('/itemsearch')
 @bottle.post('/itemsearch')
 def item_search():
-    '''Displays the page for searching items, unless there's not yet a group of participants selected to search for.'''
+    '''Displays the page for searching items, unless there's not yet a group of speakers selected to search for.'''
 
     session = bottle.request.environ.get('beaker.session')  #@UndefinedVariable
     
@@ -776,7 +790,7 @@ def item_search():
         bottle.redirect('/')
         
     if len(session.get('partlist',[]))==0 or session.get('partcount',0)==0:
-        session['message'] = "Please first select some Participants. "
+        session['message'] = "Please first select some Speakers. "
         bottle.redirect('/psearch')
         
 

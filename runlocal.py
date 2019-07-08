@@ -2,18 +2,19 @@
     A server to run the application locally for development
 """
 import sys, socket
-from cherrypy import wsgiserver
-from cherrypy.wsgiserver.ssl_pyopenssl import pyOpenSSLAdapter
+from cheroot import wsgi
+from cheroot.ssl.builtin import BuiltinSSLAdapter
 from OpenSSL import SSL
 
 import bottle
 from main import app
+port = None
 from settings import *
 
 
 # By default, the server will allow negotiations with extremely old protocols
 # that are susceptible to attacks, so we only allow TLSv1.2
-class SecuredSSLServer(pyOpenSSLAdapter):
+class SecuredSSLServer(BuiltinSSLAdapter):
     def get_context(self):
         c = super(SecuredSSLServer, self).get_context()
         c.set_options(SSL.OP_NO_SSLv2)
@@ -27,8 +28,9 @@ class SecuredSSLServer(pyOpenSSLAdapter):
 # uses the default cherrypy server, which doesn't use SSL
 class SSLCherryPyServer(bottle.ServerAdapter):
     def run(self, handler):
-        server = wsgiserver.CherryPyWSGIServer((self.host, self.port), handler)
+        server = wsgi.Server((self.host, self.port), handler)
         server.ssl_adapter = SecuredSSLServer('keys/cacert.pem', 'keys/privkey.pem')
+        
         try:
             server.start()
         finally:
@@ -42,11 +44,19 @@ if __name__ == '__main__':
         ip = ''
     if len(sys.argv)>1:
         if len(sys.argv)>2 and sys.argv[2]=='--no-ssl':
+            if not port:
+                    port = 80
             bottle.run(app=app, host=sys.argv[1], port=port, debug=True)
         else:
             if sys.argv[1]=='--no-ssl':
+                if not port:
+                    port = 80
                 bottle.run(app=app, host=ip, port=port, debug=True)
             else:
+                if not port:
+                    port = 443
                 bottle.run(app=app, host=sys.argv[1], port=port, debug=True,server=SSLCherryPyServer)
     else:
+        if not port:
+            port = 443
         bottle.run(app=app, host=ip, port=port, debug=True,server=SSLCherryPyServer)

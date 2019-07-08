@@ -61,7 +61,7 @@ can also be displayed by setting the key 'message' in the session to some value.
 
 *****6/2/15*****
 
--Added searching for items based on the last set of selected participants. Currently you can select all items or
+-Added searching for items based on the last set of selected speakers. Currently you can select all items or
 search by prompt and/or component type.
 
 -Added export.tpl. This'll be the page used to export item lists to Alveo.
@@ -72,7 +72,7 @@ search by prompt and/or component type.
 -List of the results of the last item search are stored in the session.
 -More assorted changes to session handling/dealing with beaker that were not previously obvious.
 
--Minor changes to participant querying. More search fields now only display on the results page if they were
+-Minor changes to speaker querying. More search fields now only display on the results page if they were
 actually searched.
 
 -Created file to keep track of to do list. A few things I keep forgetting to do.
@@ -85,11 +85,11 @@ we'll have a function that allows us to build an entire SPARQL query with a sing
 This would make qbuilder a pretty useful thing in its own right and would be a good step towards generalising the app
 to be able to query collections other than austalk. Although that's not a particularly high priority at the moment.
 
--Now using beaker to keep the most recent list of participants from search results in the session data. Had to
+-Now using beaker to keep the most recent list of speakers from search results in the session data. Had to
 rewrite a bunch of stuff to get this working. Also using this to store the count for the number of search results
 from a query now, which let me clear up something that was kind of nasty about alquery.htmlTable.
 
--Added itemresults.tpl and a button to get all the items for the selected participants to the results page. 
+-Added itemresults.tpl and a button to get all the items for the selected speakers to the results page. 
 -Renamed "results" to "presults". 
 -Renamed "search" to "psearch".
 

@@ -76,7 +76,7 @@ def to_str_filter(fName,prepend="",custom=None):
     @param fName: The name of the field being filtered. Make sure that this matches the name of the input in the HTML form.
     @type fName: String
     @param prepend: Adds a string at the beginning of the query, use if the user input values is not the entire value that needs to be specified in SPARQL.
-                    Eg: User selects ?participant with a [0-9]_[0-9]^3 string rather than the entire url. 
+                    Eg: User selects ?speaker with a [0-9]_[0-9]^3 string rather than the entire url. 
                     Necessary if the searched element can be a subset of another element. Ie: when you search for "1_114" yet "1_1441" also exists.
     @type String
     @param custom: If the input needs to be manually formatted rather than being pulled directly from the form
@@ -157,7 +157,7 @@ def regex_filter(fName,toString=False,prepend="",custom=None):
     @param toString: If fName needs to be converted to a string in the query
     @type Boolean
     @param prepend: Adds a string at the beginning of the query, use if the user input values is not the entire value that needs to be specified in SPARQL.
-                    Eg: User selects ?participant with a [0-9]_[0-9]^3 string rather than the entire url. 
+                    Eg: User selects ?speaker with a [0-9]_[0-9]^3 string rather than the entire url. 
                     Necessary if the searched element can be a subset of another element. Ie: when you search for "1_114" yet "1_1441" also exists.
     @type String
     @param custom: If the input needs to be manually formatted rather than being pulled directly from the form
@@ -201,14 +201,14 @@ def regex_filter(fName,toString=False,prepend="",custom=None):
     else:
         return ''
 
-def get_everything_from_participants(filters=None,id=None):
+def get_everything_from_speakers(filters=None,id=None):
     '''
-    @summary: Used to get a SPARQL query that gets all metadata from either one participant or many according to a given filter.
-    Inputting nothing will return all participants
+    @summary: Used to get a SPARQL query that gets all metadata from either one speaker or many according to a given filter.
+    Inputting nothing will return all speakers
     
     @param filters: The raw SPARQL filters to be used in the search.
     @type filters: String
-    @param id: The id of the participant to retrieve the metadata from. If this is given then the filter is ignored and only this one participant will be returned.
+    @param id: The id of the speaker to retrieve the metadata from. If this is given then the filter is ignored and only this one participant will be returned.
     @type id: String
     @rtype: String
     '''
