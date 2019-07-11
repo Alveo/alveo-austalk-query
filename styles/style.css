@@ -212,3 +212,6 @@ fieldset[disabled] .btn-custom.focus {
 .btn-group > .btn-group .dropdown-menu {
   left: auto;
 }
+input[type="radio"]{
+  margin: 0 0 0 10px;
+}
