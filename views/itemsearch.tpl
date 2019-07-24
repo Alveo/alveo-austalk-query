@@ -92,8 +92,8 @@
 								then select the item from below.
 								<i class="far fa-question-circle" data-toggle="tooltip" data-html="true" 
 								title="<p>This allows you to search specific word groups or sessions within some of the components. 
-								You can select all the 'words' components by selecting words in the dropdown above.</p>"></i><br>
-								<a href="/media/wordList.csv">Click here for the list of words used.</a></p>
+								You can select all the 'words' components by selecting words in the dropdown above.</p>"></i>
+								</p>
 							</div>
 						</div>
 						<div class="row mb-3 d-none">
@@ -158,7 +158,9 @@
 								title="<p>You can search for individual speakers by entering their speaker id's. You can also use 
 								SPARQL's regular expression syntax. Some examples, '.' is a wildcard character, '*' matches 0-many 
 								of the previous expression. Partial searches can also work using '^' and/or '$' at the beginning and the 
-								end respectively. Searches are not case-sensitive. More information on it's special usage is below.</p>"></i>
+								end respectively. Searches are not case-sensitive. More information on it's special usage is below.</p>"></i><br>
+								<a id="sentencesLink" href="https://austalk.edu.au/media/attachments/AusTalk-Protocol-Sentences-Session2.pdf">Click here for the list of sentences used.</a>
+								<a id='wordsLink' href="/media/wordList.csv">Click here for the list of words used.</a>
 								</p>
 							</div>
 						</div>
@@ -292,8 +294,16 @@
 		if (val != 'words') {
 			$('#specificComponentRow').hide();
 			$('[name="componentName"]').val("");
+			$('#wordsLink').hide();
 		} else {
 			$('#specificComponentRow').show();
+			$('#wordsLink').show();
+		}
+
+		if (val == 'sentences') {
+			$('#sentencesLink').show();
+		} else {
+			$('#sentencesLink').hide();
 		}
 	}
 
