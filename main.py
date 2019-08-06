@@ -340,12 +340,14 @@ def results():
 
     undoExists = 'backupPartList' in session.itervalues()
 
-    return bottle.template('presults', 
-                           resultsList=resultsList, 
-                           resultCount=session['partcount'],
-                           message=session.pop('message',''),
-                           undo=undoExists, 
-                           name=session.get('name',None))
+    bottle.redirect('/itemsearch')
+
+    # return bottle.template('presults', 
+    #                        resultsList=resultsList, 
+    #                        resultCount=session['partcount'],
+    #                        message=session.pop('message',''),
+    #                        undo=undoExists, 
+    #                        name=session.get('name',None))
 
 @bottle.get('/presults')
 def part_list():
