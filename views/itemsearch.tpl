@@ -34,25 +34,13 @@
 			<div id="gcomp" class="panel-collapse collapse">
 				<div class="card-body">
 						<div class="row mb-3">
-							<div class="col-lg-2 col-md-6 col-xs-12"><b>Speech Type:</b></div>
-							<div class="col-lg-7 col-md-12 col-xs-12">
-								<input type="radio" id="r1" name="speechType" value="all" checked>
-								<label for="r1">All</label> 
-								<input type="radio" id="r2" name="speechType" value="read">
-								<label for="r2">Read Speech</label> 
-								<input type="radio" id="r3" name="speechType" value="spontaneous">
-								<label for="r3">Spontaneous Speech</label> 
-							</div>
-
-						</div>
-						<div class="row mb-3">
 							<div class="col-lg-2 col-md-6 col-xs-12">
 								<label for="comptype"><b>Component Type:</b></label>
 							</div>
 							<div class="col-lg-3 col-md-6 col-xs-12">
 								<div class="form-group">
-									<select id="componentType" class="form-control" name="comptype">
-										<!--<option value="">Any</option>
+									<select class="form-control" name="comptype">
+										<option value="">Any</option>
 										<option value="sentences">Sentences</option>
 										<option value="yes-no">Yes-No</option>
 										<option value="words">Words</option>
@@ -60,9 +48,8 @@
 										<option value="interview">Interview</option>
 										<option value="maptask">Maptask</option>
 										<option value="calibration">Calibration</option>
-										<option value="^story">Story</option>
-										<option value="re-told-story">Re-told Story</option>
-										<option value="conversation">Conversation</option>-->
+										<option value="story">Story</option>
+										<option value="conversation">Conversation</option>
 									</select>
 								</div>
 							</div>
@@ -253,17 +240,12 @@
 			arrow.addClass("fa-angle-down");
 		}
 	});
-
-	$('[name="speechType"]').on('change', function(event) {
-		loadSpeechTypeOtions(event.currentTarget.value);
-	});
 	
 	$(document).ready(function() {
 		$('.progress .progress-bar').css("width",function() {
 			return $(this).attr("aria-valuenow")+"%";
 		});
 		chooseCards($('[name="comptype"]').val());
-		loadSpeechTypeOtions('all');
 	});
 
 	$('[name="comptype"]').on('change', function(event) {
@@ -295,41 +277,5 @@
 		} else {
 			$('#specificComponentRow').show();
 		}
-	}
-
-	var loadSpeechTypeOtions = function(sType) {
-		$('#componentType')
-			.empty()
-		if (sType == 'all') {
-			$('#componentType').append('<option value="">Any</option>');
-			loadReadOptions();
-			loadSpontaneousOptions();
-		} else if (sType == 'read') {
-			$('#componentType').append('<option value="sentences|words|digits|^story">Any</option>');
-			loadReadOptions();
-		} else if (sType == 'spontaneous') {
-			$('#componentType').append('<option value="yes-no|interview|maptask|calibration|re-told-story|conversation">Any</option>');
-			loadSpontaneousOptions();
-		}
-	}
-
-	var loadReadOptions = function() {
-		$('#componentType')
-		.append('<option value="sentences">Sentences</option>',
-				'<option value="words">Words</option>',
-				'<option value="digits">Digits</option>',
-				'<option value="^story">Story</option>',
-		);
-	}
-
-	var loadSpontaneousOptions = function() {
-		$('#componentType')
-		.append('<option value="yes-no">Yes-No</option>',
-				'<option value="interview">Interview</option>',
-				'<option value="maptask">Maptask</option>',
-				'<option value="calibration">Calibration</option>',
-				'<option value="re-told-story">Re-told Story</option>',
-				'<option value="conversation">Conversation</option>',
-		);
 	}
 </script>
