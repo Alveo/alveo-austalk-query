@@ -240,6 +240,8 @@
 	<div class="col-md-9 col-sm-12">Using the Component field you can search for a specific component if desired (i.e, "yes-no-opening-2").<br>
 	The Component Type drop-down menu will select by a broader category of components (all "yes-no" type components).</div>
 </div>
+<script src="js/wordList.js" language="Javascript" type="text/javascript" ></script>
+<script src="js/sentenceList.js" language="Javascript" type="text/javascript" ></script>
 <script type="text/javascript">
 	$(function () {
 		  $('[data-toggle="tooltip"]').tooltip();
@@ -266,6 +268,7 @@
 		});
 		chooseCards($('[name="comptype"]').val());
 		loadSpeechTypeOtions('all');
+		$("#prompt").autocomplete({source: wordList});
 	});
 
 	$('[name="comptype"]').on('change', function(event) {
@@ -273,6 +276,8 @@
 		var val = $(this).val();
 		chooseCards(val);
 	});
+
+
 
 	var chooseCards = function(val) {
 		var showPromptOptions = ["sentences", "words", "digits", "yes-no"];
@@ -298,10 +303,12 @@
 		} else {
 			$('#specificComponentRow').show();
 			$('#wordsLink').show();
+			$( "#prompt" ).autocomplete( "option", "source", wordList);
 		}
 
 		if (val == 'sentences') {
 			$('#sentencesLink').show();
+			$( "#prompt" ).autocomplete( "option", "source",sentenceList);
 		} else {
 			$('#sentencesLink').hide();
 		}
