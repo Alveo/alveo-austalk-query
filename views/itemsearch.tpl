@@ -225,6 +225,8 @@
 	<div class="col-md-9 col-sm-12">Using the Component field you can search for a specific component if desired (i.e, "yes-no-opening-2").<br>
 	The Component Type drop-down menu will select by a broader category of components (all "yes-no" type components).</div>
 </div>
+<script src="js/wordList.js" language="Javascript" type="text/javascript" ></script>
+<script src="js/sentenceList.js" language="Javascript" type="text/javascript" ></script>
 <script type="text/javascript">
 	$(function () {
 		  $('[data-toggle="tooltip"]').tooltip();
@@ -246,6 +248,8 @@
 			return $(this).attr("aria-valuenow")+"%";
 		});
 		chooseCards($('[name="comptype"]').val());
+		loadSpeechTypeOtions('all');
+		$("#prompt").autocomplete({source: wordList});
 	});
 
 	$('[name="comptype"]').on('change', function(event) {
@@ -253,6 +257,8 @@
 		var val = $(this).val();
 		chooseCards(val);
 	});
+
+
 
 	var chooseCards = function(val) {
 		var showPromptOptions = ["sentences", "words", "digits", "yes-no"];
@@ -276,6 +282,51 @@
 			$('[name="componentName"]').val("");
 		} else {
 			$('#specificComponentRow').show();
+			$('#wordsLink').show();
+			$( "#prompt" ).autocomplete( "option", "source", wordList);
 		}
+
+		if (val == 'sentences') {
+			$('#sentencesLink').show();
+			$( "#prompt" ).autocomplete( "option", "source",sentenceList);
+		} else {
+			$('#sentencesLink').hide();
+		}
+	}
+
+	var loadSpeechTypeOtions = function(sType) {
+		$('#componentType')
+			.empty()
+		if (sType == 'all') {
+			$('#componentType').append('<option value="">Any</option>');
+			loadReadOptions();
+			loadSpontaneousOptions();
+		} else if (sType == 'read') {
+			$('#componentType').append('<option value="sentences|words|digits|^story">Any</option>');
+			loadReadOptions();
+		} else if (sType == 'spontaneous') {
+			$('#componentType').append('<option value="yes-no|interview|maptask|calibration|re-told-story|conversation">Any</option>');
+			loadSpontaneousOptions();
+		}
+	}
+
+	var loadReadOptions = function() {
+		$('#componentType')
+		.append('<option value="sentences">Sentences</option>',
+				'<option value="words">Words</option>',
+				'<option value="digits">Digits</option>',
+				'<option value="^story">Story</option>',
+		);
+	}
+
+	var loadSpontaneousOptions = function() {
+		$('#componentType')
+		.append('<option value="yes-no">Yes-No</option>',
+				'<option value="interview">Interview</option>',
+				'<option value="maptask">Maptask</option>',
+				'<option value="calibration">Calibration</option>',
+				'<option value="re-told-story">Re-told Story</option>',
+				'<option value="conversation">Conversation</option>',
+		);
 	}
 </script>
