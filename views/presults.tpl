@@ -14,8 +14,8 @@
 
 <h4>Found {{resultCount}} Speakers.</h4>
 
-<p>Click on the speakers you wish to select, then click "Search Items From Selected Speakers". 
-If you wish to select all speakers minus a few, select the speakers you wish to remove, then click 
+<p>All speakers are initially selected. Click "Search Items From Selected Speakers" to search all speakers listed or refine your selection first. 
+If you wish to select all speakers minus a few, click "Select None", select the speakers you wish to remove, then click 
 "Remove Selected Speakers". When you have your desired list, click "Select All Speakers" and then 
 "Search Items from Selected Speakers"</p>
 
@@ -104,5 +104,6 @@ If you wish to select all speakers minus a few, select the speakers you wish to 
 		$('.progress .progress-bar').css("width",function() {
 			return $(this).attr("aria-valuenow")+"%";
 		});
+		selectAll();
 	});
 </script>
