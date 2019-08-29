@@ -221,11 +221,12 @@ def get_everything_from_speakers(filters=None,id=None):
                         'has_speech_problems','has_piercings','has_health_problems','has_hearing_problems',
                         'has_dentures','is_student','is_left_handed','has_reading_problems','pob_country',
                         'father_pob_country','mother_pob_country']
-    select = 'SELECT ?id ?age ?city ?gender ?first_language ?mother_first_language ?father_first_language'
+    select = 'SELECT ?id ?age ?city ?institution ?gender ?first_language ?mother_first_language ?father_first_language '
     where = '''WHERE {
         ?id a foaf:Person .
         ?id austalk:recording_site ?recording_site .
         ?recording_site austalk:city ?city .
+        ?recording_site austalk:institution ?institution .
         ?id foaf:age ?age .
         ?id foaf:gender ?gender .
         OPTIONAL { ?id austalk:first_language ?fl .
