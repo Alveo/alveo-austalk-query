@@ -97,6 +97,9 @@ def search():
     if client is None:
         session['message'] = "You must log in to view this page!"
         bottle.redirect('/')
+    elif client.oauth.token is None:
+        session['message'] = "You must log in to view this page!"
+        bottle.redirect('/')
         
     quer = alquery.AlQuery(client)
 
@@ -233,6 +236,9 @@ def results():
     if client is None:
         session['message'] = "You must log in to view this page!"
         bottle.redirect('/')
+    elif client.oauth.token is None:
+        session['message'] = "You must log in to view this page!"
+        bottle.redirect('/')
 
     quer = alquery.AlQuery(client)
 
@@ -357,6 +363,9 @@ def part_list():
     if client is None:
         session['message'] = "You must log in to view this page!"
         bottle.redirect('/')
+    elif client.oauth.token is None:
+        session['message'] = "You must log in to view this page!"
+        bottle.redirect('/')
 
     try:
         resultsList = session['partlist']
@@ -386,6 +395,9 @@ def download_speakers_csv():
     
     client = session.get('client',None)
     if client is None:
+        session['message'] = "You must log in to view this page!"
+        bottle.redirect('/')
+    elif client.oauth.token is None:
         session['message'] = "You must log in to view this page!"
         bottle.redirect('/')
 
@@ -433,6 +445,9 @@ def handle_parts():
 
     client = session.get('client',None)
     if client is None:
+        session['message'] = "You must log in to view this page!"
+        bottle.redirect('/')
+    elif client.oauth.token is None:
         session['message'] = "You must log in to view this page!"
         bottle.redirect('/')
 
@@ -498,6 +513,9 @@ def item_results():
 
     client = session.get('client',None)
     if client is None:
+        session['message'] = "You must log in to view this page!"
+        bottle.redirect('/')
+    elif client.oauth.token is None:
         session['message'] = "You must log in to view this page!"
         bottle.redirect('/')
     
@@ -634,6 +652,9 @@ def item_list():
     if client is None:
         session['message'] = "You must log in to view this page!"
         bottle.redirect('/')
+    elif client.oauth.token is None:
+        session['message'] = "You must log in to view this page!"
+        bottle.redirect('/')
 
     try:
         partList = session['partlist']
@@ -663,6 +684,9 @@ def download_items_csv():
 
     client = session.get('client',None)
     if client is None:
+        session['message'] = "You must log in to view this page!"
+        bottle.redirect('/')
+    elif client.oauth.token is None:
         session['message'] = "You must log in to view this page!"
         bottle.redirect('/')
     
@@ -725,6 +749,9 @@ def handle_items():
 
     client = session.get('client',None)
     if client is None:
+        session['message'] = "You must log in to view this page!"
+        bottle.redirect('/')
+    elif client.oauth.token is None:
         session['message'] = "You must log in to view this page!"
         bottle.redirect('/')
 
@@ -800,6 +827,9 @@ def item_search():
     if client is None:
         session['message'] = "You must log in to view this page!"
         bottle.redirect('/')
+    elif client.oauth.token is None:
+        session['message'] = "You must log in to view this page!"
+        bottle.redirect('/')
         
     if len(session.get('partlist',[]))==0 or session.get('partcount',0)==0:
         session['message'] = "Please first select some Speakers. "
@@ -818,6 +848,8 @@ def getSentences():
     
     client = session.get('client',None)
     if client is None:
+        return "<option value="">You must login to view results!</option>"
+    elif client.oauth.token is None:
         return "<option value="">You must login to view results!</option>"
         
     
@@ -854,6 +886,9 @@ def export():
 
     client = session.get('client',None)
     if client is None:
+        session['message'] = "You must log in to view this page!"
+        bottle.redirect('/')
+    elif client.oauth.token is None:
         session['message'] = "You must log in to view this page!"
         bottle.redirect('/')
 
