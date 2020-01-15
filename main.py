@@ -329,6 +329,7 @@ def results():
     
 
     query = query + qfilter + "} \nORDER BY ?id"
+
     
     resultsList = quer.results_dict_list(session.get('corpus','austalk'), query)
     session['partfilters'] = qfilter #so we can use the filters later again
@@ -522,6 +523,17 @@ def item_results():
       ?recording_site austalk:city ?city .
       ?id foaf:age ?age .
       ?id foaf:gender ?gender .
+        ?recording_site austalk:institution ?institution .
+        OPTIONAL { ?id austalk:residential_history ?rh . 
+        OPTIONAL { ?rh austalk:country ?hist_country . }
+        OPTIONAL { ?rh austalk:state ?hist_state . }
+        OPTIONAL { ?rh austalk:town ?hist_town . }
+        OPTIONAL { ?rh austalk:age_from ?age_from . }
+        OPTIONAL { ?rh austalk:age_to ?age_to . } }
+        OPTIONAL { ?id austalk:first_language ?first_language . 
+                    ?first_language iso639schema:name ?first_language_name . }
+        OPTIONAL { ?id austalk:pob_country ?pob_country . }
+        OPTIONAL { ?id austalk:pob_town ?pob_town . }
      """
 
     if bottle.request.forms.get('anno') == "required":
@@ -535,7 +547,7 @@ def item_results():
         query = query + qbuilder.regex_filter('prompt',custom='^'+bottle.request.forms.get('fullprompt')+'$')
     else:
         query = query + qbuilder.regex_filter('prompt')
-    query = query + qbuilder.simple_filter('componentName')
+    query = query + qbuilder.simple_filter('componentName', endWith=False) #set endwith=False so that eg "words-1" matches "words-1" and "words-1-2"
     query = query + qbuilder.to_str_filter('prototype',prepend="https://app.alveo.edu.au/protocol/item/")
 
     if bottle.request.forms.get('comptype') != "":

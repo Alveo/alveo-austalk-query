@@ -24,7 +24,7 @@
 	</div>
 
 	<div class="accordion" id="accordion" >
-		<div class="card">
+		<div id="componentCard" class="card" style="border-bottom:1px solid rgba(0,0,0,.125); border-bottom-left-radius:4px; border-bottom-right-radius:4px;">
 			<div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#gcomp">
 				<div class="d-flex align-items-center">
 					<h5 class="mb-0">Search by Component</h5>
@@ -60,7 +60,7 @@
 								</p>
 							</div>
 						</div>
-						<div class="row mb-3">
+						<div id="specificComponentRow" class="row mb-3" style="display:none;">
 							<div class="col-lg-2 col-md-6 col-xs-12">
 								<label for="componentName"><b>Specific Component:</b></label>
 							</div>
@@ -68,21 +68,9 @@
 								<div class="form-group">
 									<select class="form-control" name="componentName">
 										<option value="">Any</option>
-										<option value="calibration">calibration</option>
-										<option value="digits">digits</option>
-										<option value="sentences">sentences</option>
-										<option value="sentences-e">sentences-e</option>
-										<option value="story">story</option>
-										<option value="words-1">words-1</option>
-										<option value="words-1-2">words-1-2</option>
-										<option value="words-2">words-2</option>
-										<option value="words-2-2">words-2-2</option>
-										<option value="words-3">words-3</option>
-										<option value="words-3-2">words-3-2</option>
-										<option value="yes-no-closing">yes-no-closing</option>
-										<option value="yes-no-opening-1">yes-no-opening-1</option>
-										<option value="yes-no-opening-2">yes-no-opening-2</option>
-										<option value="yes-no-opening-3">yes-no-opening-3</option>
+										<option value="words-1">Words session 1</option>
+										<option value="words-2">Words session 2</option>
+										<option value="words-3">Words session 3</option>
 									</select>
 								</div>
 							</div>
@@ -91,8 +79,8 @@
 								then select the item from below.
 								<i class="far fa-question-circle" data-toggle="tooltip" data-html="true" 
 								title="<p>This allows you to search specific word groups or sessions within some of the components. 
-								You can select all the 'words' components by selecting words in the dropdown above.</p>"></i>
-								</p>
+								You can select all the 'words' components by selecting words in the dropdown above.</p>"></i><br>
+								<a href="/media/wordList.csv">Click here for the list of words used.</a></p>
 							</div>
 						</div>
 						<div class="row mb-3 d-none">
@@ -132,7 +120,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="card">
+		<div id="promptCard" class="card" style="display:none;">
 			<div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#gitem">
 				<div class="d-flex align-items-center">
 					<h5 class="mb-0">Search by Prompt</h5>
@@ -148,11 +136,11 @@
 							</div>
 							<div class="col-lg-3 col-md-6 col-xs-12">
 								<div class="form-group">
-									<input type="text" class="form-control" name="prompt" id="prompt" placeholder="animal">
+									<input type="text" class="form-control" name="prompt" id="prompt">
 								</div>
 							</div>
 							<div class="col-lg-7 col-md-12 col-xs-12">
-								<p>This filter supports Regular Expressions. 
+								<p>Search in words, digits or sentences. E.g. "helicopter" (without quotes). This filter supports Regular Expressions. 
 								<i class="far fa-question-circle" data-toggle="tooltip" data-html="true" 
 								title="<p>You can search for individual speakers by entering their speaker id's. You can also use 
 								SPARQL's regular expression syntax. Some examples, '.' is a wildcard character, '*' matches 0-many 
@@ -169,13 +157,13 @@
 								<div class="form-group">
 									<div class="btn-group btn-group-toggle" data-toggle="buttons" id="anno" name="anno">
 										<label class="btn btn-light active">
-											<input type="radio" value = "" id="anno" name="anno" autocomplete="off" checked>Either
+											<input type="radio" value = "" id="annoEither" name="anno" autocomplete="off" checked>Either
 										</label>
 										<label class="btn btn-light">
-											<input type="radio" value = "required" id="anno" name="anno" autocomplete="off">Yes
+											<input type="radio" value = "required" id="annoYes" name="anno" autocomplete="off">Yes
 										</label>
 										<label class="btn btn-light">
-											<input type="radio" value = "" id="anno" name="anno" autocomplete="off">No
+											<input type="radio" value = "" id="annoNo" name="anno" autocomplete="off">No
 										</label>
 									</div>
 								</div>
@@ -186,12 +174,12 @@
 						</div>
 						<div class="row mb-3">
 							<div class="col-lg-2 col-md-6 col-xs-12">
-								<label for="wlist"><b>Predefined Word List:</b></label>
+								<label for="wlist"><b>Filter by Word List:</b></label>
 							</div>
 							<div class="col-lg-3 col-md-6 col-xs-12">
 								<div class="form-group">
 									<select class="form-control" name="wlist">
-										<option value="">None</option>
+										<option value="">Any</option>
 										<option value="hvdwords">hVd Words</option>
 										<option value="hvdmono">hVd Monophthongs</option>
 										<option value="hvddip">hVd Diphthongs</option>
@@ -200,7 +188,7 @@
 							</div>
 							<div class="col-lg-7 col-md-12 col-xs-12">
 								<p>You can choose one of the pre-defined Word Lists, where all the items match a specific pattern. <br>
-								<a href="https://austalk.edu.au/sites/default/files/IS11-AusTalk.pdf" target="_blank">Click here for more information.</a></div>
+								<a href="https://austalk.edu.au/media/attachments/IS11-AusTalk.pdf" target="_blank">Click here for more information.</a></div>
 								</p>
 							</div>
 						</div>
@@ -230,7 +218,7 @@
 <div class="row mb-3">
 	<div class="col-md-3 col-sm-12"><b>Predefined Word Lists:</b></div>
 	<div class="col-md-9 col-sm-12">You can choose one of the pre-defined Word Lists, where all the items match a specific pattern (see Burnham et al. (2011) "Building an Audio-Visual Corpus of Australian English: Large Corpus Collection with an Economical Portable and Replicable Black Box". Interspeech 2011.<br>
-		<a href="https://austalk.edu.au/sites/default/files/IS11-AusTalk.pdf" target="_blank">Click here for more information.</a></div>
+		<a href="https://austalk.edu.au/media/attachments/IS11-AusTalk.pdf" target="_blank">Click here for more information.</a></div>
 </div>
 <div class="row mb-3">
 	<div class="col-md-3 col-sm-12"><b>Component/Component Type:</b></div>
@@ -257,5 +245,37 @@
 		$('.progress .progress-bar').css("width",function() {
 			return $(this).attr("aria-valuenow")+"%";
 		});
+		chooseCards($('[name="comptype"]').val());
 	});
+
+	$('[name="comptype"]').on('change', function(event) {
+		//show or hide the "Search by prompt" card based on the component type selected
+		var val = $(this).val();
+		chooseCards(val);
+	});
+
+	var chooseCards = function(val) {
+		var showPromptOptions = ["sentences", "words", "digits", "yes-no"];
+		var matches = showPromptOptions.filter(function(opt) {
+			return opt == val;
+		});
+		if (matches.length === 0) {
+			//hide the card and reset the values
+			$('#promptCard').hide();
+			$('#componentCard').css({"border-bottom": "1px solid rgba(0,0,0,.125)", "border-bottom-left-radius": "4px", "border-bottom-right-radius": "4px"});
+			$('#prompt').val("");
+			$('input#annoEither').trigger("click");
+			$('[name="wlist"]').val("");
+		} else {
+			$('#promptCard').show();
+			$('#componentCard').removeAttr("style");
+		}
+
+		if (val != 'words') {
+			$('#specificComponentRow').hide();
+			$('[name="componentName"]').val("");
+		} else {
+			$('#specificComponentRow').show();
+		}
+	}
 </script>
