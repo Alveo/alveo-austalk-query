@@ -4,6 +4,6 @@ git+https://github.com/Alveo/pyalveo.git
 python-dateutil==2.4.0
 six==1.10.0
 gunicorn==19.9.0
-pyOpenSSL==16.2.0
+pyOpenSSL==17.5.0
 CherryPy==8.1.0
 pycountry==18.5.26
