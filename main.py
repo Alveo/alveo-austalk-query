@@ -12,6 +12,7 @@ import qbuilder
 import socket
 import sys
 import traceback
+from pprint import pprint
 import pyalveo
 from datetime import datetime
 import csv,json
@@ -1174,16 +1175,16 @@ def create_log(event,data={}):
     fields_ordered_list = ['Event','User','Email','IP Address','Session Time','Event Time','Data']
     
     fields = {'Event':event,
-              'User':session.get('name','None'),
-              'Email':session.get('email','None'),
+              'User':session.get('name','None').encode('utf-8'),
+              'Email':session.get('email','None').encode('utf-8'),
               'IP Address':ip,
               'Session Time':session_time,
               'Event Time':datetime.now().strftime('%d-%m-%Y %H:%M:%S'),
-              'Data':str(data)
+              'Data':str(data).encode('utf-8')
               }
     
-    #Print to console log data as dict with headers as keys and row as values.
-    print(str(fields))
+    #Print to console log data as dict
+    pprint(fields)
     
     #Open Log file and init if not exists or empty
     with open(log_file, 'a+') as f:
