@@ -34,13 +34,25 @@
 			<div id="gcomp" class="panel-collapse collapse">
 				<div class="card-body">
 						<div class="row mb-3">
+							<div class="col-lg-2 col-md-6 col-xs-12"><b>Speech Type:</b></div>
+							<div class="col-lg-7 col-md-12 col-xs-12">
+								<input type="radio" id="r1" name="speechType" value="all" checked>
+								<label for="r1">All</label> 
+								<input type="radio" id="r2" name="speechType" value="read">
+								<label for="r2">Read Speech</label> 
+								<input type="radio" id="r3" name="speechType" value="spontaneous">
+								<label for="r3">Spontaneous Speech</label> 
+							</div>
+
+						</div>
+						<div class="row mb-3">
 							<div class="col-lg-2 col-md-6 col-xs-12">
 								<label for="comptype"><b>Component Type:</b></label>
 							</div>
 							<div class="col-lg-3 col-md-6 col-xs-12">
 								<div class="form-group">
-									<select class="form-control" name="comptype">
-										<option value="">Any</option>
+									<select id="componentType" class="form-control" name="comptype">
+										<!--<option value="">Any</option>
 										<option value="sentences">Sentences</option>
 										<option value="yes-no">Yes-No</option>
 										<option value="words">Words</option>
@@ -48,8 +60,9 @@
 										<option value="interview">Interview</option>
 										<option value="maptask">Maptask</option>
 										<option value="calibration">Calibration</option>
-										<option value="story">Story</option>
-										<option value="conversation">Conversation</option>
+										<option value="^story">Story</option>
+										<option value="re-told-story">Re-told Story</option>
+										<option value="conversation">Conversation</option>-->
 									</select>
 								</div>
 							</div>
@@ -79,8 +92,8 @@
 								then select the item from below.
 								<i class="far fa-question-circle" data-toggle="tooltip" data-html="true" 
 								title="<p>This allows you to search specific word groups or sessions within some of the components. 
-								You can select all the 'words' components by selecting words in the dropdown above.</p>"></i><br>
-								<a href="/media/wordList.csv">Click here for the list of words used.</a></p>
+								You can select all the 'words' components by selecting words in the dropdown above.</p>"></i>
+								</p>
 							</div>
 						</div>
 						<div class="row mb-3 d-none">
@@ -145,7 +158,9 @@
 								title="<p>You can search for individual speakers by entering their speaker id's. You can also use 
 								SPARQL's regular expression syntax. Some examples, '.' is a wildcard character, '*' matches 0-many 
 								of the previous expression. Partial searches can also work using '^' and/or '$' at the beginning and the 
-								end respectively. Searches are not case-sensitive. More information on it's special usage is below.</p>"></i>
+								end respectively. Searches are not case-sensitive. More information on it's special usage is below.</p>"></i><br>
+								<a id="sentencesLink" href="https://austalk.edu.au/media/attachments/AusTalk-Protocol-Sentences-Session2.pdf">Click here for the list of sentences used.</a>
+								<a id='wordsLink' href="/media/wordList.csv">Click here for the list of words used.</a>
 								</p>
 							</div>
 						</div>
@@ -225,6 +240,8 @@
 	<div class="col-md-9 col-sm-12">Using the Component field you can search for a specific component if desired (i.e, "yes-no-opening-2").<br>
 	The Component Type drop-down menu will select by a broader category of components (all "yes-no" type components).</div>
 </div>
+<script src="js/wordList.js" language="Javascript" type="text/javascript" ></script>
+<script src="js/sentenceList.js" language="Javascript" type="text/javascript" ></script>
 <script type="text/javascript">
 	$(function () {
 		  $('[data-toggle="tooltip"]').tooltip();
@@ -240,12 +257,18 @@
 			arrow.addClass("fa-angle-down");
 		}
 	});
+
+	$('[name="speechType"]').on('change', function(event) {
+		loadSpeechTypeOtions(event.currentTarget.value);
+	});
 	
 	$(document).ready(function() {
 		$('.progress .progress-bar').css("width",function() {
 			return $(this).attr("aria-valuenow")+"%";
 		});
 		chooseCards($('[name="comptype"]').val());
+		loadSpeechTypeOtions('all');
+		$("#prompt").autocomplete({source: wordList});
 	});
 
 	$('[name="comptype"]').on('change', function(event) {
@@ -253,6 +276,8 @@
 		var val = $(this).val();
 		chooseCards(val);
 	});
+
+
 
 	var chooseCards = function(val) {
 		var showPromptOptions = ["sentences", "words", "digits", "yes-no"];
@@ -274,8 +299,54 @@
 		if (val != 'words') {
 			$('#specificComponentRow').hide();
 			$('[name="componentName"]').val("");
+			$('#wordsLink').hide();
 		} else {
 			$('#specificComponentRow').show();
+			$('#wordsLink').show();
+			$( "#prompt" ).autocomplete( "option", "source", wordList);
 		}
+
+		if (val == 'sentences') {
+			$('#sentencesLink').show();
+			$( "#prompt" ).autocomplete( "option", "source",sentenceList);
+		} else {
+			$('#sentencesLink').hide();
+		}
+	}
+
+	var loadSpeechTypeOtions = function(sType) {
+		$('#componentType')
+			.empty()
+		if (sType == 'all') {
+			$('#componentType').append('<option value="">Any</option>');
+			loadReadOptions();
+			loadSpontaneousOptions();
+		} else if (sType == 'read') {
+			$('#componentType').append('<option value="sentences|words|digits|^story">Any</option>');
+			loadReadOptions();
+		} else if (sType == 'spontaneous') {
+			$('#componentType').append('<option value="yes-no|interview|maptask|calibration|re-told-story|conversation">Any</option>');
+			loadSpontaneousOptions();
+		}
+	}
+
+	var loadReadOptions = function() {
+		$('#componentType')
+		.append('<option value="sentences">Sentences</option>',
+				'<option value="words">Words</option>',
+				'<option value="digits">Digits</option>',
+				'<option value="^story">Story</option>',
+		);
+	}
+
+	var loadSpontaneousOptions = function() {
+		$('#componentType')
+		.append('<option value="yes-no">Yes-No</option>',
+				'<option value="interview">Interview</option>',
+				'<option value="maptask">Maptask</option>',
+				'<option value="calibration">Calibration</option>',
+				'<option value="re-told-story">Re-told Story</option>',
+				'<option value="conversation">Conversation</option>',
+		);
 	}
 </script>

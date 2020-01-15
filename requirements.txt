@@ -7,3 +7,4 @@ gunicorn==19.9.0
 pyOpenSSL==17.5.0
 CherryPy==8.1.0
 pycountry==18.5.26
+requests-toolbelt==0.9.1
